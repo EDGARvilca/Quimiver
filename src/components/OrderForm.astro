@@ -1,0 +1,140 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { site } from '../config/site';
+import { formatCurrency, type OrderConfig } from '../lib/order';
+
+interface Props {
+  product: CollectionEntry<'products'>['data'];
+}
+
+const { product } = Astro.props;
+
+const config: OrderConfig = {
+  productName: product.name,
+  presentations: product.presentations,
+  shippingOptions: [...site.order.shippingOptions],
+  paymentMethods: site.payment.methods,
+  paymentNumber: site.payment.number,
+};
+
+const priceSummary = product.presentations
+  .map((p) => `${p.label} es de ${formatCurrency(p.price)}`)
+  .join(' y el de ');
+---
+
+<section class="section order" id="compra">
+  <div class="order-intro">
+    <span class="eyebrow">Compra directa</span>
+    <h2>Haz tu pedido de {product.name}</h2>
+    <p>
+      Completa el formulario y te contactaremos por WhatsApp o teléfono para confirmar el envío. El
+      precio por frasco de {priceSummary}.
+    </p>
+  </div>
+
+  <form class="order-form" id="order-form">
+    <div class="form-field">
+      <label for="customer-name">Nombre y apellido</label>
+      <input
+        type="text"
+        id="customer-name"
+        name="customer-name"
+        required
+        autocomplete="name"
+        placeholder="Ej. Ana Torres"
+      />
+    </div>
+    <div class="form-field">
+      <label for="phone">Celular o WhatsApp</label>
+      <input
+        type="tel"
+        id="phone"
+        name="phone"
+        required
+        autocomplete="tel"
+        placeholder={`Ej. ${site.payment.number.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3')}`}
+      />
+    </div>
+    <div class="form-field">
+      <label for="city">Ciudad</label>
+      <input
+        type="text"
+        id="city"
+        name="city"
+        required
+        autocomplete="address-level2"
+        placeholder="Ej. Huaraz"
+      />
+    </div>
+    <div class="form-field">
+      <label for="presentation">Presentación</label>
+      <select id="presentation" name="presentation" required>
+        <option value="" selected disabled>
+          Selecciona una opción
+        </option>
+        {product.presentations.map((p) => (
+          <option value={p.id}>
+            {p.label} — {formatCurrency(p.price)}
+          </option>
+        ))}
+      </select>
+    </div>
+    <div class="form-field">
+      <label for="quantity">Cantidad</label>
+      <input
+        type="number"
+        id="quantity"
+        name="quantity"
+        value="1"
+        min="1"
+        max={site.order.maxQuantity}
+        required
+      />
+    </div>
+    <div class="form-field">
+      <label for="delivery">Tipo de entrega</label>
+      <select id="delivery" name="delivery" required>
+        <option value="" selected disabled>
+          Selecciona una opción
+        </option>
+        {site.order.shippingOptions.map((s) => (
+          <option value={s.id}>{s.label}</option>
+        ))}
+      </select>
+    </div>
+    <div class="form-field full">
+      <label for="notes">Observaciones</label>
+      <textarea
+        id="notes"
+        name="notes"
+        rows="3"
+        placeholder="Comparte más detalles, alergias o instrucciones de entrega"
+      ></textarea>
+    </div>
+
+    <div class="form-summary">
+      <p>
+        Total estimado:{' '}
+        <strong id="order-total" aria-live="polite">
+          {formatCurrency(0)}
+        </strong>
+      </p>
+      <p class="footnote">
+        El total final puede variar según el costo de envío seleccionado. Te confirmaremos todo por
+        WhatsApp.
+      </p>
+    </div>
+
+    <p id="order-status" class="form-status" role="status" aria-live="polite" hidden></p>
+
+    <button type="submit" class="btn primary full">
+      Confirmar pedido
+    </button>
+  </form>
+  <script type="application/json" id="order-config" set:html={JSON.stringify(config)} />
+</section>
+
+<script>
+  import { initOrderForm } from '../scripts/order-form';
+  initOrderForm();
+</script>

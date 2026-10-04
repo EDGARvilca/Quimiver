@@ -1,0 +1,60 @@
+---
+import { PENDING_TEXT, site, whatsappLink } from '../config/site';
+
+const socialLinks = site.social.filter((s) => s.url !== null);
+const buildYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer-content">
+    <div>
+      <h2 class="footer-title">{site.brand}</h2>
+      <p>
+        Producto creado por {site.company} para brindar bienestar natural a las familias peruanas.
+      </p>
+    </div>
+    <div>
+      <h3>Contacto</h3>
+      <ul>
+        <li>
+          Teléfono: <a href={site.contact.phoneHref}>{site.contact.phoneDisplay}</a>
+        </li>
+        <li>
+          Correo: <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+        </li>
+        <li>
+          WhatsApp:{' '}
+          <a href={whatsappLink()} target="_blank" rel="noopener">
+            Atención directa
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h3>Síguenos</h3>
+      {socialLinks.length > 0 ? (
+        <ul>
+          {socialLinks.map((s) => (
+            <li>
+              <a href={s.url} target="_blank" rel="noopener">
+                {s.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="pending pending--dark">{PENDING_TEXT}</p>
+      )}
+    </div>
+  </div>
+  <p class="footer-note">
+    © <span id="current-year">{buildYear}</span>&nbsp;{site.company}. Todos los derechos reservados.
+  </p>
+</footer>
+
+<script>
+  const year = document.getElementById('current-year');
+  if (year) {
+    year.textContent = String(new Date().getFullYear());
+  }
+</script>

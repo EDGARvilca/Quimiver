@@ -1,0 +1,37 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import PendingNotice from './PendingNotice.astro';
+
+interface Props {
+  product: CollectionEntry<'products'>['data'];
+}
+
+const { product } = Astro.props;
+const { ingredients, images } = product;
+const points = ingredients.points.filter((p) => p.verified);
+---
+
+<section class="section split" id="ingredientes">
+  <div class="split-media">
+    <img
+      src={images.ingredient.src}
+      alt={images.ingredient.alt}
+      width={images.ingredient.width}
+      height={images.ingredient.height}
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  <div class="split-text">
+    <span class="eyebrow">Ingrediente principal</span>
+    <h2>{ingredients.heading}</h2>
+    {ingredients.description.verified ? <p>{ingredients.description.text}</p> : <PendingNotice />}
+    {points.length > 0 && (
+      <ul class="list">
+        {points.map((p) => (
+          <li>{p.text}</li>
+        ))}
+      </ul>
+    )}
+  </div>
+</section>

@@ -1,0 +1,32 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import PendingNotice from './PendingNotice.astro';
+
+interface Props {
+  product: CollectionEntry<'products'>['data'];
+}
+
+const { product } = Astro.props;
+const testimonials = product.testimonials.filter((t) => t.verified);
+---
+
+<section class="section testimonials" id="testimonios">
+  <div class="section-heading">
+    <span class="eyebrow">Testimonios</span>
+    <h2>Clientes que ya confían en {product.name}</h2>
+  </div>
+  {testimonials.length > 0 ? (
+    <div class="testimonials-grid">
+      {testimonials.map((t) => (
+        <blockquote>
+          <p>"{t.quote}"</p>
+          <cite>
+            — {t.author}, {t.city}
+          </cite>
+        </blockquote>
+      ))}
+    </div>
+  ) : (
+    <PendingNotice />
+  )}
+</section>

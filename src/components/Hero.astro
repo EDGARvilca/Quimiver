@@ -1,0 +1,77 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { site } from '../config/site';
+import PendingNotice from './PendingNotice.astro';
+
+interface Props {
+  product: CollectionEntry<'products'>['data'];
+}
+
+const { product } = Astro.props;
+const highlights = product.highlights.filter((h) => h.verified);
+---
+
+<header class="hero" id="inicio">
+  <nav class="navbar" aria-label="Principal">
+    <a class="brand" href="#inicio">
+      {site.brand}
+    </a>
+    <div class="nav-links">
+      <a href="#beneficios">Beneficios</a>
+      <a href="#ingredientes">Ingredientes</a>
+      <a href="#testimonios">Testimonios</a>
+      <a href="#faq">Preguntas</a>
+      <a class="cta-nav" href="#compra">
+        Comprar
+      </a>
+    </div>
+  </nav>
+
+  <div class="hero-content">
+    <div class="hero-text">
+      {product.badge.verified && <span class="badge">{product.badge.text}</span>}
+      <h1>
+        {product.name}, de {product.manufacturer}
+      </h1>
+      <p>
+        {product.intro}
+        {product.summary.verified && ` ${product.summary.text}`}
+      </p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#compra">
+          Realizar pedido
+        </a>
+        <a class="btn ghost" href="#beneficios">
+          Conocer más
+        </a>
+      </div>
+      {highlights.length > 0 && (
+        <ul class="highlights">
+          {highlights.map((h) => (
+            <li>{h.text}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+    <div class="hero-media">
+      <div class="product-card">
+        <img
+          src={product.images.hero.src}
+          alt={product.images.hero.alt}
+          width={product.images.hero.width}
+          height={product.images.hero.height}
+          fetchpriority="high"
+        />
+        {product.seal.verified && (
+          <div class="seal">
+            <span>{product.seal.text}</span>
+          </div>
+        )}
+      </div>
+      <div class="origin-card">
+        <h2 class="origin-title">Origen</h2>
+        {product.origin.verified ? <p>{product.origin.text}</p> : <PendingNotice />}
+      </div>
+    </div>
+  </div>
+</header>

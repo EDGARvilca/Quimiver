@@ -1,0 +1,19 @@
+// Variables de diseño. Única fuente de colores, radios y sombras.
+
+:root {
+  --bg: #f2f7f4;
+  --primary: #0d7c66;
+  --primary-dark: #075948;
+  --secondary: #f6a700;
+  --text: #1d1f21;
+  --muted: #5a6760; /* 5.4:1 sobre --bg (WCAG AA) */
+  --card-bg: #ffffff;
+  --border: #e1e7e3;
+  --shadow: 0 20px 45px rgba(13, 124, 102, 0.15);
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+  --transition: all 0.25s ease;
+  --pending-bg: #fff6e0;
+  --pending-text: #8a5a00;
+}

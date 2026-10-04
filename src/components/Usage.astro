@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  product: CollectionEntry<'products'>['data'];
+}
+
+const { product } = Astro.props;
+---
+
+<section class="section steps" id="uso">
+  <div class="section-heading">
+    <span class="eyebrow">Modo de uso</span>
+    <h2>Aplicación sencilla en {product.usage.length} pasos</h2>
+  </div>
+  <ol class="steps-grid">
+    {product.usage.map((step, i) => (
+      <li class="step">
+        <span class="step-number" aria-hidden="true">
+          {i + 1}
+        </span>
+        <h3>{step.title}</h3>
+        <p>{step.text}</p>
+      </li>
+    ))}
+  </ol>
+</section>
