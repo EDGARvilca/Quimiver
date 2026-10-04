@@ -13,7 +13,9 @@ const config: OrderConfig = {
   presentations: [{ id: '50g', label: 'Frasco de 50 g', price: 25, wholesalePrice: 20 }],
   wholesaleMinQuantity: 6,
   shippingOptions: [
-    { id: 'recojo-lima', label: 'Recojo en Lima (sin costo)', fee: 0 },
+    { id: 'recojo-lima', label: 'Recojo en Lima (costo según zona)', fee: null },
+    // Opción con costo fijo, para cubrir ese caso aunque hoy el negocio no la use.
+    { id: 'fijo', label: 'Envío con costo fijo', fee: 10 },
     { id: 'shalom', label: 'Envío por Shalom (costo según destino)', fee: null },
     { id: 'olva', label: 'Envío por Olva (costo según destino)', fee: null },
   ],
@@ -54,9 +56,15 @@ describe('quoteOrder', () => {
   });
 
   it('suma el envío cuando tiene costo fijo', () => {
-    const quote = quoteOrder(config, input);
-    expect(quote.shippingFee).toBe(0);
+    const quote = quoteOrder(config, { ...input, shippingId: 'fijo' });
+    expect(quote.shippingFee).toBe(10);
     expect(quote.shippingPending).toBe(false);
+    expect(quote.total).toBe(60);
+  });
+
+  it('marca el recojo en Lima como costo pendiente según zona', () => {
+    const quote = quoteOrder(config, input);
+    expect(quote.shippingPending).toBe(true);
     expect(quote.total).toBe(50);
   });
 
@@ -92,9 +100,9 @@ describe('buildOrderMessage', () => {
     expect(message).toContain('*Presentación:* Frasco de 50 g');
     expect(message).toContain('*Precio unitario:* S/ 20.00 (por mayor)');
     expect(message).toContain('*Subtotal:* S/ 120.00');
-    expect(message).toContain('*Entrega:* Recojo en Lima (sin costo)');
-    expect(message).toContain('*Costo de envío:* S/ 0.00');
-    expect(message).toContain('*Total estimado:* S/ 120.00');
+    expect(message).toContain('*Entrega:* Recojo en Lima (costo según zona)');
+    expect(message).toContain('*Costo de envío:* a coordinar según destino');
+    expect(message).toContain('*Total estimado:* S/ 120.00 + envío');
     expect(message).toContain('Yape / Plin: *929445834*');
   });
 

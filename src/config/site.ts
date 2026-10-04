@@ -43,7 +43,7 @@ export const site = {
     wholesaleMinQuantity: 6,
     /** `fee: null` = el costo depende del destino y se coordina por WhatsApp. */
     shippingOptions: [
-      { id: 'recojo-lima', label: 'Recojo en Lima (sin costo)', fee: 0 },
+      { id: 'recojo-lima', label: 'Recojo en Lima (costo según zona)', fee: null },
       { id: 'shalom', label: 'Envío por Shalom (costo según destino)', fee: null },
       { id: 'olva', label: 'Envío por Olva (costo según destino)', fee: null },
     ] satisfies ShippingOption[],
