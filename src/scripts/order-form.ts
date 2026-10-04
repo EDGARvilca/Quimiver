@@ -1,8 +1,8 @@
 import {
   buildOrderMessage,
   buildWhatsAppUrl,
-  calculateTotal,
   formatCurrency,
+  quoteOrder,
   type OrderConfig,
   type OrderInput,
 } from '../lib/order';
@@ -47,7 +47,10 @@ export function initOrderForm(): void {
   }
 
   const refreshTotal = () => {
-    totalLabel.textContent = formatCurrency(calculateTotal(config, readInput(form)));
+    const quote = quoteOrder(config, readInput(form));
+    const pending = quote.shippingPending ? ' + envío' : '';
+    const detail = quote.subtotal > 0 ? ` (precio ${quote.priceType})` : '';
+    totalLabel.textContent = `${formatCurrency(quote.total)}${pending}${detail}`;
   };
 
   form.addEventListener('input', refreshTotal);

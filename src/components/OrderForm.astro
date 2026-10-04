@@ -12,14 +12,14 @@ const { product } = Astro.props;
 const config: OrderConfig = {
   productName: product.name,
   presentations: product.presentations,
+  wholesaleMinQuantity: site.order.wholesaleMinQuantity,
   shippingOptions: [...site.order.shippingOptions],
   paymentMethods: site.payment.methods,
   paymentNumber: site.payment.number,
 };
 
-const priceSummary = product.presentations
-  .map((p) => `${p.label} es de ${formatCurrency(p.price)}`)
-  .join(' y el de ');
+const minWholesale = site.order.wholesaleMinQuantity;
+const singlePresentation = product.presentations.length === 1;
 ---
 
 <section class="section order" id="compra">
@@ -27,9 +27,17 @@ const priceSummary = product.presentations
     <span class="eyebrow">Compra directa</span>
     <h2>Haz tu pedido de {product.name}</h2>
     <p>
-      Completa el formulario y te contactaremos por WhatsApp o teléfono para confirmar el envío. El
-      precio por frasco de {priceSummary}.
+      Completa el formulario y te contactaremos por WhatsApp o teléfono para confirmar el envío.
     </p>
+    <ul class="price-list">
+      {product.presentations.map((p) => (
+        <li>
+          {p.label}: <strong>{formatCurrency(p.price)}</strong> por unidad, o{' '}
+          <strong>{formatCurrency(p.wholesalePrice)}</strong> por unidad desde {minWholesale}{' '}
+          unidades.
+        </li>
+      ))}
+    </ul>
   </div>
 
   <form class="order-form" id="order-form">
@@ -69,11 +77,11 @@ const priceSummary = product.presentations
     <div class="form-field">
       <label for="presentation">Presentación</label>
       <select id="presentation" name="presentation" required>
-        <option value="" selected disabled>
+        <option value="" disabled selected={!singlePresentation}>
           Selecciona una opción
         </option>
         {product.presentations.map((p) => (
-          <option value={p.id}>
+          <option value={p.id} selected={singlePresentation}>
             {p.label} — {formatCurrency(p.price)}
           </option>
         ))}
@@ -81,15 +89,7 @@ const priceSummary = product.presentations
     </div>
     <div class="form-field">
       <label for="quantity">Cantidad</label>
-      <input
-        type="number"
-        id="quantity"
-        name="quantity"
-        value="1"
-        min="1"
-        max={site.order.maxQuantity}
-        required
-      />
+      <input type="number" id="quantity" name="quantity" value="1" min="1" step="1" required />
     </div>
     <div class="form-field">
       <label for="delivery">Tipo de entrega</label>
@@ -120,8 +120,8 @@ const priceSummary = product.presentations
         </strong>
       </p>
       <p class="footnote">
-        El total final puede variar según el costo de envío seleccionado. Te confirmaremos todo por
-        WhatsApp.
+        Desde {minWholesale} unidades se aplica el precio por mayor. El costo de envío por Shalom u
+        Olva depende del destino y te lo confirmamos por WhatsApp.
       </p>
     </div>
 

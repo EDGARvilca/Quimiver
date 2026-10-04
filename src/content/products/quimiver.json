@@ -7,8 +7,12 @@
     "description": "QUIMIVER es un producto de Química Verde Andina elaborado a base de congona de Huaraz. Conoce el producto y realiza tu pedido por WhatsApp."
   },
   "presentations": [
-    { "id": "50", "label": "50 ml", "price": 45 },
-    { "id": "100", "label": "100 ml", "price": 75 }
+    {
+      "id": "50g",
+      "label": "Frasco de 50 g",
+      "price": 25,
+      "wholesalePrice": 20
+    }
   ],
   "images": {
     "hero": {
@@ -24,16 +28,31 @@
       "height": 600
     }
   },
-  "badge": { "text": "Cicatrizante y antiinflamatorio peruano", "verified": false },
+  "badge": {
+    "text": "Cicatrizante y antiinflamatorio peruano",
+    "verified": false
+  },
   "summary": {
     "text": "Repara la piel y reduce la inflamación con un extracto 100% natural, ideal para toda la familia.",
     "verified": false
   },
-  "seal": { "text": "100% Natural", "verified": false },
+  "seal": {
+    "text": "100% Natural",
+    "verified": false
+  },
   "highlights": [
-    { "text": "Resultados visibles desde la primera semana", "verified": false },
-    { "text": "Sin parabenos ni derivados del petróleo", "verified": false },
-    { "text": "Envíos a todo el Perú", "verified": true }
+    {
+      "text": "Resultados visibles desde la primera semana",
+      "verified": false
+    },
+    {
+      "text": "Sin parabenos ni derivados del petróleo",
+      "verified": false
+    },
+    {
+      "text": "Envíos a todo el Perú",
+      "verified": true
+    }
   ],
   "origin": {
     "text": "Congona fresca recolectada en comunidades altoandinas de Huaraz, respetando prácticas sostenibles.",
@@ -73,7 +92,10 @@
         "text": "Producido por Química Verde Andina con procesos artesanales certificados.",
         "verified": false
       },
-      { "text": "Sin colorantes artificiales ni aceites minerales.", "verified": false },
+      {
+        "text": "Sin colorantes artificiales ni aceites minerales.",
+        "verified": false
+      },
       {
         "text": "Control de calidad en cada lote para garantizar pureza y efectividad.",
         "verified": false
@@ -117,12 +139,12 @@
   "faq": [
     {
       "question": "¿Qué presentaciones tienen disponibles?",
-      "answer": "Manejamos frascos de 50 ml y 100 ml. Puedes escoger la que prefieras en el formulario de pedido.",
+      "answer": "Por ahora manejamos una presentación: frasco de 50 g, a S/ 25.00 por unidad. Desde 6 unidades el precio es de S/ 20.00 por frasco.",
       "verified": true
     },
     {
       "question": "¿En cuánto tiempo llega mi pedido?",
-      "answer": "Envíos a Lima metropolitana toman entre 24 y 48 horas. Para provincias, el plazo es de 3 a 5 días hábiles.",
+      "answer": "Enviamos por Shalom y Olva. El costo y el plazo dependen del destino y te los confirmamos por WhatsApp.",
       "verified": true
     },
     {
@@ -132,7 +154,7 @@
     },
     {
       "question": "¿Ofrecen ventas al por mayor?",
-      "answer": "Contáctanos para cotizaciones personalizadas y beneficios para distribuidores autorizados.",
+      "answer": "Sí. Desde 6 unidades (media docena) el precio es de S/ 20.00 por frasco. Contáctanos por WhatsApp para pedidos más grandes.",
       "verified": true
     }
   ]

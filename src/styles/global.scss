@@ -425,6 +425,14 @@ section {
   color: var(--muted);
 }
 
+.price-list {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--text);
+  display: grid;
+  gap: 6px;
+}
+
 .order-form {
   background: #fff;
   border-radius: var(--radius-md);

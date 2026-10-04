@@ -39,11 +39,13 @@ export const site = {
     { label: 'TikTok', url: null },
   ] satisfies SocialLink[],
   order: {
-    maxQuantity: 10,
+    /** Unidades a partir de las cuales se aplica el precio por mayor (media docena). */
+    wholesaleMinQuantity: 6,
+    /** `fee: null` = el costo depende del destino y se coordina por WhatsApp. */
     shippingOptions: [
-      { id: 'Recojo en Lima', label: 'Recojo en Lima (sin costo)', fee: 0 },
-      { id: 'Envio Lima', label: 'Envío Lima Metropolitana (+S/ 10)', fee: 10 },
-      { id: 'Envio provincias', label: 'Envío a provincias (+S/ 15)', fee: 15 },
+      { id: 'recojo-lima', label: 'Recojo en Lima (sin costo)', fee: 0 },
+      { id: 'shalom', label: 'Envío por Shalom (costo según destino)', fee: null },
+      { id: 'olva', label: 'Envío por Olva (costo según destino)', fee: null },
     ] satisfies ShippingOption[],
   },
 } as const;

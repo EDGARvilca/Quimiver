@@ -35,6 +35,7 @@ const products = defineCollection({
           id: z.string().min(1),
           label: z.string().min(1),
           price: z.number().positive(),
+          wholesalePrice: z.number().positive(),
         }),
       )
       .min(1),
