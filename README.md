@@ -34,11 +34,11 @@ Copia `.env.example` a `.env` si necesitas definirlas.
 
 ## Dónde se editan los datos
 
-| Qué                                                                         | Archivo                              |
-| --------------------------------------------------------------------------- | ------------------------------------ |
-| Producto: textos, presentaciones, precios, imágenes, FAQ, testimonios       | `src/content/products/quimiver.json` |
+| Qué                                                                                      | Archivo                              |
+| ---------------------------------------------------------------------------------------- | ------------------------------------ |
+| Producto: textos, presentaciones, precios, imágenes, FAQ, testimonios                    | `src/content/products/quimiver.json` |
 | Teléfono, WhatsApp, correo, redes, envíos, métodos de pago, mínimo para precio por mayor | `src/config/site.ts`                 |
-| Colores y medidas                                                           | `src/styles/_tokens.scss`            |
+| Colores y medidas                                                                        | `src/styles/_tokens.scss`            |
 
 El archivo de producto se valida al compilar con el esquema de `src/content.config.ts`: si falta un campo o un precio no es válido, el build falla.
 
