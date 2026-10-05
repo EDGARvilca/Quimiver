@@ -24,6 +24,8 @@ const products = defineCollection({
   schema: z.object({
     name: z.string().min(1),
     manufacturer: z.string().min(1),
+    /** Tipo de producto tal como figura en la etiqueta (p. ej. "Crema de congona"). */
+    descriptor: z.string().min(1),
     intro: z.string().min(1),
     seo: z.object({
       title: z.string().min(1),
