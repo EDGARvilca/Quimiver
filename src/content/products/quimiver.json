@@ -1,0 +1,161 @@
+{
+  "name": "QUIMIVER",
+  "manufacturer": "Química Verde Andina",
+  "intro": "QUIMIVER es elaborado por el grupo Química Verde Andina, inspirado en la sabiduría de Huaraz.",
+  "seo": {
+    "title": "QUIMIVER | Química Verde Andina",
+    "description": "QUIMIVER es un producto de Química Verde Andina elaborado a base de congona de Huaraz. Conoce el producto y realiza tu pedido por WhatsApp."
+  },
+  "presentations": [
+    {
+      "id": "50g",
+      "label": "Frasco de 50 g",
+      "price": 25,
+      "wholesalePrice": 20
+    }
+  ],
+  "images": {
+    "hero": {
+      "src": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=720&q=80",
+      "alt": "Imagen referencial de frascos con extractos naturales",
+      "width": 720,
+      "height": 480
+    },
+    "ingredient": {
+      "src": "https://images.unsplash.com/photo-1583246912644-5fc26a8a6e8b?auto=format&fit=crop&w=900&q=80",
+      "alt": "Imagen referencial de hojas verdes",
+      "width": 900,
+      "height": 600
+    }
+  },
+  "badge": {
+    "text": "Cicatrizante y antiinflamatorio peruano",
+    "verified": false
+  },
+  "summary": {
+    "text": "Repara la piel y reduce la inflamación con un extracto 100% natural, ideal para toda la familia.",
+    "verified": false
+  },
+  "seal": {
+    "text": "100% Natural",
+    "verified": false
+  },
+  "highlights": [
+    {
+      "text": "Resultados visibles desde la primera semana",
+      "verified": false
+    },
+    {
+      "text": "Sin parabenos ni derivados del petróleo",
+      "verified": false
+    },
+    {
+      "text": "Envíos a todo el Perú",
+      "verified": true
+    }
+  ],
+  "origin": {
+    "text": "Congona fresca recolectada en comunidades altoandinas de Huaraz, respetando prácticas sostenibles.",
+    "verified": false
+  },
+  "benefits": {
+    "intro": {
+      "text": "Actúa de forma rápida y profunda para aliviar lesiones de la piel, golpes y molestias musculares.",
+      "verified": false
+    },
+    "items": [
+      {
+        "title": "Regeneración acelerada",
+        "text": "Favorece la cicatrización gracias a su concentración de taninos y compuestos bioactivos de la congona.",
+        "verified": false
+      },
+      {
+        "title": "Anti-inflamatorio inmediato",
+        "text": "Reduce la hinchazón y calma el dolor en esguinces, golpes y articulaciones sensibles.",
+        "verified": false
+      },
+      {
+        "title": "Protección natural",
+        "text": "Fórmula libre de químicos agresivos, apta para pieles sensibles y uso en niños desde los 6 años.",
+        "verified": false
+      }
+    ]
+  },
+  "ingredients": {
+    "heading": "Congona: la planta maestra de los Andes peruanos",
+    "description": {
+      "text": "La congona es conocida por su poder cicatrizante y antiinflamatorio. Nuestro equipo selecciona las mejores hojas y raíces, maceradas en frío para preservar su potencia natural y sus notas aromáticas.",
+      "verified": false
+    },
+    "points": [
+      {
+        "text": "Producido por Química Verde Andina con procesos artesanales certificados.",
+        "verified": false
+      },
+      {
+        "text": "Sin colorantes artificiales ni aceites minerales.",
+        "verified": false
+      },
+      {
+        "text": "Control de calidad en cada lote para garantizar pureza y efectividad.",
+        "verified": false
+      }
+    ]
+  },
+  "usage": [
+    {
+      "title": "Limpia la zona",
+      "text": "Retira el polvo con agua tibia y seca suavemente para preparar la piel."
+    },
+    {
+      "title": "Aplica QUIMIVER",
+      "text": "Usa una pequeña cantidad y masajea hasta que se absorba por completo."
+    },
+    {
+      "title": "Repite según necesidad",
+      "text": "Para mejores resultados aplica dos veces al día durante al menos 7 días."
+    }
+  ],
+  "testimonials": [
+    {
+      "quote": "Mi hijo tuvo una caída jugando fútbol. Con QUIMIVER la inflamación bajó en dos días y la herida cerró mucho más rápido.",
+      "author": "Carla R.",
+      "city": "Lima",
+      "verified": false
+    },
+    {
+      "quote": "Trabajo en montaña y suelo tener golpes. Este producto es lo único que llevo en mi botiquín. Es natural y efectivo.",
+      "author": "Walter M.",
+      "city": "Huaraz",
+      "verified": false
+    },
+    {
+      "quote": "Tengo la piel muy sensible. Probé otros geles que me irritaban; con QUIMIVER noté alivio sin ardor.",
+      "author": "Milagros S.",
+      "city": "Cusco",
+      "verified": false
+    }
+  ],
+  "faq": [
+    {
+      "question": "¿Qué presentaciones tienen disponibles?",
+      "answer": "Por ahora manejamos una presentación: frasco de 50 g, a S/ 25.00 por unidad. Desde 6 unidades el precio es de S/ 20.00 por frasco.",
+      "verified": true
+    },
+    {
+      "question": "¿En cuánto tiempo llega mi pedido?",
+      "answer": "Enviamos por Shalom y Olva. El costo y el plazo dependen del destino y te los confirmamos por WhatsApp.",
+      "verified": true
+    },
+    {
+      "question": "¿Puedo usarlo en niños o adultos mayores?",
+      "answer": "Sí, es seguro a partir de los 6 años. Evita el contacto con los ojos y consulta al médico si la lesión es grave.",
+      "verified": false
+    },
+    {
+      "question": "¿Ofrecen ventas al por mayor?",
+      "answer": "Sí. Desde 6 unidades (media docena) el precio es de S/ 20.00 por frasco. Contáctanos por WhatsApp para pedidos más grandes.",
+      "verified": true
+    }
+  ]
+}
