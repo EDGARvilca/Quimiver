@@ -51,7 +51,7 @@ Copia `.env.example` a `.env` si necesitas definirlas.
 
 Las páginas fijas están en `src/config/pages.ts` (menú, pie y sitemap las leen de ahí). Los enlaces internos usan `withBase()` (`src/lib/paths.ts`) para funcionar también bajo `/Quimiver/` en GitHub Pages.
 
-Los datos legales del proveedor (razón social, RUC, domicilio) van en `site.legal` de `src/config/site.ts`; mientras sean `null` se muestran como pendientes.
+Los datos legales del proveedor (razón social, RUC, domicilio) van en `site.legal` de `src/config/site.ts`; mientras sean `null` no se muestran. Lo mismo con el horario (`site.contact.hours`).
 
 ## Dónde se editan los datos
 

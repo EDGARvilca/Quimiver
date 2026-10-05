@@ -64,10 +64,12 @@ const socialLinks = site.social.filter((s) => s.url !== null);
           <PendingNotice />
         )}
       </article>
-      <article class="card">
-        <h2>Horario de atención</h2>
-        <PendingNotice />
-      </article>
+      {site.contact.hours && (
+        <article class="card">
+          <h2>Horario de atención</h2>
+          <p>{site.contact.hours}</p>
+        </article>
+      )}
       <article class="card">
         <h2>Punto de recojo en Lima</h2>
         <p>Se coordina por WhatsApp. El costo depende de la zona.</p>

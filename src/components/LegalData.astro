@@ -1,7 +1,7 @@
 ---
-import { PENDING_TEXT, site } from '../config/site';
+import { site } from '../config/site';
 
-/** Identificación del proveedor. Los datos no confirmados se muestran como pendientes. */
+/** Identificación del proveedor. Los datos aún no definidos (`null`) no se muestran. */
 const rows = [
   { label: 'Nombre comercial', value: site.company },
   { label: 'Razón social', value: site.legal.businessName },
@@ -9,13 +9,13 @@ const rows = [
   { label: 'Domicilio', value: site.legal.address },
   { label: 'Correo', value: site.contact.email },
   { label: 'Teléfono', value: site.contact.phoneDisplay },
-];
+].filter((r) => r.value !== null);
 ---
 
 <ul>
   {rows.map((r) => (
     <li>
-      <strong>{r.label}:</strong> {r.value ?? <span class="pending">{PENDING_TEXT}</span>}
+      <strong>{r.label}:</strong> {r.value}
     </li>
   ))}
 </ul>

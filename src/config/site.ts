@@ -28,6 +28,8 @@ export const site = {
     /** Número en formato internacional sin "+", como lo pide wa.me. */
     whatsapp: '51929445834',
     email: 'ventas@quimicaverdeandina.pe',
+    /** Horario de atención; `null` lo oculta hasta que el negocio lo defina. */
+    hours: null as string | null,
   },
   payment: {
     methods: 'Yape / Plin',
@@ -35,7 +37,7 @@ export const site = {
   },
   /**
    * Datos legales del proveedor (Código de Protección y Defensa del Consumidor
-   * y Ley 29733). `null` mientras el negocio no los confirme.
+   * y Ley 29733). `null` los oculta hasta que el negocio los confirme.
    */
   legal: {
     businessName: null as string | null,
