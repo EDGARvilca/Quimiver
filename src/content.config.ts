@@ -44,6 +44,19 @@ const products = defineCollection({
     images: z.object({
       hero: image,
       ingredient: image,
+      /**
+       * Secuencia de fotos del frasco girando (opcional). `pattern` lleva {n} donde va el número
+       * del cuadro: "/images/giro/giro-{n}.webp" → giro-01.webp … giro-36.webp.
+       * Mientras no exista, la foto real hace un giro 3D ligero al bajar.
+       */
+      spin: z
+        .object({
+          pattern: z.string().includes('{n}'),
+          frames: z.number().int().min(2),
+          width: z.number().int().positive(),
+          height: z.number().int().positive(),
+        })
+        .optional(),
     }),
     badge: claim,
     summary: claim,

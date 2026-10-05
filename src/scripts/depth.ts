@@ -1,9 +1,11 @@
 import { parallaxOffset, tiltFromPointer } from '../lib/depth';
+import { frameAt, framePath, sceneProgress, turnAt } from '../lib/spin';
 
 /**
  * Efectos de profundidad ligeros:
  * - [data-tilt]: la tarjeta se inclina en 3D siguiendo el mouse (solo con puntero fino).
  * - [data-depth]: capas decorativas que se desplazan a distinta velocidad al hacer scroll.
+ * - [data-spin-scene]: el frasco gira al bajar (secuencia de fotos si existe; si no, giro 3D de la foto).
  * - Aparición suave de secciones al entrar en pantalla.
  *
  * Sin JavaScript, o con "reducir movimiento" activado en el sistema, todo se ve estático y completo.
@@ -15,6 +17,7 @@ export function initDepth(): void {
   document.documentElement.classList.add('depth-ready');
   initTilt();
   initParallax();
+  initSpin();
   initReveal();
 }
 
@@ -70,10 +73,84 @@ function initParallax(): void {
   update();
 }
 
+function initSpin(): void {
+  document.querySelectorAll<HTMLElement>('[data-spin-scene]').forEach((scene) => {
+    const card = scene.querySelector<HTMLElement>('[data-spin]');
+    if (!card) {
+      return;
+    }
+    const image = card.querySelector<HTMLImageElement>('[data-spin-image]');
+    const pattern = card.dataset.spinPattern;
+    const frames = Number(card.dataset.spinFrames) || 0;
+    const useFrames = Boolean(image && pattern && frames > 1);
+    let loaded = false;
+    let lastFrame = -1;
+
+    // Los cuadros se descargan solo cuando la escena está por aparecer.
+    const preload = () => {
+      if (loaded || !useFrames || !pattern) {
+        return;
+      }
+      loaded = true;
+      for (let i = 1; i < frames; i++) {
+        new Image().src = framePath(pattern, i);
+      }
+    };
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            preload();
+            observer.disconnect();
+          }
+        },
+        { rootMargin: '100% 0px' },
+      );
+      observer.observe(scene);
+    } else {
+      preload();
+    }
+
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const box = scene.getBoundingClientRect();
+      const progress = sceneProgress(box.top, box.height, window.innerHeight);
+      if (useFrames && image && pattern) {
+        const frame = frameAt(progress, frames);
+        if (frame !== lastFrame) {
+          lastFrame = frame;
+          image.src = framePath(pattern, frame);
+        }
+        return;
+      }
+      const turn = turnAt(progress);
+      card.style.setProperty('--spin-y', `${turn.rotateY}deg`);
+      card.style.setProperty('--spin-scale', String(turn.scale));
+      card.style.setProperty('--spin-sheen', String(Math.abs(turn.rotateY) / 35));
+      card.style.setProperty('--glare-x', `${15 + turn.sheen}%`);
+    };
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    update();
+  });
+}
+
 const REVEAL_SELECTOR = [
   '.section-heading',
   '.split-media',
   '.split-text',
+  '.showcase-text',
+  '.story-band-text',
+  '.steps-figure',
   '.steps-grid > li',
   '.faq-list',
   '.order-intro',
