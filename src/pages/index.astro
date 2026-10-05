@@ -9,7 +9,6 @@ import OrderForm from '../components/OrderForm.astro';
 import Testimonials from '../components/Testimonials.astro';
 import Usage from '../components/Usage.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
-import { site } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const entry = await getEntry('products', 'quimiver');
@@ -17,23 +16,9 @@ if (!entry) {
   throw new Error('No se encontró el producto "quimiver" en src/content/products.');
 }
 const product = entry.data;
-
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Product',
-  name: product.name,
-  brand: { '@type': 'Brand', name: product.manufacturer },
-  description: product.seo.description,
-  offers: product.presentations.map((p) => ({
-    '@type': 'Offer',
-    name: `${product.name} ${p.label}`,
-    price: p.price.toFixed(2),
-    priceCurrency: site.currency,
-  })),
-};
 ---
 
-<BaseLayout title={product.seo.title} description={product.seo.description} jsonLd={jsonLd}>
+<BaseLayout title={product.seo.title} description={product.seo.description}>
   <Hero product={product} />
   <main>
     <Benefits product={product} />

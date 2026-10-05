@@ -37,6 +37,16 @@ Copia `.env.example` a `.env` si necesitas definirlas.
 | `SITE_URL`  | Opcional. URL pública sin barra final; activa `canonical` y `og:url`. |
 | `BASE_PATH` | Opcional. Subcarpeta donde se sirve el sitio (p. ej. `/Quimiver`).    |
 
+## Rutas
+
+| Ruta                          | Contenido                                                                      |
+| ----------------------------- | ------------------------------------------------------------------------------ |
+| `/`                           | Landing con formulario de pedido                                               |
+| `/productos/<id>/`            | Página de cada producto de `src/content/products` (hoy `/productos/quimiver/`) |
+| `/sitemap.xml`, `/robots.txt` | Generados al compilar; el sitemap solo lista URLs si existe `SITE_URL`         |
+
+Los enlaces internos usan `withBase()` (`src/lib/paths.ts`) para funcionar también bajo `/Quimiver/` en GitHub Pages.
+
 ## Dónde se editan los datos
 
 | Qué                                                                                      | Archivo                              |
