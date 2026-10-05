@@ -1,6 +1,5 @@
 ---
 import { getEntry } from 'astro:content';
-import PendingNotice from '../components/PendingNotice.astro';
 import PriceTable from '../components/PriceTable.astro';
 import { pages } from '../config/pages';
 import { site, whatsappLink } from '../config/site';
@@ -94,7 +93,14 @@ const { shippingOptions, wholesaleMinQuantity } = site.order;
     </p>
 
     <h2>Cambios y devoluciones</h2>
-    <PendingNotice />
+    <p>
+      Si tu pedido llega dañado, con defecto o distinto a lo que pediste, te lo cambiamos o te
+      devolvemos el dinero. Revisa la{' '}
+      <a class="text-link" href={pages.returns}>
+        política de cambios y devoluciones
+      </a>
+      .
+    </p>
 
     <div class="hero-actions">
       <a class="btn primary" href={pages.order}>

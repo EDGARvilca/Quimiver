@@ -1,0 +1,122 @@
+---
+import LegalData from '../components/LegalData.astro';
+import { pages } from '../config/pages';
+import { site } from '../config/site';
+import PageLayout from '../layouts/PageLayout.astro';
+
+const carriers = site.order.shippingOptions
+  .filter((s) => s.id !== 'recojo-lima')
+  .map((s) => s.label.replace(/^Envío por (\w+).*$/, '$1'))
+  .join(' y ');
+---
+
+<PageLayout
+  title={`Política de privacidad | ${site.brand}`}
+  description={`Cómo ${site.company} trata los datos personales de quienes hacen pedidos de ${site.brand}.`}
+  crumb="Política de privacidad"
+>
+  <section class="section info-page legal-text" aria-labelledby="page-title">
+    <span class="eyebrow">Datos personales</span>
+    <h1 id="page-title">Política de privacidad</h1>
+    <p class="lead">
+      Explicamos qué datos personales usamos, para qué y cómo puedes ejercer tus derechos, conforme
+      a la Ley N.° 29733, Ley de Protección de Datos Personales, y su reglamento.
+    </p>
+
+    <h2>1. Responsable del tratamiento</h2>
+    <LegalData />
+
+    <h2>2. Qué datos usamos</h2>
+    <p>Cuando haces un pedido o una consulta, usamos solo los datos que tú nos das:</p>
+    <ul>
+      <li>nombre y apellido;</li>
+      <li>número de celular o WhatsApp;</li>
+      <li>ciudad y, para el envío, la dirección o la agencia de destino;</li>
+      <li>los productos, la cantidad y las observaciones del pedido;</li>
+      <li>el comprobante de pago que nos envías.</li>
+    </ul>
+    <p>
+      No pedimos datos de salud. Te pedimos no incluirlos en las observaciones ni en los mensajes.
+    </p>
+
+    <h2>3. Cómo los recibimos</h2>
+    <p>
+      Este sitio web no guarda los datos del formulario de pedido. Al confirmar, se abre WhatsApp
+      con tu pedido ya escrito y los datos nos llegan solo si tú envías ese mensaje. También los
+      recibimos si nos escribes por correo o nos llamas.
+    </p>
+
+    <h2>4. Para qué los usamos</h2>
+    <ul>
+      <li>atender y confirmar tu pedido;</li>
+      <li>coordinar el costo de envío, la entrega o el recojo;</li>
+      <li>verificar tu pago;</li>
+      <li>atender consultas, cambios, devoluciones y reclamos;</li>
+      <li>cumplir obligaciones legales y tributarias.</li>
+    </ul>
+    <p>
+      No usamos tus datos para publicidad ni los vendemos. Si en el futuro quisiéramos enviarte
+      promociones, te pediremos antes tu consentimiento por separado.
+    </p>
+
+    <h2>5. Con quién los compartimos</h2>
+    <ul>
+      <li>
+        Con la agencia de transporte que elijas ({carriers}): tu nombre, celular y destino, solo
+        para entregar el pedido.
+      </li>
+      <li>
+        Con WhatsApp (Meta), que es el servicio por el que nos comunicamos. Sus servidores pueden
+        estar fuera del Perú y se rige por sus propias políticas.
+      </li>
+      <li>Con autoridades, cuando una norma o una orden lo exija.</li>
+    </ul>
+
+    <h2>6. Cuánto tiempo los conservamos</h2>
+    <p>
+      Mientras sea necesario para atender tu pedido y sus posibles cambios o reclamos, y luego
+      durante los plazos que exigen las normas tributarias y de protección al consumidor.
+    </p>
+
+    <h2>7. Tus derechos</h2>
+    <p>
+      Puedes pedir en cualquier momento el acceso, la rectificación, la cancelación o la oposición
+      al uso de tus datos, y retirar tu consentimiento. Escríbenos a{' '}
+      <a class="text-link" href={`mailto:${site.contact.email}`}>
+        {site.contact.email}
+      </a>{' '}
+      indicando tu nombre, tu celular y lo que solicitas.
+    </p>
+    <p>
+      Si consideras que no atendimos tu solicitud, puedes acudir a la Autoridad Nacional de
+      Protección de Datos Personales del Ministerio de Justicia y Derechos Humanos.
+    </p>
+
+    <h2>8. Seguridad</h2>
+    <p>
+      Solo las personas que atienden los pedidos tienen acceso a tus datos, y los usamos únicamente
+      para los fines indicados.
+    </p>
+
+    <h2>9. Servicios de terceros en este sitio</h2>
+    <p>
+      Este sitio no usa cookies propias ni herramientas de analítica. Para mostrarse, carga
+      tipografías de Google Fonts e imágenes de Unsplash, y está alojado en GitHub Pages. Esos
+      servicios pueden registrar datos técnicos como tu dirección IP según sus propias políticas.
+    </p>
+
+    <h2>10. Menores de edad</h2>
+    <p>Los pedidos deben hacerlos personas mayores de 18 años.</p>
+
+    <h2>11. Cambios a esta política</h2>
+    <p>Si cambiamos esta política, publicaremos la nueva versión en esta página.</p>
+
+    <p class="legal-meta">
+      Consulta también la{' '}
+      <a class="text-link" href={pages.returns}>
+        política de cambios y devoluciones
+      </a>
+      .
+    </p>
+  </section>
+</PageLayout>

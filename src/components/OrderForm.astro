@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { pages } from '../config/pages';
 import { site } from '../config/site';
 import { formatCurrency, type OrderConfig } from '../lib/order';
 
@@ -108,7 +109,7 @@ const singlePresentation = product.presentations.length === 1;
         id="notes"
         name="notes"
         rows="3"
-        placeholder="Comparte más detalles, alergias o instrucciones de entrega"
+        placeholder="Comparte más detalles o instrucciones de entrega"
       ></textarea>
     </div>
 
@@ -123,6 +124,17 @@ const singlePresentation = product.presentations.length === 1;
         Desde {minWholesale} unidades se aplica el precio por mayor. El costo de envío depende de la
         zona o del destino y te lo confirmamos por WhatsApp.
       </p>
+    </div>
+
+    <div class="form-field full form-consent">
+      <input type="checkbox" id="privacy-consent" name="privacy-consent" required />
+      <label for="privacy-consent">
+        Acepto que {site.company} use mis datos para atender este pedido, según la{' '}
+        <a class="text-link" href={pages.privacy} target="_blank" rel="noopener">
+          política de privacidad
+        </a>
+        .
+      </label>
     </div>
 
     <p id="order-status" class="form-status" role="status" aria-live="polite" hidden></p>

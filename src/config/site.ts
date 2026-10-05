@@ -33,6 +33,15 @@ export const site = {
     methods: 'Yape / Plin',
     number: '929445834',
   },
+  /**
+   * Datos legales del proveedor (Código de Protección y Defensa del Consumidor
+   * y Ley 29733). `null` mientras el negocio no los confirme.
+   */
+  legal: {
+    businessName: null as string | null,
+    ruc: null as string | null,
+    address: null as string | null,
+  },
   social: [
     { label: 'Facebook', url: null },
     { label: 'Instagram', url: null },
