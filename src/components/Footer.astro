@@ -1,6 +1,6 @@
 ---
 import { pages } from '../config/pages';
-import { PENDING_TEXT, site, whatsappLink } from '../config/site';
+import { site, whatsappLink } from '../config/site';
 
 const socialLinks = site.social.filter((s) => s.url !== null);
 const buildYear = new Date().getFullYear();
@@ -54,9 +54,9 @@ const buildYear = new Date().getFullYear();
         </li>
       </ul>
     </div>
-    <div>
-      <h3>Síguenos</h3>
-      {socialLinks.length > 0 ? (
+    {socialLinks.length > 0 && (
+      <div>
+        <h3>Síguenos</h3>
         <ul>
           {socialLinks.map((s) => (
             <li>
@@ -66,10 +66,8 @@ const buildYear = new Date().getFullYear();
             </li>
           ))}
         </ul>
-      ) : (
-        <p class="pending pending--dark">{PENDING_TEXT}</p>
-      )}
-    </div>
+      </div>
+    )}
   </div>
   <p class="footer-note">
     © <span id="current-year">{buildYear}</span>&nbsp;{site.company}. Todos los derechos reservados.

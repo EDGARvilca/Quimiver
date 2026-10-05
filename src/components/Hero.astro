@@ -1,7 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { productPath } from '../lib/paths';
-import PendingNotice from './PendingNotice.astro';
 import SiteHeader from './SiteHeader.astro';
 
 interface Props {
@@ -56,10 +55,12 @@ const highlights = product.highlights.filter((h) => h.verified);
           </div>
         )}
       </div>
-      <div class="origin-card">
-        <h2 class="origin-title">Origen</h2>
-        {product.origin.verified ? <p>{product.origin.text}</p> : <PendingNotice />}
-      </div>
+      {product.origin.verified && (
+        <div class="origin-card">
+          <h2 class="origin-title">Origen</h2>
+          <p>{product.origin.text}</p>
+        </div>
+      )}
     </div>
   </div>
 </header>

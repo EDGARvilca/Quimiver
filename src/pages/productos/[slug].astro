@@ -2,7 +2,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Faq from '../../components/Faq.astro';
 import Ingredients from '../../components/Ingredients.astro';
-import PendingNotice from '../../components/PendingNotice.astro';
 import PriceTable from '../../components/PriceTable.astro';
 import Usage from '../../components/Usage.astro';
 import { pages } from '../../config/pages';
@@ -60,7 +59,7 @@ const jsonLd = {
         <span class="eyebrow">{product.manufacturer}</span>
         <h1 id="product-title">{product.name}</h1>
         <p>{product.intro}</p>
-        {product.summary.verified ? <p>{product.summary.text}</p> : <PendingNotice />}
+        {product.summary.verified && <p>{product.summary.text}</p>}
 
         <h2 class="product-subtitle">Presentación y precios</h2>
         <PriceTable product={product} />

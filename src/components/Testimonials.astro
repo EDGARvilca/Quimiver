@@ -1,6 +1,5 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import PendingNotice from './PendingNotice.astro';
 
 interface Props {
   product: CollectionEntry<'products'>['data'];
@@ -10,12 +9,12 @@ const { product } = Astro.props;
 const testimonials = product.testimonials.filter((t) => t.verified);
 ---
 
-<section class="section testimonials" id="testimonios">
-  <div class="section-heading">
-    <span class="eyebrow">Testimonios</span>
-    <h2>Clientes que ya confían en {product.name}</h2>
-  </div>
-  {testimonials.length > 0 ? (
+{testimonials.length > 0 && (
+  <section class="section testimonials" id="testimonios">
+    <div class="section-heading">
+      <span class="eyebrow">Testimonios</span>
+      <h2>Clientes que ya confían en {product.name}</h2>
+    </div>
     <div class="testimonials-grid">
       {testimonials.map((t) => (
         <blockquote>
@@ -26,7 +25,5 @@ const testimonials = product.testimonials.filter((t) => t.verified);
         </blockquote>
       ))}
     </div>
-  ) : (
-    <PendingNotice />
-  )}
-</section>
+  </section>
+)}

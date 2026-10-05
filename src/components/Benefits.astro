@@ -1,6 +1,5 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import PendingNotice from './PendingNotice.astro';
 
 interface Props {
   product: CollectionEntry<'products'>['data'];
@@ -10,13 +9,13 @@ const { product } = Astro.props;
 const items = product.benefits.items.filter((b) => b.verified);
 ---
 
-<section class="section features" id="beneficios">
-  <div class="section-heading">
-    <span class="eyebrow">¿Por qué elegirlo?</span>
-    <h2>Beneficios de {product.name}</h2>
-    {product.benefits.intro.verified && <p>{product.benefits.intro.text}</p>}
-  </div>
-  {items.length > 0 ? (
+{items.length > 0 && (
+  <section class="section features" id="beneficios">
+    <div class="section-heading">
+      <span class="eyebrow">¿Por qué elegirlo?</span>
+      <h2>Beneficios de {product.name}</h2>
+      {product.benefits.intro.verified && <p>{product.benefits.intro.text}</p>}
+    </div>
     <div class="cards-grid">
       {items.map((b) => (
         <article class="card">
@@ -25,7 +24,5 @@ const items = product.benefits.items.filter((b) => b.verified);
         </article>
       ))}
     </div>
-  ) : (
-    <PendingNotice />
-  )}
-</section>
+  </section>
+)}

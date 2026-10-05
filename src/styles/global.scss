@@ -481,6 +481,10 @@ section {
   gap: 6px;
 }
 
+.order > * {
+  min-width: 0;
+}
+
 .order-form {
   background: #fff;
   border-radius: var(--radius-md);
@@ -509,6 +513,8 @@ section {
 .form-field input,
 .form-field select,
 .form-field textarea {
+  min-width: 0;
+  max-width: 100%;
   font: inherit;
   padding: 14px 16px;
   border-radius: 12px;
@@ -937,31 +943,6 @@ section {
 
 .info-page .hero-actions {
   margin-top: 40px;
-}
-
-/* Contenido que el negocio aún no ha confirmado (ver README). */
-.pending {
-  display: inline-block;
-  margin: 0;
-  padding: 8px 14px;
-  border-radius: var(--radius-sm);
-  background: var(--pending-bg);
-  color: var(--pending-text);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
-
-.section-heading + .pending {
-  display: block;
-  width: fit-content;
-  margin: 0 auto;
-}
-
-.pending--dark {
-  background: transparent;
-  padding: 0;
-  color: #ffd27a;
 }
 
 .form-status {
