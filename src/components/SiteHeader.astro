@@ -1,0 +1,63 @@
+---
+import { site } from '../config/site';
+import { productPath, withBase } from '../lib/paths';
+
+const links = [
+  { href: productPath('quimiver'), label: 'Producto' },
+  { href: withBase('/#uso'), label: 'Modo de uso' },
+  { href: withBase('/#faq'), label: 'Preguntas' },
+];
+---
+
+<nav class="navbar" aria-label="Principal" data-navbar>
+  <a class="brand" href={withBase('/')}>
+    {site.brand}
+  </a>
+  <button
+    type="button"
+    class="nav-toggle"
+    aria-expanded="false"
+    aria-controls="nav-links"
+    hidden
+    data-nav-toggle
+  >
+    <span class="nav-toggle-bar" aria-hidden="true"></span>
+    <span class="nav-toggle-label">Menú</span>
+  </button>
+  <div class="nav-links" id="nav-links">
+    {links.map((l) => (
+      <a href={l.href}>{l.label}</a>
+    ))}
+    <a class="cta-nav" href={withBase('/#compra')}>
+      Comprar
+    </a>
+  </div>
+</nav>
+
+<script>
+  // Sin JavaScript, los enlaces se muestran siempre; el botón solo aparece cuando este script corre.
+  const navbar = document.querySelector<HTMLElement>('[data-navbar]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+
+  if (navbar && toggle) {
+    const setOpen = (open: boolean) => {
+      navbar.dataset.open = String(open);
+      toggle.setAttribute('aria-expanded', String(open));
+    };
+
+    navbar.dataset.enhanced = 'true';
+    toggle.hidden = false;
+    setOpen(false);
+
+    toggle.addEventListener('click', () => setOpen(navbar.dataset.open !== 'true'));
+    navbar.querySelectorAll('.nav-links a').forEach((link) => {
+      link.addEventListener('click', () => setOpen(false));
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && navbar.dataset.open === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+</script>
