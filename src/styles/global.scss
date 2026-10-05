@@ -1429,7 +1429,8 @@ section {
 
 [data-tilt] {
   position: relative;
-  transform: perspective(1200px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transform: perspective(1200px) rotateX(var(--tilt-x, 0deg))
+    rotateY(calc(var(--tilt-y, 0deg) + var(--spin-y, 0deg))) scale(var(--spin-scale, 1));
   transform-style: preserve-3d;
   transition:
     transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
@@ -1467,12 +1468,40 @@ section {
     rgba(255, 255, 255, 0.32),
     transparent 55%
   );
-  opacity: 0;
+  opacity: var(--spin-sheen, 0);
   transition: opacity 0.4s ease;
 }
 
 [data-tilting]::after {
   opacity: 1;
+}
+
+/* El frasco gira al bajar: en pantallas grandes la escena queda fija mientras gira. */
+.showcase-scene {
+  padding: 0;
+}
+
+.showcase {
+  padding: 96px 24px;
+}
+
+.depth-ready [data-spin] {
+  transition:
+    transform 0.15s linear,
+    box-shadow 0.6s ease;
+}
+
+@media (min-width: 1025px) and (min-height: 760px) {
+  .depth-ready .showcase-scene {
+    height: 180vh;
+  }
+
+  .depth-ready .showcase {
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+    padding-block: 48px;
+  }
 }
 
 .product-card[data-tilt] figcaption {
@@ -1684,6 +1713,10 @@ summary:focus-visible {
     inset: 0 0 auto;
     height: 22%;
     background: linear-gradient(var(--paper), rgba(245, 241, 232, 0));
+  }
+
+  .showcase {
+    padding: 72px 20px;
   }
 
   .story-band {

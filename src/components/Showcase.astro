@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import { site } from '../config/site';
 import { formatCurrency } from '../lib/order';
 import { assetUrl, productPath } from '../lib/paths';
+import { framePath } from '../lib/spin';
 
 interface Props {
   product: CollectionEntry<'products'>['data'];
@@ -11,6 +12,7 @@ interface Props {
 const { product } = Astro.props;
 const highlights = product.highlights.filter((h) => h.verified);
 const [presentation] = product.presentations;
+const spin = product.images.spin;
 const carriers = site.order.shippingOptions.map((s) => s.label.replace(/ \(.*\)$/, ''));
 
 /** Ficha técnica: solo datos confirmados por el negocio. */
@@ -25,64 +27,84 @@ const specs = [
 ];
 ---
 
-<section class="section showcase" id="producto">
-  <figure class="showcase-media product-card" data-tilt>
-    <img
-      src={assetUrl(product.images.hero.src)}
-      alt={product.images.hero.alt}
-      width={product.images.hero.width}
-      height={product.images.hero.height}
-      loading="lazy"
-      decoding="async"
-    />
-    <figcaption>
-      <span>Fig. 01</span>
-      Foto real · {product.name} · {presentation.label}
-    </figcaption>
-    {product.seal.verified && (
-      <div class="seal">
-        <span>{product.seal.text}</span>
-      </div>
-    )}
-  </figure>
-  <div class="showcase-text">
-    <span class="eyebrow">El producto</span>
-    <h2>
-      {product.name}
-      <span class="hero-subtitle">{product.descriptor}</span>
-    </h2>
-    <p class="showcase-price">
-      {formatCurrency(presentation.price)}
-      <small>por frasco</small>
-    </p>
-    <dl class="spec-sheet">
-      {specs.map((s) => (
-        <div>
-          <dt>{s.term}</dt>
-          <dd>{s.value}</dd>
+<section class="showcase-scene" id="producto" data-spin-scene>
+  <div class="section showcase">
+    <figure
+      class="showcase-media product-card"
+      data-tilt
+      data-spin
+      data-spin-pattern={spin ? assetUrl(spin.pattern) : undefined}
+      data-spin-frames={spin?.frames}
+    >
+      {spin ? (
+        <img
+          src={assetUrl(framePath(spin.pattern, 0))}
+          alt={product.images.hero.alt}
+          width={spin.width}
+          height={spin.height}
+          loading="lazy"
+          decoding="async"
+          data-spin-image
+        />
+      ) : (
+        <img
+          src={assetUrl(product.images.hero.src)}
+          alt={product.images.hero.alt}
+          width={product.images.hero.width}
+          height={product.images.hero.height}
+          loading="lazy"
+          decoding="async"
+        />
+      )}
+      <figcaption>
+        <span>Fig. 01</span>
+        Foto real · {product.name} · {presentation.label}
+      </figcaption>
+      {product.seal.verified && (
+        <div class="seal">
+          <span>{product.seal.text}</span>
         </div>
-      ))}
-    </dl>
-    {highlights.length > 0 && (
-      <ul class="highlights">
-        {highlights.map((h) => (
-          <li>{h.text}</li>
+      )}
+    </figure>
+    <div class="showcase-text">
+      <span class="eyebrow">El producto</span>
+      <h2>
+        {product.name}
+        <span class="hero-subtitle">{product.descriptor}</span>
+      </h2>
+      <p class="showcase-price">
+        {formatCurrency(presentation.price)}
+        <small>por frasco</small>
+      </p>
+      <dl class="spec-sheet">
+        {specs.map((s) => (
+          <div>
+            <dt>{s.term}</dt>
+            <dd>{s.value}</dd>
+          </div>
         ))}
-      </ul>
-    )}
-    {product.origin.verified && (
-      <div class="origin-card">
-        <h3 class="origin-title">Origen</h3>
-        <p>{product.origin.text}</p>
+      </dl>
+      {highlights.length > 0 && (
+        <ul class="highlights">
+          {highlights.map((h) => (
+            <li>{h.text}</li>
+          ))}
+        </ul>
+      )}
+      {product.origin.verified && (
+        <div class="origin-card">
+          <h3 class="origin-title">Origen</h3>
+          <p>{product.origin.text}</p>
+        </div>
+      )}
+      <div class="hero-actions">
+        <a class="btn primary" href="#compra">
+          Realizar pedido
+        </a>
+        <a class="btn ghost" href={productPath('quimiver')}>
+          Ver ficha completa
+        </a>
       </div>
-    )}
-    <div class="hero-actions">
-      <a class="btn primary" href="#compra">
-        Realizar pedido
-      </a>
-      <a class="btn ghost" href={productPath('quimiver')}>
-        Ver ficha completa
-      </a>
     </div>
   </div>
 </section>

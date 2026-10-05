@@ -71,6 +71,19 @@ Para publicar una afirmación, confirma que existe respaldo (registro sanitario,
 
 Las redes sociales en `src/config/site.ts` tienen `url: null` hasta que se definan las cuentas oficiales.
 
+### Frasco girando (secuencia de fotos)
+
+En la portada, la foto real del frasco gira en 3D al bajar. Para que dé la vuelta completa con fotos reales:
+
+1. Guarda las fotos en `public/images/giro/` como `giro-01.webp` … `giro-36.webp` (mismo tamaño todas, unos 800 px de ancho).
+2. Agrega en `images` de `quimiver.json`:
+
+```json
+"spin": { "pattern": "/images/giro/giro-{n}.webp", "frames": 36, "width": 800, "height": 600 }
+```
+
+Los cuadros se descargan solo cuando la sección está por aparecer, así que no frenan la carga inicial.
+
 ## Estructura
 
 ```
