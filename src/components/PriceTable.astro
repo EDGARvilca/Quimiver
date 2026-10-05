@@ -1,0 +1,32 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { site } from '../config/site';
+import { formatCurrency } from '../lib/order';
+
+interface Props {
+  product: CollectionEntry<'products'>['data'];
+}
+
+const { product } = Astro.props;
+const minWholesale = site.order.wholesaleMinQuantity;
+---
+
+<table class="price-table">
+  <caption class="visually-hidden">Precios de{product.name}por frasco, en soles</caption>
+  <thead>
+    <tr>
+      <th scope="col">Presentación</th>
+      <th scope="col">Menudeo</th>
+      <th scope="col">Por mayor (desde {minWholesale} u.)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {product.presentations.map((p) => (
+      <tr>
+        <th scope="row">{p.label}</th>
+        <td>{formatCurrency(p.price)}</td>
+        <td>{formatCurrency(p.wholesalePrice)}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>

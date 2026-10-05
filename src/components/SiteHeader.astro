@@ -1,16 +1,18 @@
 ---
 import { site } from '../config/site';
-import { productPath, withBase } from '../lib/paths';
+import { pages } from '../config/pages';
 
 const links = [
-  { href: productPath('quimiver'), label: 'Producto' },
-  { href: withBase('/#uso'), label: 'Modo de uso' },
-  { href: withBase('/#faq'), label: 'Preguntas' },
+  { href: pages.product, label: 'Producto' },
+  { href: pages.shipping, label: 'Envíos y pagos' },
+  { href: pages.contact, label: 'Contacto' },
+  { href: pages.faq, label: 'Preguntas' },
 ];
+const currentPath = Astro.url.pathname;
 ---
 
 <nav class="navbar" aria-label="Principal" data-navbar>
-  <a class="brand" href={withBase('/')}>
+  <a class="brand" href={pages.home}>
     {site.brand}
   </a>
   <button
@@ -26,9 +28,11 @@ const links = [
   </button>
   <div class="nav-links" id="nav-links">
     {links.map((l) => (
-      <a href={l.href}>{l.label}</a>
+      <a href={l.href} aria-current={l.href === currentPath ? 'page' : undefined}>
+        {l.label}
+      </a>
     ))}
-    <a class="cta-nav" href={withBase('/#compra')}>
+    <a class="cta-nav" href={pages.order}>
       Comprar
     </a>
   </div>

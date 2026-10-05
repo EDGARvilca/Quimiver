@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { productPath, withBase } from '../lib/paths';
+import { pages } from '../config/pages';
+import { productPath } from '../lib/paths';
 
 /**
  * Sitemap mínimo. El protocolo exige URLs absolutas, así que sin SITE_URL
@@ -8,7 +9,12 @@ import { productPath, withBase } from '../lib/paths';
  */
 export const GET: APIRoute = async ({ site }) => {
   const products = await getCollection('products');
-  const paths = [withBase('/'), ...products.map((p) => productPath(p.id))];
+  const paths = [
+    pages.home,
+    ...products.map((p) => productPath(p.id)),
+    pages.shipping,
+    pages.contact,
+  ];
   const urls = site ? paths.map((path) => new URL(path, site).href) : [];
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>

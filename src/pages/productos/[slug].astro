@@ -1,16 +1,13 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Faq from '../../components/Faq.astro';
-import Footer from '../../components/Footer.astro';
 import Ingredients from '../../components/Ingredients.astro';
 import PendingNotice from '../../components/PendingNotice.astro';
-import SiteHeader from '../../components/SiteHeader.astro';
+import PriceTable from '../../components/PriceTable.astro';
 import Usage from '../../components/Usage.astro';
-import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import { pages } from '../../config/pages';
 import { site, whatsappLink } from '../../config/site';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { formatCurrency } from '../../lib/order';
-import { withBase } from '../../lib/paths';
+import PageLayout from '../../layouts/PageLayout.astro';
 
 export async function getStaticPaths() {
   const products = await getCollection('products');
@@ -23,7 +20,6 @@ interface Props {
 
 const { entry } = Astro.props;
 const product = entry.data;
-const minWholesale = site.order.wholesaleMinQuantity;
 const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 
 const jsonLd = {
@@ -43,85 +39,53 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout
+<PageLayout
   title={`${product.name} | ${product.manufacturer}`}
   description={product.seo.description}
+  crumb={product.name}
   jsonLd={jsonLd}
 >
-  <header class="hero hero--compact">
-    <SiteHeader />
-  </header>
-  <main>
-    <section class="section product-detail" aria-labelledby="product-title">
-      <nav class="breadcrumb" aria-label="Ruta de navegación">
-        <ol>
-          <li>
-            <a href={withBase('/')}>Inicio</a>
-          </li>
-          <li aria-current="page">{product.name}</li>
-        </ol>
-      </nav>
-      <div class="product-detail-grid">
-        <div class="product-card">
-          <img
-            src={product.images.hero.src}
-            alt={product.images.hero.alt}
-            width={product.images.hero.width}
-            height={product.images.hero.height}
-            fetchpriority="high"
-          />
-        </div>
-        <div class="product-info">
-          <span class="eyebrow">{product.manufacturer}</span>
-          <h1 id="product-title">{product.name}</h1>
-          <p>{product.intro}</p>
-          {product.summary.verified ? <p>{product.summary.text}</p> : <PendingNotice />}
+  <section class="section product-detail" aria-labelledby="product-title">
+    <div class="product-detail-grid">
+      <div class="product-card">
+        <img
+          src={product.images.hero.src}
+          alt={product.images.hero.alt}
+          width={product.images.hero.width}
+          height={product.images.hero.height}
+          fetchpriority="high"
+        />
+      </div>
+      <div class="product-info">
+        <span class="eyebrow">{product.manufacturer}</span>
+        <h1 id="product-title">{product.name}</h1>
+        <p>{product.intro}</p>
+        {product.summary.verified ? <p>{product.summary.text}</p> : <PendingNotice />}
 
-          <h2 class="product-subtitle">Presentación y precios</h2>
-          <table class="price-table">
-            <caption class="visually-hidden">Precios por frasco en soles</caption>
-            <thead>
-              <tr>
-                <th scope="col">Presentación</th>
-                <th scope="col">Menudeo</th>
-                <th scope="col">Por mayor (desde {minWholesale} u.)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {product.presentations.map((p) => (
-                <tr>
-                  <th scope="row">{p.label}</th>
-                  <td>{formatCurrency(p.price)}</td>
-                  <td>{formatCurrency(p.wholesalePrice)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <p class="footnote">
-            Envío por Shalom u Olva, o recojo en Lima. El costo depende de la zona o del destino y
-            se confirma por WhatsApp.
-          </p>
+        <h2 class="product-subtitle">Presentación y precios</h2>
+        <PriceTable product={product} />
+        <p class="footnote">
+          Envío por Shalom u Olva, o recojo en Lima. El costo depende de la zona o del destino y se
+          confirma por WhatsApp. <a href={pages.shipping}>Ver envíos y pagos</a>.
+        </p>
 
-          <div class="hero-actions">
-            <a class="btn primary" href={withBase('/#compra')}>
-              Hacer pedido
-            </a>
-            <a
-              class="btn ghost"
-              href={whatsappLink(`Hola, quiero información sobre ${product.name}.`)}
-              target="_blank"
-              rel="noopener"
-            >
-              Consultar por WhatsApp
-            </a>
-          </div>
+        <div class="hero-actions">
+          <a class="btn primary" href={pages.order}>
+            Hacer pedido
+          </a>
+          <a
+            class="btn ghost"
+            href={whatsappLink(`Hola, quiero información sobre ${product.name}.`)}
+            target="_blank"
+            rel="noopener"
+          >
+            Consultar por WhatsApp
+          </a>
         </div>
       </div>
-    </section>
-    <Ingredients product={product} />
-    <Usage product={product} />
-    <Faq product={product} />
-  </main>
-  <Footer />
-  <WhatsAppButton />
-</BaseLayout>
+    </div>
+  </section>
+  <Ingredients product={product} />
+  <Usage product={product} />
+  <Faq product={product} />
+</PageLayout>

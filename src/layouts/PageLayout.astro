@@ -1,0 +1,39 @@
+---
+import Footer from '../components/Footer.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { withBase } from '../lib/paths';
+import BaseLayout from './BaseLayout.astro';
+
+/** Plantilla de las páginas internas: cabecera compacta, ruta de navegación y pie. */
+interface Props {
+  title: string;
+  description: string;
+  /** Texto de la última miga de pan (la página actual). */
+  crumb: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, crumb, jsonLd } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <header class="hero hero--compact">
+    <SiteHeader />
+  </header>
+  <main>
+    <div class="section page-intro">
+      <nav class="breadcrumb" aria-label="Ruta de navegación">
+        <ol>
+          <li>
+            <a href={withBase('/')}>Inicio</a>
+          </li>
+          <li aria-current="page">{crumb}</li>
+        </ol>
+      </nav>
+    </div>
+    <slot />
+  </main>
+  <Footer />
+  <WhatsAppButton />
+</BaseLayout>

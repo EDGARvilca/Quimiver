@@ -45,7 +45,7 @@ Copia `.env.example` a `.env` si necesitas definirlas.
 | `/productos/<id>/`            | Página de cada producto de `src/content/products` (hoy `/productos/quimiver/`) |
 | `/sitemap.xml`, `/robots.txt` | Generados al compilar; el sitemap solo lista URLs si existe `SITE_URL`         |
 
-Los enlaces internos usan `withBase()` (`src/lib/paths.ts`) para funcionar también bajo `/Quimiver/` en GitHub Pages.
+Las páginas fijas están en `src/config/pages.ts` (menú, pie y sitemap las leen de ahí). Los enlaces internos usan `withBase()` (`src/lib/paths.ts`) para funcionar también bajo `/Quimiver/` en GitHub Pages.
 
 ## Dónde se editan los datos
 

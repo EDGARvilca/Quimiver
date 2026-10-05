@@ -1,0 +1,89 @@
+---
+import PendingNotice from '../components/PendingNotice.astro';
+import { pages } from '../config/pages';
+import { site, whatsappLink } from '../config/site';
+import PageLayout from '../layouts/PageLayout.astro';
+
+const socialLinks = site.social.filter((s) => s.url !== null);
+---
+
+<PageLayout
+  title={`Contacto | ${site.brand}`}
+  description={`Escríbenos por WhatsApp, llámanos o envíanos un correo para pedidos y consultas sobre ${site.brand}.`}
+  crumb="Contacto"
+>
+  <section class="section info-page" aria-labelledby="page-title">
+    <span class="eyebrow">{site.company}</span>
+    <h1 id="page-title">Contacto</h1>
+    <p class="lead">
+      Atendemos pedidos y consultas por WhatsApp. También puedes llamarnos o escribirnos un correo.
+    </p>
+
+    <div class="info-grid">
+      <article class="card">
+        <h2>WhatsApp</h2>
+        <p>El canal más rápido para pedidos, precios por mayor y costos de envío.</p>
+        <a
+          class="btn primary"
+          href={whatsappLink(`Hola, tengo una consulta sobre ${site.brand}.`)}
+          target="_blank"
+          rel="noopener"
+        >
+          Escribir por WhatsApp
+        </a>
+      </article>
+      <article class="card">
+        <h2>Teléfono</h2>
+        <p>
+          <a class="text-link" href={site.contact.phoneHref}>
+            {site.contact.phoneDisplay}
+          </a>
+        </p>
+      </article>
+      <article class="card">
+        <h2>Correo</h2>
+        <p>
+          <a class="text-link" href={`mailto:${site.contact.email}`}>
+            {site.contact.email}
+          </a>
+        </p>
+      </article>
+      <article class="card">
+        <h2>Redes sociales</h2>
+        {socialLinks.length > 0 ? (
+          <ul>
+            {socialLinks.map((s) => (
+              <li>
+                <a class="text-link" href={s.url} target="_blank" rel="noopener">
+                  {s.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <PendingNotice />
+        )}
+      </article>
+      <article class="card">
+        <h2>Horario de atención</h2>
+        <PendingNotice />
+      </article>
+      <article class="card">
+        <h2>Punto de recojo en Lima</h2>
+        <p>Se coordina por WhatsApp. El costo depende de la zona.</p>
+      </article>
+    </div>
+
+    <p class="footnote">
+      ¿Quieres hacer un pedido? Usa el{' '}
+      <a class="text-link" href={pages.order}>
+        formulario de pedido
+      </a>{' '}
+      o revisa{' '}
+      <a class="text-link" href={pages.shipping}>
+        envíos y pagos
+      </a>
+      .
+    </p>
+  </section>
+</PageLayout>
