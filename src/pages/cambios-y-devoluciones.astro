@@ -1,7 +1,7 @@
 ---
 import LegalData from '../components/LegalData.astro';
 import { pages } from '../config/pages';
-import { PENDING_TEXT, site, whatsappLink } from '../config/site';
+import { site, whatsappLink } from '../config/site';
 import PageLayout from '../layouts/PageLayout.astro';
 
 /** Días calendario para pedir un cambio o devolución sin defecto (regla del negocio). */
@@ -83,15 +83,7 @@ const preferenceDays = 7;
 
     <h2>5. Reclamos</h2>
     <p>
-      Si no estás conforme con la atención, puedes presentar un reclamo o una queja. Conforme a lo
-      establecido en el Código de Protección y Defensa del Consumidor, este establecimiento debe
-      contar con un Libro de Reclamaciones a tu disposición.
-    </p>
-    <p>
-      Libro de Reclamaciones virtual: <span class="pending">{PENDING_TEXT}</span>
-    </p>
-    <p>
-      Mientras tanto, envía tu reclamo a{' '}
+      Si no estás conforme con la atención, puedes presentar un reclamo o una queja escribiendo a{' '}
       <a class="text-link" href={`mailto:${site.contact.email}`}>
         {site.contact.email}
       </a>{' '}
