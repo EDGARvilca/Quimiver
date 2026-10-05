@@ -2,6 +2,8 @@
 import '../styles/global.scss';
 import { site } from '../config/site';
 import { withBase } from '../lib/paths';
+import displayFont from '../assets/fonts/cormorant-garamond-latin-500-normal.woff2?url';
+import bodyFont from '../assets/fonts/manrope-latin-wght-normal.woff2?url';
 
 interface Props {
   title: string;
@@ -34,12 +36,13 @@ const ogImage = Astro.site
     {canonical && <meta property="og:url" content={canonical} />}
     {ogImage && <meta property="og:image" content={ogImage} />}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <script is:inline>
+      // Marca temprana para que el menú móvil se pinte ya plegado y la página no salte.
+      document.documentElement.classList.add('js');
+    </script>
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
   <body>
