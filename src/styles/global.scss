@@ -1156,6 +1156,168 @@ section {
   text-decoration: underline;
 }
 
+/* ---------- Libro de Reclamaciones ---------- */
+
+.complaints-provider,
+.complaints-legends {
+  margin: 32px 0;
+  padding: 20px 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.complaints-provider h2 {
+  margin-top: 0;
+}
+
+.complaints-legends p {
+  margin: 0 0 8px;
+  color: var(--muted);
+}
+
+.complaints-form fieldset {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 0;
+  padding: 0 0 8px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+
+.complaints-form legend {
+  grid-column: 1 / -1;
+  margin-bottom: 4px;
+  padding: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--forest);
+}
+
+.choice-row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+}
+
+.choice-row .choice-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.choice-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+}
+
+.choice-row input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--forest);
+}
+
+.field-error {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--error-text);
+}
+
+[aria-invalid='true'] {
+  border-color: var(--error-text) !important;
+}
+
+.complaints-receipt {
+  margin-top: 32px;
+}
+
+.complaints-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.complaints-table th,
+.complaints-table td {
+  padding: 10px 12px 10px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.complaints-table th {
+  width: 38%;
+  font-weight: 600;
+}
+
+.complaints-table td {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.complaints-receipt .btn {
+  margin-top: 20px;
+}
+
+/* Aviso del Libro de Reclamaciones en el pie de todas las páginas. */
+.complaints-notice {
+  max-width: var(--max);
+  margin: 40px auto 0;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px 18px;
+  border: 1px solid rgba(243, 239, 228, 0.3);
+  border-radius: var(--radius);
+  color: var(--on-dark);
+  font-size: 0.9rem;
+}
+
+.complaints-notice strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.complaints-notice:hover {
+  border-color: var(--on-dark);
+}
+
+@media (max-width: 560px) {
+  .complaints-form fieldset {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  .hero--compact,
+  .page-intro,
+  .footer,
+  .floating-whatsapp,
+  .complaints-provider,
+  .complaints-receipt .btn {
+    display: none !important;
+  }
+
+  .complaints > :not(.complaints-receipt, .complaints-legends, h1) {
+    display: none !important;
+  }
+}
+
 /* ---------- Pie de página ---------- */
 
 .footer {
@@ -1244,6 +1406,7 @@ section {
 /* ---------- Páginas internas ---------- */
 
 .hero--compact {
+  min-height: 0;
   padding-bottom: 0;
   background: var(--paper);
   border-bottom: 0;

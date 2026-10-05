@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { pages } from '../config/pages';
+import { complaintsBookEnabled } from '../config/site';
 import { productPath } from '../lib/paths';
 
 /**
@@ -16,6 +17,7 @@ export const GET: APIRoute = async ({ site }) => {
     pages.contact,
     pages.returns,
     pages.privacy,
+    ...(complaintsBookEnabled ? [pages.complaints] : []),
   ];
   const urls = site ? paths.map((path) => new URL(path, site).href) : [];
 

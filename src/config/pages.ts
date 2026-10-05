@@ -8,6 +8,7 @@ export const pages = {
   contact: withBase('/contacto/'),
   returns: withBase('/cambios-y-devoluciones/'),
   privacy: withBase('/politica-de-privacidad/'),
+  complaints: withBase('/libro-de-reclamaciones/'),
   faq: withBase('/#faq'),
   order: withBase('/#compra'),
 };
