@@ -1,4 +1,5 @@
 ---
+import { pages } from '../config/pages';
 import { PENDING_TEXT, site, whatsappLink } from '../config/site';
 
 const socialLinks = site.social.filter((s) => s.url !== null);
@@ -12,6 +13,23 @@ const buildYear = new Date().getFullYear();
       <p>
         Producto creado por {site.company} para brindar bienestar natural a las familias peruanas.
       </p>
+    </div>
+    <div>
+      <h3>Información</h3>
+      <ul>
+        <li>
+          <a href={pages.product}>Producto</a>
+        </li>
+        <li>
+          <a href={pages.shipping}>Envíos y pagos</a>
+        </li>
+        <li>
+          <a href={pages.contact}>Contacto</a>
+        </li>
+        <li>
+          <a href={pages.faq}>Preguntas frecuentes</a>
+        </li>
+      </ul>
     </div>
     <div>
       <h3>Contacto</h3>

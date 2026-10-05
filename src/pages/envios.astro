@@ -1,0 +1,113 @@
+---
+import { getEntry } from 'astro:content';
+import PendingNotice from '../components/PendingNotice.astro';
+import PriceTable from '../components/PriceTable.astro';
+import { pages } from '../config/pages';
+import { site, whatsappLink } from '../config/site';
+import { formatCurrency } from '../lib/order';
+import PageLayout from '../layouts/PageLayout.astro';
+
+const entry = await getEntry('products', 'quimiver');
+if (!entry) {
+  throw new Error('No se encontró el producto "quimiver" en src/content/products.');
+}
+const product = entry.data;
+const { shippingOptions, wholesaleMinQuantity } = site.order;
+---
+
+<PageLayout
+  title={`Envíos y pagos | ${site.brand}`}
+  description={`Cómo comprar ${site.brand}: precios por menudeo y por mayor, envíos por Shalom y Olva, recojo en Lima y pago por ${site.payment.methods}.`}
+  crumb="Envíos y pagos"
+>
+  <section class="section info-page" aria-labelledby="page-title">
+    <span class="eyebrow">Compra directa</span>
+    <h1 id="page-title">Envíos y pagos</h1>
+    <p class="lead">
+      Todos los pedidos se coordinan por WhatsApp. Aquí tienes los precios, las formas de entrega y
+      cómo pagar.
+    </p>
+
+    <h2>Cómo comprar</h2>
+    <ol class="steps-grid">
+      <li class="step">
+        <span class="step-number" aria-hidden="true">
+          1
+        </span>
+        <h3>Completa el pedido</h3>
+        <p>
+          Llena el{' '}
+          <a class="text-link" href={pages.order}>
+            formulario de pedido
+          </a>{' '}
+          con tus datos, la cantidad y la forma de entrega.
+        </p>
+      </li>
+      <li class="step">
+        <span class="step-number" aria-hidden="true">
+          2
+        </span>
+        <h3>Envíalo por WhatsApp</h3>
+        <p>Se abre WhatsApp con tu pedido ya escrito. Solo tienes que enviarlo.</p>
+      </li>
+      <li class="step">
+        <span class="step-number" aria-hidden="true">
+          3
+        </span>
+        <h3>Confirmamos el envío</h3>
+        <p>Te indicamos el costo de envío según tu zona o destino.</p>
+      </li>
+      <li class="step">
+        <span class="step-number" aria-hidden="true">
+          4
+        </span>
+        <h3>Paga y envía el comprobante</h3>
+        <p>
+          Paga por {site.payment.methods} al <strong>{site.payment.number}</strong> y envía el
+          comprobante por WhatsApp para procesar tu pedido.
+        </p>
+      </li>
+    </ol>
+
+    <h2>Precios</h2>
+    <PriceTable product={product} />
+    <p class="footnote">
+      Desde {wholesaleMinQuantity} unidades se aplica el precio por mayor: por ejemplo,{' '}
+      {wholesaleMinQuantity} frascos cuestan{' '}
+      {formatCurrency(product.presentations[0].wholesalePrice * wholesaleMinQuantity)}.
+    </p>
+
+    <h2>Formas de entrega</h2>
+    <ul class="info-list">
+      {shippingOptions.map((s) => (
+        <li>{s.label}</li>
+      ))}
+    </ul>
+    <p>
+      El costo y el plazo de entrega dependen de la zona o del destino. Te los confirmamos por
+      WhatsApp antes del pago.
+    </p>
+
+    <h2>Medios de pago</h2>
+    <p>
+      {site.payment.methods}: <strong>{site.payment.number}</strong>
+    </p>
+
+    <h2>Cambios y devoluciones</h2>
+    <PendingNotice />
+
+    <div class="hero-actions">
+      <a class="btn primary" href={pages.order}>
+        Hacer pedido
+      </a>
+      <a
+        class="btn ghost"
+        href={whatsappLink(`Hola, quiero consultar el costo de envío de ${site.brand}.`)}
+        target="_blank"
+        rel="noopener"
+      >
+        Consultar envío por WhatsApp
+      </a>
+    </div>
+  </section>
+</PageLayout>
