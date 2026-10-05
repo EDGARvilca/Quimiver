@@ -1,0 +1,21 @@
+---
+import { PENDING_TEXT, site } from '../config/site';
+
+/** Identificación del proveedor. Los datos no confirmados se muestran como pendientes. */
+const rows = [
+  { label: 'Nombre comercial', value: site.company },
+  { label: 'Razón social', value: site.legal.businessName },
+  { label: 'RUC', value: site.legal.ruc },
+  { label: 'Domicilio', value: site.legal.address },
+  { label: 'Correo', value: site.contact.email },
+  { label: 'Teléfono', value: site.contact.phoneDisplay },
+];
+---
+
+<ul>
+  {rows.map((r) => (
+    <li>
+      <strong>{r.label}:</strong> {r.value ?? <span class="pending">{PENDING_TEXT}</span>}
+    </li>
+  ))}
+</ul>

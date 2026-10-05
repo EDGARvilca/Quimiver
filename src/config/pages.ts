@@ -6,6 +6,8 @@ export const pages = {
   product: productPath('quimiver'),
   shipping: withBase('/envios/'),
   contact: withBase('/contacto/'),
+  returns: withBase('/cambios-y-devoluciones/'),
+  privacy: withBase('/politica-de-privacidad/'),
   faq: withBase('/#faq'),
   order: withBase('/#compra'),
 };

@@ -43,9 +43,15 @@ Copia `.env.example` a `.env` si necesitas definirlas.
 | ----------------------------- | ------------------------------------------------------------------------------ |
 | `/`                           | Landing con formulario de pedido                                               |
 | `/productos/<id>/`            | Página de cada producto de `src/content/products` (hoy `/productos/quimiver/`) |
+| `/contacto/`                  | Canales de contacto                                                            |
+| `/envios/`                    | Cómo comprar, precios, entregas y pagos                                        |
+| `/cambios-y-devoluciones/`    | Política de cambios y devoluciones (Ley 29571)                                 |
+| `/politica-de-privacidad/`    | Política de privacidad (Ley 29733)                                             |
 | `/sitemap.xml`, `/robots.txt` | Generados al compilar; el sitemap solo lista URLs si existe `SITE_URL`         |
 
 Las páginas fijas están en `src/config/pages.ts` (menú, pie y sitemap las leen de ahí). Los enlaces internos usan `withBase()` (`src/lib/paths.ts`) para funcionar también bajo `/Quimiver/` en GitHub Pages.
+
+Los datos legales del proveedor (razón social, RUC, domicilio) van en `site.legal` de `src/config/site.ts`; mientras sean `null` se muestran como pendientes.
 
 ## Dónde se editan los datos
 

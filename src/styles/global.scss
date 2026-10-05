@@ -525,6 +525,25 @@ section {
   box-shadow: 0 0 0 4px rgba(13, 124, 102, 0.14);
 }
 
+.form-field.form-consent {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.form-field.form-consent input {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  padding: 0;
+  flex-shrink: 0;
+  accent-color: var(--primary);
+}
+
+.form-field.form-consent label {
+  font-weight: 400;
+}
+
 .form-summary {
   background: rgba(13, 124, 102, 0.08);
   padding: 18px 20px;
@@ -888,6 +907,32 @@ section {
 .text-link {
   color: var(--primary);
   text-decoration: underline;
+}
+
+.legal-text {
+  max-width: 760px;
+}
+
+.legal-text h2 {
+  font-size: 1.25rem;
+  margin: 40px 0 12px;
+}
+
+.legal-text p,
+.legal-text li {
+  line-height: 1.7;
+}
+
+.legal-text ul,
+.legal-text ol {
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+}
+
+.legal-meta {
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
 .info-page .hero-actions {

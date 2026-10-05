@@ -14,6 +14,8 @@ export const GET: APIRoute = async ({ site }) => {
     ...products.map((p) => productPath(p.id)),
     pages.shipping,
     pages.contact,
+    pages.returns,
+    pages.privacy,
   ];
   const urls = site ? paths.map((path) => new URL(path, site).href) : [];
 
