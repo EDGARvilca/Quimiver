@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { productPath } from '../lib/paths';
+import { assetUrl, productPath } from '../lib/paths';
 import SiteHeader from './SiteHeader.astro';
 
 interface Props {
@@ -43,7 +43,7 @@ const highlights = product.highlights.filter((h) => h.verified);
     <div class="hero-media">
       <div class="product-card">
         <img
-          src={product.images.hero.src}
+          src={assetUrl(product.images.hero.src)}
           alt={product.images.hero.alt}
           width={product.images.hero.width}
           height={product.images.hero.height}

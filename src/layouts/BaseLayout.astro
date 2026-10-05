@@ -1,6 +1,7 @@
 ---
 import '../styles/global.scss';
 import { site } from '../config/site';
+import { withBase } from '../lib/paths';
 
 interface Props {
   title: string;
@@ -11,6 +12,9 @@ interface Props {
 
 const { title, description, jsonLd } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const ogImage = Astro.site
+  ? new URL(withBase('/images/quimiver-og.jpg'), Astro.site).href
+  : undefined;
 ---
 
 <!doctype html>
@@ -28,6 +32,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     {canonical && <meta property="og:url" content={canonical} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

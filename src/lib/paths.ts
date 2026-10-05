@@ -11,3 +11,8 @@ export function withBase(path: string, base: string = import.meta.env.BASE_URL):
 export function productPath(slug: string): string {
   return withBase(`/productos/${slug}/`);
 }
+
+/** Rutas de `public/` ("/images/...") pasan por `withBase`; URLs externas quedan igual. */
+export function assetUrl(src: string, base: string = import.meta.env.BASE_URL): string {
+  return src.startsWith('/') ? withBase(src, base) : src;
+}

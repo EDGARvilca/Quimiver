@@ -1,4 +1,5 @@
 ---
+import { assetUrl } from '../lib/paths';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -13,7 +14,7 @@ const points = ingredients.points.filter((p) => p.verified);
 <section class="section split" id="ingredientes">
   <div class="split-media">
     <img
-      src={images.ingredient.src}
+      src={assetUrl(images.ingredient.src)}
       alt={images.ingredient.alt}
       width={images.ingredient.width}
       height={images.ingredient.height}
