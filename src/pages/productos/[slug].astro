@@ -7,6 +7,7 @@ import Usage from '../../components/Usage.astro';
 import { pages } from '../../config/pages';
 import { site, whatsappLink } from '../../config/site';
 import PageLayout from '../../layouts/PageLayout.astro';
+import { assetUrl } from '../../lib/paths';
 
 export async function getStaticPaths() {
   const products = await getCollection('products');
@@ -28,6 +29,9 @@ const jsonLd = {
   brand: { '@type': 'Brand', name: product.manufacturer },
   description: product.seo.description,
   ...(pageUrl && { url: pageUrl }),
+  ...(Astro.site && {
+    image: new URL(assetUrl(product.images.hero.src), Astro.site).href,
+  }),
   offers: product.presentations.map((p) => ({
     '@type': 'Offer',
     name: `${product.name} ${p.label}`,
@@ -48,7 +52,7 @@ const jsonLd = {
     <div class="product-detail-grid">
       <div class="product-card">
         <img
-          src={product.images.hero.src}
+          src={assetUrl(product.images.hero.src)}
           alt={product.images.hero.alt}
           width={product.images.hero.width}
           height={product.images.hero.height}

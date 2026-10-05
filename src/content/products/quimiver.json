@@ -16,16 +16,16 @@
   ],
   "images": {
     "hero": {
-      "src": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=720&q=80",
-      "alt": "Imagen referencial de frascos con extractos naturales",
-      "width": 720,
-      "height": 480
+      "src": "/images/quimiver-frascos.webp",
+      "alt": "Frasco de crema QUIMIVER de 50 g sostenido con guantes y otro frasco abierto que muestra la crema",
+      "width": 1024,
+      "height": 739
     },
     "ingredient": {
-      "src": "https://images.unsplash.com/photo-1583246912644-5fc26a8a6e8b?auto=format&fit=crop&w=900&q=80",
-      "alt": "Imagen referencial de hojas verdes",
-      "width": 900,
-      "height": 600
+      "src": "/images/quimiver-etiqueta.webp",
+      "alt": "Etiqueta del frasco QUIMIVER, crema de congona, contenido 50 g",
+      "width": 500,
+      "height": 480
     }
   },
   "badge": {
