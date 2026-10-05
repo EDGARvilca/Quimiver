@@ -1,5 +1,4 @@
 ---
-import PendingNotice from '../components/PendingNotice.astro';
 import { pages } from '../config/pages';
 import { site, whatsappLink } from '../config/site';
 import PageLayout from '../layouts/PageLayout.astro';
@@ -48,9 +47,9 @@ const socialLinks = site.social.filter((s) => s.url !== null);
           </a>
         </p>
       </article>
-      <article class="card">
-        <h2>Redes sociales</h2>
-        {socialLinks.length > 0 ? (
+      {socialLinks.length > 0 && (
+        <article class="card">
+          <h2>Redes sociales</h2>
           <ul>
             {socialLinks.map((s) => (
               <li>
@@ -60,10 +59,8 @@ const socialLinks = site.social.filter((s) => s.url !== null);
               </li>
             ))}
           </ul>
-        ) : (
-          <PendingNotice />
-        )}
-      </article>
+        </article>
+      )}
       {site.contact.hours && (
         <article class="card">
           <h2>Horario de atención</h2>

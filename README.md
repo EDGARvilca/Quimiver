@@ -65,7 +65,7 @@ El archivo de producto se valida al compilar con el esquema de `src/content.conf
 
 ### Contenido pendiente de verificación
 
-Las afirmaciones que necesitan respaldo del negocio (propiedades de salud, certificaciones, composición y testimonios) tienen `"verified": false` en el JSON. Mientras sea así, el sitio no las publica y muestra **DATO PENDIENTE DE DEFINICIÓN** en su lugar.
+Las afirmaciones que necesitan respaldo del negocio (propiedades de salud, certificaciones, composición y testimonios) tienen `"verified": false` en el JSON. Mientras sea así, el sitio no las publica: la sección o el texto simplemente no aparece (si no queda ningún beneficio o testimonio verificado, se oculta la sección completa).
 
 Para publicar una afirmación, confirma que existe respaldo (registro sanitario, certificado, autorización del cliente para su testimonio, etc.) y cambia su valor a `"verified": true`.
 

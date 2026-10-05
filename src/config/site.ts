@@ -3,12 +3,10 @@
  *
  * Todo dato de contacto, envío o pago se define aquí una sola vez.
  * Los valores provienen del sitio original; los que no estaban definidos
- * quedan en `null` y se muestran como pendientes.
+ * quedan en `null` y no se muestran.
  */
 
 import type { ShippingOption } from '../lib/order';
-
-export const PENDING_TEXT = 'DATO PENDIENTE DE DEFINICIÓN';
 
 export interface SocialLink {
   label: string;

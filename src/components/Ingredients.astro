@@ -1,6 +1,5 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import PendingNotice from './PendingNotice.astro';
 
 interface Props {
   product: CollectionEntry<'products'>['data'];
@@ -25,7 +24,7 @@ const points = ingredients.points.filter((p) => p.verified);
   <div class="split-text">
     <span class="eyebrow">Ingrediente principal</span>
     <h2>{ingredients.heading}</h2>
-    {ingredients.description.verified ? <p>{ingredients.description.text}</p> : <PendingNotice />}
+    {ingredients.description.verified && <p>{ingredients.description.text}</p>}
     {points.length > 0 && (
       <ul class="list">
         {points.map((p) => (

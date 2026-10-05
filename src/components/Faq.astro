@@ -1,12 +1,12 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { PENDING_TEXT } from '../config/site';
 
 interface Props {
   product: CollectionEntry<'products'>['data'];
 }
 
 const { product } = Astro.props;
+const faq = product.faq.filter((item) => item.verified);
 ---
 
 <section class="section faq" id="faq">
@@ -15,10 +15,10 @@ const { product } = Astro.props;
     <h2>Todo lo que necesitas saber antes de comprar</h2>
   </div>
   <div class="faq-list">
-    {product.faq.map((item) => (
+    {faq.map((item) => (
       <details>
         <summary>{item.question}</summary>
-        {item.verified ? <p>{item.answer}</p> : <p class="pending">{PENDING_TEXT}</p>}
+        <p>{item.answer}</p>
       </details>
     ))}
   </div>
