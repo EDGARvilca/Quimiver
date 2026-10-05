@@ -1071,6 +1071,159 @@ section {
   margin-top: 48px;
 }
 
+/* ---------- Profundidad (3D ligero) ----------
+   Solo se activa con JavaScript (clase .depth-ready) y sin "reducir movimiento".
+   Sin eso, la página se ve completa y estática. */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero > :not(.hero-layers) {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-layers {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-orb,
+.hero-ring {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.hero-orb {
+  width: 560px;
+  height: 560px;
+  right: -140px;
+  top: 40px;
+  background: radial-gradient(circle at 35% 35%, rgba(213, 224, 203, 0.95), transparent 70%);
+}
+
+.hero-ring {
+  width: 400px;
+  height: 400px;
+  right: 6%;
+  top: 150px;
+  border: 1px solid rgba(168, 131, 74, 0.4);
+}
+
+[data-tilt] {
+  position: relative;
+  transform: perspective(1200px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transform-style: preserve-3d;
+  transition:
+    transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 0.6s ease;
+}
+
+[data-tilt][data-tilting] {
+  transition-duration: 0.12s, 0.4s;
+}
+
+.product-card {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 34px 60px -34px rgba(15, 58, 45, 0.4),
+    0 14px 24px -18px rgba(15, 58, 45, 0.3);
+}
+
+.product-card[data-tilting] {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 60px 90px -40px rgba(15, 58, 45, 0.45),
+    0 20px 30px -20px rgba(15, 58, 45, 0.3);
+}
+
+/* Brillo que sigue al puntero, como luz sobre vidrio. */
+.product-card[data-tilt]::after,
+.split-media[data-tilt]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgba(255, 255, 255, 0.32),
+    transparent 55%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+[data-tilting]::after {
+  opacity: 1;
+}
+
+.product-card[data-tilt] figcaption {
+  transform: translateZ(28px);
+}
+
+.btn.primary {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 12px 22px -14px rgba(15, 58, 45, 0.7);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.depth-ready .reveal {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 0.7s ease var(--reveal-delay, 0ms),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--reveal-delay, 0ms);
+}
+
+.depth-ready .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* En pantallas táctiles no hay mouse: el frasco flota suavemente. */
+@media (hover: none) {
+  .depth-ready .hero-media {
+    animation: flotar 7s ease-in-out infinite;
+  }
+}
+
+@keyframes flotar {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -8px, 0);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-orb {
+    width: 360px;
+    height: 360px;
+    right: -160px;
+    top: 280px;
+  }
+
+  .hero-ring {
+    width: 260px;
+    height: 260px;
+    right: -60px;
+    top: 420px;
+  }
+}
+
 /* ---------- Accesibilidad ---------- */
 
 a:focus-visible,
