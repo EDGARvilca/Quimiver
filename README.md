@@ -24,13 +24,18 @@ Hoy es una landing de un solo producto. El pedido se arma en el navegador y se e
 
 CI (`.github/workflows/ci.yml`) ejecuta lint, formato, tipos, pruebas y build en cada PR y en `main`.
 
+## Publicación
+
+Cada push a `main` publica el sitio en GitHub Pages (`.github/workflows/pages.yml`), en https://edgarvilca.github.io/Quimiver/. Requiere que en **Settings → Pages → Build and deployment** el origen sea **GitHub Actions** (se configura una sola vez). Para usar un dominio propio, configúralo en esa misma página; el workflow toma la URL y la subcarpeta automáticamente.
+
 ## Variables de entorno
 
 Copia `.env.example` a `.env` si necesitas definirlas.
 
-| Variable   | Uso                                                                   |
-| ---------- | --------------------------------------------------------------------- |
-| `SITE_URL` | Opcional. URL pública sin barra final; activa `canonical` y `og:url`. |
+| Variable    | Uso                                                                   |
+| ----------- | --------------------------------------------------------------------- |
+| `SITE_URL`  | Opcional. URL pública sin barra final; activa `canonical` y `og:url`. |
+| `BASE_PATH` | Opcional. Subcarpeta donde se sirve el sitio (p. ej. `/Quimiver`).    |
 
 ## Dónde se editan los datos
 
