@@ -49,6 +49,8 @@ const specs = [
       ) : (
         <img
           src={assetUrl(product.images.hero.src)}
+          srcset={`${assetUrl('/images/quimiver-frascos-720.webp')} 720w, ${assetUrl(product.images.hero.src)} ${product.images.hero.width}w`}
+          sizes="(max-width: 1024px) calc(100vw - 60px), 560px"
           alt={product.images.hero.alt}
           width={product.images.hero.width}
           height={product.images.hero.height}

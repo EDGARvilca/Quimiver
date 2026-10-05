@@ -1,6 +1,7 @@
 // Estilos globales del sitio. Los colores, tipografías y medidas viven en _tokens.scss.
 // Concepto "laboratorio de lujo": tipografía editorial, líneas finas, mucho aire y la foto
 // del producto como protagonista. Sin sombras ni animaciones de más.
+@use 'fonts';
 @use 'tokens';
 
 /* ---------- Base ---------- */
@@ -731,15 +732,21 @@ section {
   flex-direction: column;
   justify-content: center;
   border-top: 1px solid var(--line);
-  transition: opacity 0.5s ease;
+}
+
+.story-step h3,
+.story-fig {
+  transition: color 0.5s ease;
 }
 
 .story-step:first-child {
   border-top: 0;
 }
 
-.story-body.is-enhanced .story-step:not(.is-active) {
-  opacity: 0.35;
+/* El paso que no se está leyendo baja de tono, sin perder contraste legible. */
+.story-body.is-enhanced .story-step:not(.is-active) h3,
+.story-body.is-enhanced .story-step:not(.is-active) .story-fig {
+  color: var(--muted);
 }
 
 .story-inline {
@@ -1614,8 +1621,12 @@ summary:focus-visible {
     padding: 72px 24px;
   }
 
-  .story-body.is-enhanced .story-step:not(.is-active) {
-    opacity: 1;
+  .story-body.is-enhanced .story-step:not(.is-active) h3 {
+    color: var(--forest);
+  }
+
+  .story-body.is-enhanced .story-step:not(.is-active) .story-fig {
+    color: var(--emerald);
   }
 
   .steps-figure {
@@ -1651,16 +1662,16 @@ summary:focus-visible {
   }
 
   /* Con JavaScript activo, los enlaces se pliegan detrás del botón "Menú". */
-  .navbar[data-enhanced='true'] {
+  .js .navbar {
     flex-direction: row;
     flex-wrap: wrap;
   }
 
-  .navbar[data-enhanced='true'] .nav-toggle {
+  .js .navbar .nav-toggle {
     display: inline-flex;
   }
 
-  .navbar[data-enhanced='true'] .nav-links {
+  .js .navbar .nav-links {
     display: none;
     flex-basis: 100%;
     flex-direction: column;
@@ -1674,12 +1685,12 @@ summary:focus-visible {
     display: flex;
   }
 
-  .navbar[data-enhanced='true'] .nav-links a {
+  .js .navbar .nav-links a {
     padding: 14px 4px;
     border-bottom: 1px solid var(--line);
   }
 
-  .navbar[data-enhanced='true'] .nav-links .cta-nav {
+  .js .navbar .nav-links .cta-nav {
     margin: 14px 0 0;
     text-align: center;
   }
