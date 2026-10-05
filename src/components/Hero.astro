@@ -27,6 +27,10 @@ const specs = [
 ---
 
 <header class="hero" id="inicio">
+  <div class="hero-layers" aria-hidden="true">
+    <span class="hero-orb" data-depth="0.18"></span>
+    <span class="hero-ring" data-depth="-0.12"></span>
+  </div>
   <SiteHeader />
 
   <div class="hero-content">
@@ -67,7 +71,7 @@ const specs = [
         </ul>
       )}
     </div>
-    <figure class="hero-media product-card">
+    <figure class="hero-media product-card" data-tilt>
       <img
         src={assetUrl(product.images.hero.src)}
         alt={product.images.hero.alt}

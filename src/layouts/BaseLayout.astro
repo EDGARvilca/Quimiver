@@ -44,5 +44,9 @@ const ogImage = Astro.site
   </head>
   <body>
     <slot />
+    <script>
+      import { initDepth } from '../scripts/depth';
+      initDepth();
+    </script>
   </body>
 </html>
