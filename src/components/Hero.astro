@@ -1,8 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { site } from '../config/site';
-import { formatCurrency } from '../lib/order';
-import { assetUrl, productPath } from '../lib/paths';
+import { assetUrl } from '../lib/paths';
 import SiteHeader from './SiteHeader.astro';
 
 interface Props {
@@ -10,27 +8,26 @@ interface Props {
 }
 
 const { product } = Astro.props;
-const highlights = product.highlights.filter((h) => h.verified);
-const [presentation] = product.presentations;
-const carriers = site.order.shippingOptions.map((s) => s.label.replace(/ \(.*\)$/, ''));
-
-/** Ficha técnica: solo datos confirmados por el negocio. */
-const specs = [
-  { term: 'Presentación', value: presentation.label },
-  { term: 'Precio', value: `${formatCurrency(presentation.price)} por frasco` },
-  {
-    term: 'Por mayor',
-    value: `${formatCurrency(presentation.wholesalePrice)} desde ${site.order.wholesaleMinQuantity} frascos`,
-  },
-  { term: 'Entrega', value: carriers.join(' · ') },
-];
 ---
 
 <header class="hero" id="inicio">
-  <div class="hero-layers" aria-hidden="true">
-    <span class="hero-orb" data-depth="0.18"></span>
-    <span class="hero-ring" data-depth="-0.12"></span>
-  </div>
+  <picture class="hero-backdrop" data-depth="0.12">
+    <source
+      media="(max-width: 768px)"
+      srcset={assetUrl('/images/portada-movil.webp')}
+      width="752"
+      height="941"
+    />
+    <img
+      src={assetUrl('/images/portada.webp')}
+      srcset={`${assetUrl('/images/portada-960.webp')} 960w, ${assetUrl('/images/portada.webp')} 1672w`}
+      sizes="100vw"
+      alt="Frasco de crema con tapa verde sobre una piedra clara, rodeado de hojas verdes"
+      width="1672"
+      height="941"
+      fetchpriority="high"
+    />
+  </picture>
   <SiteHeader />
 
   <div class="hero-content">
@@ -51,49 +48,15 @@ const specs = [
         <a class="btn primary" href="#compra">
           Realizar pedido
         </a>
-        <a class="btn ghost" href={productPath('quimiver')}>
-          Ver producto
+        <a class="btn ghost" href="#producto">
+          Conocer el producto
         </a>
       </div>
-      <dl class="spec-sheet">
-        {specs.map((s) => (
-          <div>
-            <dt>{s.term}</dt>
-            <dd>{s.value}</dd>
-          </div>
-        ))}
-      </dl>
-      {highlights.length > 0 && (
-        <ul class="highlights">
-          {highlights.map((h) => (
-            <li>{h.text}</li>
-          ))}
-        </ul>
-      )}
     </div>
-    <figure class="hero-media product-card" data-tilt>
-      <img
-        src={assetUrl(product.images.hero.src)}
-        alt={product.images.hero.alt}
-        width={product.images.hero.width}
-        height={product.images.hero.height}
-        fetchpriority="high"
-      />
-      <figcaption>
-        <span>Fig. 01</span>
-        {product.name} · {presentation.label}
-      </figcaption>
-      {product.seal.verified && (
-        <div class="seal">
-          <span>{product.seal.text}</span>
-        </div>
-      )}
-    </figure>
-    {product.origin.verified && (
-      <div class="origin-card">
-        <h2 class="origin-title">Origen</h2>
-        <p>{product.origin.text}</p>
-      </div>
-    )}
   </div>
+
+  <a class="scroll-cue" href="#producto">
+    <span>Desliza para descubrir</span>
+  </a>
+  <small class="image-note">Imagen referencial</small>
 </header>

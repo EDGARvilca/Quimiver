@@ -171,9 +171,8 @@ section {
 /* ---------- Cabecera y navegación ---------- */
 
 .hero {
-  padding: 28px 24px 112px;
-  background:
-    radial-gradient(60% 70% at 85% 30%, rgba(213, 224, 203, 0.7), transparent 70%), var(--paper);
+  padding: 28px 24px 40px;
+  background: var(--paper);
   border-bottom: 1px solid var(--line);
 }
 
@@ -282,15 +281,112 @@ section {
   top: 6px;
 }
 
-/* ---------- Portada ---------- */
+/* ---------- Portada ----------
+   Imagen a pantalla completa; el texto vive en la zona marfil de la izquierda. */
+
+.hero {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-backdrop {
+  position: absolute;
+  inset: -6% 0 0;
+  z-index: 0;
+  will-change: transform;
+}
+
+.hero-backdrop img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 70% 50%;
+}
+
+/* Velo marfil para que el texto se lea siempre sobre la foto. */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(245, 241, 232, 0.94) 0%,
+    rgba(245, 241, 232, 0.82) 34%,
+    rgba(245, 241, 232, 0) 62%
+  );
+}
+
+.hero .navbar {
+  width: 100%;
+}
 
 .hero-content {
+  width: 100%;
   max-width: var(--max);
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-  gap: 72px;
+  margin: auto;
+}
+
+.hero-text {
+  max-width: 560px;
+}
+
+.scroll-cue {
+  align-self: center;
+  margin-top: 48px;
+  display: inline-flex;
+  flex-direction: column;
   align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--forest);
+}
+
+.scroll-cue::after {
+  content: '';
+  width: 1px;
+  height: 44px;
+  background: linear-gradient(var(--brass), transparent);
+  transform-origin: top;
+  animation: deslizar 2.4s ease-in-out infinite;
+}
+
+@keyframes deslizar {
+  0% {
+    transform: scaleY(0);
+    opacity: 1;
+  }
+
+  60% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+/* Aviso discreto en imágenes generadas que muestran un frasco o la crema. */
+.image-note {
+  position: absolute;
+  left: 16px;
+  bottom: 12px;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  background: rgba(245, 241, 232, 0.8);
+  padding: 2px 8px;
+  border-radius: var(--radius);
 }
 
 .hero-text h1 {
@@ -463,6 +559,252 @@ section {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--emerald);
+}
+
+/* ---------- El producto (foto real + ficha) ---------- */
+
+.showcase {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 80px;
+  align-items: center;
+}
+
+.showcase-text h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.6rem, 5vw, 4rem);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--forest);
+  margin: 0 0 20px;
+}
+
+.showcase-price {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 28px;
+}
+
+.showcase-price small {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-left: 8px;
+}
+
+.showcase .hero-actions {
+  margin: 36px 0 0;
+}
+
+.showcase .origin-card {
+  margin-top: 28px;
+}
+
+/* ---------- Historia de la congona (scroll) ---------- */
+
+.story {
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+
+.story-band {
+  position: relative;
+  min-height: 72vh;
+  display: flex;
+  align-items: flex-start;
+  overflow: hidden;
+  padding: 96px 24px;
+}
+
+.story-band-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 70%;
+}
+
+.story-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(245, 241, 232, 0.95) 0%,
+    rgba(245, 241, 232, 0.6) 38%,
+    rgba(245, 241, 232, 0) 70%
+  );
+}
+
+.story-band-text {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+.story-band-text h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  line-height: 1.05;
+  color: var(--forest);
+  max-width: 760px;
+  margin: 16px 0 0;
+}
+
+.story-band-text p {
+  max-width: 560px;
+  color: var(--ink);
+}
+
+.story-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 80px;
+  padding: 96px 24px;
+}
+
+.story-media {
+  position: sticky;
+  top: 12vh;
+  height: 76vh;
+  max-height: 720px;
+}
+
+.story-frame {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.story-frame.is-active {
+  opacity: 1;
+}
+
+.story-frame img,
+.story-inline img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  border: 14px solid var(--surface);
+  outline: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.story-frame figcaption,
+.story-inline figcaption,
+.steps-figure figcaption {
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.story-frame figcaption span {
+  color: var(--emerald);
+  margin-right: 12px;
+}
+
+.story-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.story-step {
+  min-height: 72vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-top: 1px solid var(--line);
+  transition: opacity 0.5s ease;
+}
+
+.story-step:first-child {
+  border-top: 0;
+}
+
+.story-body.is-enhanced .story-step:not(.is-active) {
+  opacity: 0.35;
+}
+
+.story-inline {
+  display: none;
+  margin: 0 0 28px;
+}
+
+.story-fig {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--emerald);
+}
+
+.story-step h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2rem, 3.6vw, 2.8rem);
+  color: var(--forest);
+  margin: 10px 0 12px;
+}
+
+.story-step p {
+  color: var(--muted);
+  font-size: 1.1rem;
+  max-width: 440px;
+  margin: 0;
+}
+
+.story-points {
+  padding: 0 24px 96px 42px;
+}
+
+/* ---------- Modo de uso con foto ---------- */
+
+.steps-media {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  gap: 80px;
+  align-items: center;
+}
+
+.steps-figure {
+  margin: 0;
+}
+
+.steps-figure img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  border: 14px solid var(--surface);
+  outline: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.steps-media .steps-grid {
+  grid-template-columns: 1fr;
+}
+
+.steps-media .step,
+.steps-media .step + .step {
+  padding: 24px 0;
+  border-left: 0;
 }
 
 /* ---------- Tarjetas y bloques ---------- */
@@ -1080,39 +1422,9 @@ section {
   overflow: hidden;
 }
 
-.hero > :not(.hero-layers) {
+.hero > :not(.hero-backdrop, .image-note) {
   position: relative;
   z-index: 1;
-}
-
-.hero-layers {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.hero-orb,
-.hero-ring {
-  position: absolute;
-  border-radius: 50%;
-  will-change: transform;
-}
-
-.hero-orb {
-  width: 560px;
-  height: 560px;
-  right: -140px;
-  top: 40px;
-  background: radial-gradient(circle at 35% 35%, rgba(213, 224, 203, 0.95), transparent 70%);
-}
-
-.hero-ring {
-  width: 400px;
-  height: 400px;
-  right: 6%;
-  top: 150px;
-  border: 1px solid rgba(168, 131, 74, 0.4);
 }
 
 [data-tilt] {
@@ -1192,7 +1504,7 @@ section {
 
 /* En pantallas táctiles no hay mouse: el frasco flota suavemente. */
 @media (hover: none) {
-  .depth-ready .hero-media {
+  .depth-ready .showcase-media {
     animation: flotar 7s ease-in-out infinite;
   }
 }
@@ -1205,22 +1517,6 @@ section {
 
   50% {
     transform: translate3d(0, -8px, 0);
-  }
-}
-
-@media (max-width: 768px) {
-  .hero-orb {
-    width: 360px;
-    height: 360px;
-    right: -160px;
-    top: 280px;
-  }
-
-  .hero-ring {
-    width: 260px;
-    height: 260px;
-    right: -60px;
-    top: 420px;
   }
 }
 
@@ -1254,15 +1550,47 @@ summary:focus-visible {
 /* ---------- Responsive ---------- */
 
 @media (max-width: 1024px) {
-  .hero-content,
   .split,
+  .showcase,
+  .story-body,
+  .steps-media,
   .product-detail-grid {
     grid-template-columns: 1fr;
     gap: 48px;
   }
 
-  .hero-media {
+  .showcase-media {
     max-width: 620px;
+  }
+
+  .story-media {
+    display: none;
+  }
+
+  .story-inline {
+    display: block;
+  }
+
+  .story-inline img {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .story-step {
+    min-height: 0;
+    padding: 40px 0;
+  }
+
+  .story-body {
+    padding: 72px 24px;
+  }
+
+  .story-body.is-enhanced .story-step:not(.is-active) {
+    opacity: 1;
+  }
+
+  .steps-figure {
+    max-width: 520px;
   }
 
   .order {
@@ -1327,8 +1655,52 @@ summary:focus-visible {
     text-align: center;
   }
 
+  /* En celular la foto va debajo del texto, a todo el ancho. */
   .hero {
-    padding-bottom: 80px;
+    padding-bottom: 0;
+  }
+
+  .hero::before,
+  .scroll-cue {
+    display: none;
+  }
+
+  .hero-backdrop {
+    position: relative;
+    inset: auto;
+    order: 3;
+    display: block;
+    margin: 40px -20px 0;
+  }
+
+  .hero-backdrop img {
+    aspect-ratio: 4 / 5;
+    height: auto;
+  }
+
+  .hero-backdrop::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 22%;
+    background: linear-gradient(var(--paper), rgba(245, 241, 232, 0));
+  }
+
+  .story-band {
+    min-height: 60vh;
+    padding: 72px 20px;
+  }
+
+  .story-body {
+    padding: 56px 20px;
+  }
+
+  .story-inline img {
+    border-width: 10px;
+  }
+
+  .steps-figure img {
+    border-width: 10px;
   }
 
   .order-form {
@@ -1338,7 +1710,11 @@ summary:focus-visible {
 
 @media (max-width: 560px) {
   .hero {
-    padding: 20px 18px 64px;
+    padding: 20px 18px 0;
+  }
+
+  .hero-backdrop {
+    margin: 32px -18px 0;
   }
 
   .hero-actions {
@@ -1364,6 +1740,10 @@ summary:focus-visible {
 
   .split-media img {
     border-width: 10px;
+  }
+
+  .showcase-price {
+    font-size: 2rem;
   }
 
   .order {

@@ -1,0 +1,149 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { assetUrl } from '../lib/paths';
+
+interface Props {
+  product: CollectionEntry<'products'>['data'];
+}
+
+const { product } = Astro.props;
+const { ingredients, images } = product;
+const [presentation] = product.presentations;
+const points = ingredients.points.filter((p) => p.verified);
+
+/**
+ * Historia que se cuenta al bajar: en escritorio la imagen queda fija y cambia con cada paso;
+ * en celular cada paso lleva su propia imagen. Los textos solo usan datos confirmados
+ * (etiqueta, fabricante, presentación y modo de uso). Las imágenes generadas se marcan
+ * como referenciales; la foto real se marca como tal.
+ */
+const steps = [
+  {
+    title: 'La planta',
+    text: `${product.name} es una ${product.descriptor.toLowerCase()}. La congona es una planta de los Andes peruanos.`,
+    image: {
+      src: '/images/congona-planta.webp',
+      small: '/images/congona-planta-720.webp',
+      alt: 'Planta de hojas verdes en una maceta de piedra sobre fondo marfil',
+      width: 1200,
+      height: 675,
+      position: '72% 50%',
+    },
+    note: 'Imagen referencial',
+  },
+  {
+    title: 'El laboratorio',
+    text: product.intro,
+    image: {
+      src: '/images/laboratorio.webp',
+      small: '/images/laboratorio-720.webp',
+      alt: 'Mesa de laboratorio con frascos de vidrio ámbar, mortero de piedra, hojas verdes y un frasco de crema abierto',
+      width: 1200,
+      height: 675,
+      position: '52% 60%',
+    },
+    note: 'Imagen referencial',
+  },
+  {
+    title: 'La crema',
+    text: product.usage[1]?.text ?? 'Aplica una pequeña cantidad sobre la piel.',
+    image: {
+      src: '/images/textura-crema.webp',
+      small: '/images/textura-crema-720.webp',
+      alt: 'Textura de una crema clara extendida con una espátula dorada',
+      width: 1200,
+      height: 675,
+      position: '45% 50%',
+    },
+    note: 'Imagen referencial',
+  },
+  {
+    title: 'El frasco',
+    text: `${presentation.label}, tal como llega a tus manos.`,
+    image: {
+      src: images.ingredient.src,
+      small: images.ingredient.src,
+      alt: images.ingredient.alt,
+      width: images.ingredient.width,
+      height: images.ingredient.height,
+      position: '50% 50%',
+    },
+    note: 'Foto real',
+  },
+];
+const fig = (i: number) => `Fig. ${String(i + 2).padStart(2, '0')}`;
+---
+
+<section class="story" id="ingredientes">
+  <div class="story-band">
+    <img
+      class="story-band-image"
+      src={assetUrl('/images/andes.webp')}
+      srcset={`${assetUrl('/images/andes-960.webp')} 960w, ${assetUrl('/images/andes.webp')} 1916w`}
+      sizes="100vw"
+      alt=""
+      width="1916"
+      height="821"
+      loading="lazy"
+      decoding="async"
+    />
+    <div class="story-band-text">
+      <span class="eyebrow">Ingrediente principal</span>
+      <h2>{ingredients.heading}</h2>
+      {ingredients.description.verified && <p>{ingredients.description.text}</p>}
+    </div>
+    <small class="image-note">Imagen referencial</small>
+  </div>
+
+  <div class="section story-body" data-story>
+    <div class="story-media" aria-hidden="true">
+      {steps.map((step, i) => (
+        <figure class:list={['story-frame', { 'is-active': i === 0 }]} data-story-frame={i}>
+          <img
+            src={assetUrl(step.image.src)}
+            alt=""
+            width={step.image.width}
+            height={step.image.height}
+            style={`object-position: ${step.image.position}`}
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            <span>{fig(i)}</span>
+            {step.note}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+
+    <ol class="story-steps">
+      {steps.map((step, i) => (
+        <li class="story-step" data-story-step={i}>
+          <figure class="story-inline">
+            <img
+              src={assetUrl(step.image.small)}
+              alt={step.image.alt}
+              width={step.image.width}
+              height={step.image.height}
+              style={`object-position: ${step.image.position}`}
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>{step.note}</figcaption>
+          </figure>
+          <span class="story-fig">{fig(i)}</span>
+          <h3>{step.title}</h3>
+          <p>{step.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+
+  {points.length > 0 && (
+    <ul class="section list story-points">
+      {points.map((p) => (
+        <li>{p.text}</li>
+      ))}
+    </ul>
+  )}
+</section>

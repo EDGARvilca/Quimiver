@@ -1,27 +1,47 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { assetUrl } from '../lib/paths';
 
 interface Props {
   product: CollectionEntry<'products'>['data'];
+  /** Muestra la foto de aplicación junto a los pasos (portada). */
+  withImage?: boolean;
 }
 
-const { product } = Astro.props;
+const { product, withImage = false } = Astro.props;
 ---
 
-<section class="section steps" id="uso">
-  <div class="section-heading">
-    <span class="eyebrow">Modo de uso</span>
-    <h2>Aplicación sencilla en {product.usage.length} pasos</h2>
+<section class:list={['section steps', { 'steps-media': withImage }]} id="uso">
+  {withImage && (
+    <figure class="steps-figure">
+      <img
+        src={assetUrl('/images/modo-de-uso.webp')}
+        srcset={`${assetUrl('/images/modo-de-uso-640.webp')} 640w, ${assetUrl('/images/modo-de-uso.webp')} 1122w`}
+        sizes="(max-width: 1024px) 100vw, 45vw"
+        alt="Manos tomando una pequeña cantidad de crema de un frasco abierto con tapa verde"
+        width="1122"
+        height="1402"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>Imagen referencial</figcaption>
+    </figure>
+  )}
+  <div class="steps-body">
+    <div class="section-heading">
+      <span class="eyebrow">Modo de uso</span>
+      <h2>Aplicación sencilla en {product.usage.length} pasos</h2>
+    </div>
+    <ol class="steps-grid">
+      {product.usage.map((step, i) => (
+        <li class="step">
+          <span class="step-number" aria-hidden="true">
+            {i + 1}
+          </span>
+          <h3>{step.title}</h3>
+          <p>{step.text}</p>
+        </li>
+      ))}
+    </ol>
   </div>
-  <ol class="steps-grid">
-    {product.usage.map((step, i) => (
-      <li class="step">
-        <span class="step-number" aria-hidden="true">
-          {i + 1}
-        </span>
-        <h3>{step.title}</h3>
-        <p>{step.text}</p>
-      </li>
-    ))}
-  </ol>
 </section>
