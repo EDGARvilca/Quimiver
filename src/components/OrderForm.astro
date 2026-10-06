@@ -1,4 +1,5 @@
 ---
+import { inlineJson } from '../lib/json';
 import type { CollectionEntry } from 'astro:content';
 import { pages } from '../config/pages';
 import { site } from '../config/site';
@@ -148,7 +149,7 @@ const singlePresentation = product.presentations.length === 1;
       Confirmar pedido
     </button>
   </form>
-  <script type="application/json" id="order-config" set:html={JSON.stringify(config)} />
+  <script type="application/json" id="order-config" set:html={inlineJson(config)} />
 </section>
 
 <script>

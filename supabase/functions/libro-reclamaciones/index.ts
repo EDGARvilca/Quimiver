@@ -29,6 +29,9 @@ declare const Deno: {
 const env = (name: string) => Deno.env.get(name)?.trim() ?? '';
 const MAX_BODY_BYTES = 20_000;
 const MAX_PER_EMAIL_PER_HOUR = 3;
+// Tope de todo el sitio: frena a un robot que cambie de correo en cada envío. Si se alcanza,
+// la página muestra el correo del negocio para presentar el reclamo por esa vía.
+const MAX_PER_HOUR = 30;
 
 const DEFAULT_ORIGINS = 'https://edgarvilca.github.io,http://localhost:4321,http://localhost:4329';
 
@@ -166,15 +169,26 @@ Deno.serve(async (req) => {
   }
   const complaint = result.value;
 
-  const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-  const recent = await db(
-    `reclamos?select=id&correo=eq.${encodeURIComponent(complaint.correo)}&creado_en=gte.${encodeURIComponent(since)}`,
-    { headers: { Prefer: 'count=exact', Range: '0-0' } },
-  );
-  const total = Number(recent.headers.get('Content-Range')?.split('/')[1] ?? '0');
-  if (total >= MAX_PER_EMAIL_PER_HOUR) {
+  const since = encodeURIComponent(new Date(Date.now() - 60 * 60 * 1000).toISOString());
+  const count = async (filter: string) => {
+    const res = await db(`reclamos?select=id&creado_en=gte.${since}${filter}`, {
+      headers: { Prefer: 'count=exact', Range: '0-0' },
+    });
+    return Number(res.headers.get('Content-Range')?.split('/')[1] ?? '0');
+  };
+  if (
+    (await count(`&correo=eq.${encodeURIComponent(complaint.correo)}`)) >= MAX_PER_EMAIL_PER_HOUR
+  ) {
     return json(
       { error: 'Ya registraste varias hojas en la última hora. Intenta más tarde o escríbenos.' },
+      429,
+      origin,
+    );
+  }
+  if ((await count('')) >= MAX_PER_HOUR) {
+    console.error('Tope de hojas por hora alcanzado');
+    return json(
+      { error: 'Recibimos muchas hojas en este momento. Intenta más tarde o escríbenos.' },
       429,
       origin,
     );
