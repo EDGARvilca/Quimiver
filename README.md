@@ -85,6 +85,15 @@ En la portada, la foto real del frasco gira en 3D al bajar. Para que dé la vuel
 
 Los cuadros se descargan solo cuando la sección está por aparecer, así que no frenan la carga inicial.
 
+## Registro de pedidos
+
+Al confirmar el formulario de compra, el sitio guarda una copia numerada del pedido (`P-000001`) y luego abre WhatsApp con el mensaje, que ya incluye ese número. Si el registro falla o tarda más de 4 segundos, WhatsApp se abre igual: nunca se pierde la venta.
+
+- Servidor: Edge Function `pedidos` (`supabase/functions/pedidos/`), validación en `pedido.ts` (la usan el servidor y las pruebas).
+- Tabla `pedidos` (migración en `supabase/migrations/`). Los montos son la estimación que vio el cliente; el precio final y el envío se confirman por WhatsApp.
+- Para ver los pedidos: Supabase → Table Editor → `pedidos`. Cambia la columna `estado` (`nuevo`, `confirmado`, `pagado`, `enviado`, `entregado`, `cancelado`) y usa `notas_internas` para el seguimiento.
+- Aviso por correo de cada pedido: se activa solo con los mismos secretos de Brevo del libro (`BREVO_API_KEY`, `MAIL_FROM`); llega al correo de `libro_proveedor` o al del secreto `PEDIDOS_CORREO`.
+
 ## Libro de Reclamaciones virtual
 
 Cumple el D.S. 011-2011-PCM y sus modificatorias: cada hoja recibe un número correlativo (`LR-000001`), fecha y hora, se guarda al menos 2 años y se envía por correo al consumidor y al negocio. El plazo de respuesta es de 15 días hábiles.

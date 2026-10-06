@@ -42,6 +42,10 @@ export const site = {
     ruc: '10746979156' as string | null,
     address: 'Av. Enrique Guzmán y Valle - La Cantuta, Lurigancho-Chosica, Lima' as string | null,
   },
+  /** Registro de pedidos (Edge Function de Supabase; dirección pública, no es una clave). */
+  orders: {
+    endpoint: 'https://buuelzmvfidigimbrplm.supabase.co/functions/v1/pedidos',
+  },
   /**
    * Libro de Reclamaciones virtual (D.S. 011-2011-PCM). Las hojas se guardan en Supabase
    * mediante esta Edge Function (dirección pública, no es una clave).

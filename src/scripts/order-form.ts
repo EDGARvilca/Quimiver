@@ -8,6 +8,52 @@ import {
 } from '../lib/order';
 import { site } from '../config/site';
 
+/** Tiempo máximo que esperamos al registro antes de abrir WhatsApp igual. */
+const REGISTER_TIMEOUT_MS = 4000;
+
+/**
+ * Guarda una copia numerada del pedido. Nunca bloquea la venta: si el registro falla o
+ * tarda, devuelve `undefined` y el pedido sigue por WhatsApp sin número.
+ */
+async function registerOrder(
+  config: OrderConfig,
+  input: OrderInput,
+  honeypot: string,
+): Promise<string | undefined> {
+  const quote = quoteOrder(config, input);
+  const presentation = config.presentations.find((p) => p.id === input.presentationId);
+  const shipping = config.shippingOptions.find((s) => s.id === input.shippingId);
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), REGISTER_TIMEOUT_MS);
+  try {
+    const res = await fetch(site.orders.endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({
+        cliente_nombre: input.customerName,
+        telefono: input.phone,
+        ciudad: input.city,
+        presentacion: presentation?.label ?? input.presentationId,
+        cantidad: input.quantity,
+        precio_unitario: quote.unitPrice,
+        tipo_precio: quote.priceType,
+        entrega: shipping?.label ?? input.shippingId,
+        total_estimado: quote.total,
+        observaciones: input.notes,
+        sitio_web: honeypot,
+      }),
+    });
+    if (res.status !== 201) return undefined;
+    const data = (await res.json()) as { codigo?: unknown };
+    return typeof data.codigo === 'string' ? data.codigo : undefined;
+  } catch {
+    return undefined;
+  } finally {
+    window.clearTimeout(timer);
+  }
+}
+
 function readConfig(): OrderConfig | null {
   const node = document.getElementById('order-config');
   if (!node?.textContent) {
@@ -56,7 +102,7 @@ export function initOrderForm(): void {
   form.addEventListener('input', refreshTotal);
   form.addEventListener('change', refreshTotal);
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
     status.hidden = true;
 
@@ -64,13 +110,26 @@ export function initOrderForm(): void {
       return;
     }
 
-    const message = buildOrderMessage(config, readInput(form));
-    const url = buildWhatsAppUrl(site.contact.whatsapp, message);
-    // Sin la opción "noopener" para poder detectar si el navegador bloqueó la ventana
-    // (con ella window.open siempre devuelve null). Se corta la referencia después.
-    const newWindow = window.open(url, '_blank');
+    const input = readInput(form);
+    const honeypot = String(new FormData(form).get('sitio_web') ?? '');
+    const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
 
-    if (!newWindow) {
+    // La ventana se abre ya, dentro del clic, para que el navegador no la bloquee;
+    // recibe la dirección de WhatsApp cuando el pedido queda registrado.
+    // Sin "noopener" para poder detectar el bloqueo (con él window.open siempre devuelve null).
+    const newWindow = window.open('', '_blank');
+    if (newWindow) {
+      newWindow.opener = null;
+      newWindow.document.title = 'Abriendo WhatsApp…';
+      newWindow.document.body.textContent = 'Abriendo WhatsApp con tu pedido…';
+    }
+    if (submit) submit.disabled = true;
+
+    const code = await registerOrder(config, input, honeypot);
+    const url = buildWhatsAppUrl(site.contact.whatsapp, buildOrderMessage(config, input, code));
+    if (submit) submit.disabled = false;
+
+    if (!newWindow || newWindow.closed) {
       const link = document.createElement('a');
       link.href = url;
       link.target = '_blank';
@@ -78,20 +137,24 @@ export function initOrderForm(): void {
       link.textContent = 'Abrir WhatsApp con mi pedido';
       const wrapper = document.createElement('span');
       wrapper.append(
-        'Si WhatsApp no se abrió, tu navegador pudo bloquear la ventana. Tus datos siguen en el formulario. ',
+        code
+          ? `Registramos tu pedido ${code}. Si WhatsApp no se abrió, tu navegador pudo bloquear la ventana. `
+          : 'Si WhatsApp no se abrió, tu navegador pudo bloquear la ventana. Tus datos siguen en el formulario. ',
         link,
       );
       showStatus(status, 'error', wrapper);
       return;
     }
 
-    newWindow.opener = null;
+    newWindow.location.href = url;
     form.reset();
     refreshTotal();
     showStatus(
       status,
       'success',
-      'Abrimos WhatsApp con tu pedido. Envía el mensaje para confirmarlo.',
+      code
+        ? `Registramos tu pedido ${code} y abrimos WhatsApp. Envía el mensaje para confirmarlo.`
+        : 'Abrimos WhatsApp con tu pedido. Envía el mensaje para confirmarlo.',
     );
   });
 
