@@ -213,3 +213,68 @@ export function monthLabel(month: string): string {
 export function plural(n: number, one: string, many: string): string {
   return `${n} ${n === 1 ? one : many}`;
 }
+
+/** Fecha y hora en Lima como "2026-10-06 14:05", para Excel. */
+export function limaDateTime(iso: string): string {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Lima',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    })
+      .formatToParts(new Date(iso))
+      .map((p) => [p.type, p.value]),
+  );
+  return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}`;
+}
+
+export const EXPORT_COLUMNS: { title: string; width: number }[] = [
+  { title: 'Pedido', width: 11 },
+  { title: 'Fecha (Lima)', width: 17 },
+  { title: 'Estado', width: 12 },
+  { title: 'Cliente', width: 26 },
+  { title: 'Teléfono', width: 14 },
+  { title: 'Ciudad', width: 16 },
+  { title: 'Presentación', width: 14 },
+  { title: 'Potes', width: 7 },
+  { title: 'Precio por pote (S/)', width: 12 },
+  { title: 'Tipo de precio', width: 14 },
+  { title: 'Entrega', width: 22 },
+  { title: 'Total estimado (S/)', width: 12 },
+  { title: 'Observaciones del cliente', width: 34 },
+  { title: 'Notas internas', width: 34 },
+];
+
+/** Filas para Excel: encabezado y un pedido por fila, montos como números. */
+export function ordersToRows(orders: PanelOrder[]): (string | number | null)[][] {
+  return [
+    EXPORT_COLUMNS.map((c) => c.title),
+    ...orders.map((o) => [
+      o.codigo,
+      limaDateTime(o.creado_en),
+      STATE_LABELS[o.estado] ?? o.estado,
+      o.cliente_nombre,
+      o.telefono,
+      o.ciudad,
+      o.presentacion,
+      o.cantidad,
+      o.precio_unitario,
+      o.tipo_precio,
+      o.entrega,
+      o.total_estimado,
+      o.observaciones,
+      o.notas_internas,
+    ]),
+  ];
+}
+
+/** Nombre del archivo: pedidos-quimiver-2026-10-06.xlsx (o con el estado filtrado). */
+export function exportFileName(state: OrderState | 'todos', now: Date = new Date()): string {
+  const day = limaDateTime(now.toISOString()).slice(0, 10);
+  const suffix = state === 'todos' ? '' : `-${state}`;
+  return `pedidos-quimiver${suffix}-${day}.xlsx`;
+}

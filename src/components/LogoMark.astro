@@ -1,0 +1,40 @@
+---
+/**
+ * Sello de QUIMIVER (propuesta A, elegida por Hluot el 2026-10-06):
+ * Q en círculo verde bosque con aro dorado y hoja de congona.
+ * La Q va como trazo para verse igual aunque la fuente no haya cargado.
+ */
+interface Props {
+  /** "claro" para fondos marfil; "oscuro" para fondos verde bosque. */
+  tone?: 'claro' | 'oscuro';
+  size?: number;
+  class?: string;
+}
+
+const { tone = 'claro', size = 40, class: className } = Astro.props;
+const dark = tone === 'oscuro';
+const disc = dark ? '#f3efe4' : '#0f3a2d';
+const ink = dark ? '#0f3a2d' : '#f3efe4';
+const leaf = dark ? '#1b6e40' : '#7fbf8f';
+---
+
+<svg
+  class={className}
+  width={size}
+  height={size}
+  viewBox="-70 -70 140 140"
+  aria-hidden="true"
+  focusable="false"
+>
+  <circle r="70" fill={disc}></circle>
+  <circle r="61" fill="none" stroke="#a8834a" stroke-width="1.6"></circle>
+  <path
+    d="M7.65 25.23Q9.98 29.7 13.42 33.18Q16.86 36.66 20.73 38.6Q24.6 40.53 28.04 40.53Q28.9 40.53 29.71 40.45Q30.53 40.36 31.13 40.28Q31.39 40.19 31.52 40.62Q31.65 41.05 31.48 41.14Q29.67 41.57 27.86 41.87Q26.06 42.17 24.25 42.17Q20.21 42.17 15.61 40.32Q11.01 38.47 6.71 34.81Q2.41 31.16 -0.95 25.83ZM-1.46 27.03Q-7.65 27.03 -12.68 24.84Q-17.72 22.65 -21.28 18.78Q-24.85 14.91 -26.79 9.88Q-28.72 4.84 -28.72 -0.83Q-28.72 -7.8 -26.01 -13.04Q-23.31 -18.29 -18.83 -21.77Q-14.36 -25.26 -9.03 -26.98Q-3.7 -28.7 1.55 -28.7Q7.91 -28.7 12.94 -26.42Q17.97 -24.14 21.5 -20.27Q25.03 -16.4 26.88 -11.5Q28.72 -6.59 28.72 -1.43Q28.72 4.59 26.32 9.75Q23.91 14.91 19.74 18.78Q15.57 22.65 10.11 24.84Q4.64 27.03 -1.46 27.03ZM1.55 25.14Q6.97 25.14 11.39 22.34Q15.82 19.55 18.36 14.18Q20.9 8.8 20.9 0.97Q20.9 -7.02 18.1 -13.26Q15.31 -19.49 10.19 -23.06Q5.07 -26.63 -1.98 -26.63Q-11.01 -26.63 -15.95 -20.53Q-20.9 -14.42 -20.9 -3.84Q-20.9 2.26 -19.31 7.55Q-17.72 12.84 -14.71 16.8Q-11.7 20.75 -7.57 22.95Q-3.44 25.14 1.55 25.14Z"
+    fill={ink}
+  ></path>
+  <path
+    d="M0-15C7-9 7 6 0 15C-7 6-7-9 0-15Z"
+    fill={leaf}
+    transform="translate(26 34) rotate(-40)"
+  ></path>
+</svg>

@@ -26,7 +26,10 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: site.brand,
-  ...(Astro.site && { url: new URL(withBase('/'), Astro.site).href }),
+  ...(Astro.site && {
+    url: new URL(withBase('/'), Astro.site).href,
+    logo: new URL(withBase('/images/quimiver-logo.png'), Astro.site).href,
+  }),
   ...(legal.businessName && { legalName: legal.businessName }),
   ...(legal.ruc && { taxID: legal.ruc }),
   email: contact.email,

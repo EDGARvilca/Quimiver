@@ -1,6 +1,7 @@
 ---
 import { pages } from '../config/pages';
 import { complaintsBookEnabled, site, whatsappLink } from '../config/site';
+import LogoMark from './LogoMark.astro';
 
 const socialLinks = site.social.filter((s) => s.url !== null);
 const buildYear = new Date().getFullYear();
@@ -9,7 +10,10 @@ const buildYear = new Date().getFullYear();
 <footer class="footer">
   <div class="footer-content">
     <div>
-      <h2 class="footer-title">{site.brand}</h2>
+      <h2 class="footer-title">
+        <LogoMark tone="oscuro" size={44} />
+        <span>{site.brand}</span>
+      </h2>
       <p>
         Producto creado por {site.company} para brindar bienestar natural a las familias peruanas.
       </p>

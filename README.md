@@ -122,6 +122,10 @@ Al confirmar el formulario de compra, el sitio guarda una copia numerada del ped
 
 Arriba del panel: soles y potes vendidos esta semana (desde el lunes), este mes y desde el inicio; una tabla de los últimos 6 meses y las 5 ciudades que más compran. Cuenta los pedidos confirmados, pagados, enviados o entregados (los mismos que descuentan stock) y usa el total estimado del pedido, sin envío. Se calcula en el navegador con los pedidos cargados (hasta 500); la lógica está en `summarizeSales` de `src/lib/panel.ts`, con pruebas.
 
+### Descargar pedidos en Excel
+
+El botón **Descargar Excel** del panel baja un archivo `.xlsx` con los pedidos que se ven en ese momento: todos, o solo los del estado filtrado (por ejemplo `pedidos-quimiver-pagado-2026-10-06.xlsx`). Trae una fila por pedido con fecha y hora de Lima, estado, cliente, teléfono, ciudad, potes, precios, entrega, observaciones y notas internas; los montos van como números para poder sumarlos. El archivo se arma en el navegador sin librerías (`src/lib/xlsx.ts`) y abre en Excel, Google Sheets y LibreOffice.
+
 ### Stock
 
 - Tabla `inventario` (hoy un producto, `quimiver-50g`, con 100 potes al empezar) y registro de cada cambio en `movimientos_inventario`. Migración `supabase/migrations/20261006040000_inventario.sql`.
@@ -129,6 +133,13 @@ Arriba del panel: soles y potes vendidos esta semana (desde el lunes), este mes 
 - El descuento es atómico en la base: si no alcanza el stock, el cambio de estado se rechaza y el panel avisa "No hay stock suficiente".
 - En el panel se ve cuántos potes quedan (aviso desde 10), se registran potes nuevos o correcciones (número negativo) con su motivo, y se ven los últimos movimientos.
 - La web pregunta al servidor si hay stock (solo sí o no, nunca la cantidad). Si no hay, el formulario muestra "agotado" pero deja enviar el pedido como reserva.
+
+## Logo
+
+Sello elegido por Hluot el 2026-10-06 (propuesta A): Q en círculo verde bosque con aro dorado y hoja de congona.
+
+- Componente: `src/components/LogoMark.astro` (`tone="claro"` sobre marfil, `tone="oscuro"` sobre verde). La Q va como trazo, así se ve igual aunque la fuente no cargue.
+- Archivos: `public/favicon.svg`, `public/apple-touch-icon.png` (180 px, ícono al guardar la web en el celular), `public/images/quimiver-logo.png` (512 px, el que lee Google) y `public/images/quimiver-compartir.jpg` (1200 × 630, la imagen que sale al compartir el enlace).
 
 ## Libro de Reclamaciones virtual
 
