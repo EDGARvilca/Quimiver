@@ -2240,6 +2240,91 @@ summary:focus-visible {
   font-size: 1rem;
 }
 
+.panel-stock {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.panel-stock-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.panel-stock-head h2 {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.panel-stock-count {
+  margin: 0;
+}
+
+.panel-stock-count strong {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  color: var(--forest);
+}
+
+.panel-stock-form {
+  display: grid;
+  grid-template-columns: minmax(0, 120px) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px 16px;
+}
+
+.panel-stock-form label {
+  grid-row: 1;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.panel-stock-form input {
+  grid-row: 2;
+  min-width: 0;
+  font: inherit;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.panel-stock-form .btn {
+  grid-row: 2;
+}
+
+.panel-stock-form .form-status {
+  grid-row: 3;
+}
+
+.panel-stock-moves summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.panel-stock-moves ul {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
 .panel-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -2407,8 +2492,16 @@ summary:focus-visible {
     margin-left: 0;
   }
 
-  .panel-edit {
+  .panel-edit,
+  .panel-stock-form {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel-stock-form label,
+  .panel-stock-form input,
+  .panel-stock-form .btn,
+  .panel-stock-form .form-status {
+    grid-row: auto;
   }
 
   .panel-edit label,

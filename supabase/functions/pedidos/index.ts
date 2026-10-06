@@ -4,7 +4,7 @@
  * POST: valida el pedido del formulario, lo guarda con su número (P-000001) y, si están
  *       los secretos de Brevo, avisa por correo al negocio. El cliente igual confirma por
  *       WhatsApp: si este registro falla, el sitio abre WhatsApp de todas formas.
- * GET:  verificación de estado.
+ * GET:  verificación de estado y si hay stock (`disponible`), sin revelar la cantidad.
  *
  * Secretos (Supabase → Edge Functions → Secrets). Nunca van en el código:
  * - SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY: los pone Supabase.
@@ -107,8 +107,10 @@ Deno.serve(async (req) => {
   }
 
   if (req.method === 'GET') {
-    const res = await db('pedidos?select=id&limit=1');
-    return json({ ok: res.ok }, res.ok ? 200 : 503, origin);
+    const res = await db('inventario?select=stock&producto=eq.quimiver-50g');
+    if (!res.ok) return json({ ok: false }, 503, origin);
+    const [row] = (await res.json()) as { stock: number }[];
+    return json({ ok: true, disponible: (row?.stock ?? 0) > 0 }, 200, origin);
   }
 
   if (req.method !== 'POST') {

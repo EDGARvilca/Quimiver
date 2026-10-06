@@ -71,7 +71,8 @@ test('si el registro falla, WhatsApp se abre igual sin número', async ({ page, 
 test('no envía nada si faltan datos', async ({ page, context }) => {
   let calls = 0;
   await context.route(PEDIDOS, (route) => {
-    calls += 1;
+    // La página consulta el stock con GET al cargar; aquí solo cuentan los envíos.
+    if (route.request().method() === 'POST') calls += 1;
     return route.abort();
   });
   await page.goto('#compra');
@@ -84,4 +85,24 @@ test('no envía nada si faltan datos', async ({ page, context }) => {
   expect(missing).toBe(true);
   expect(calls).toBe(0);
   expect(popups).toBe(0);
+});
+
+test('avisa que está agotado sin bloquear el pedido', async ({ page, context }) => {
+  await context.route(PEDIDOS, (route) =>
+    route.request().method() === 'GET'
+      ? route.fulfill({ json: { ok: true, disponible: false } })
+      : route.abort(),
+  );
+  await page.goto('#compra');
+  await expect(page.locator('#order-stock')).toBeVisible();
+  await expect(page.locator('#order-stock')).toContainText('agotado');
+  await expect(page.getByRole('button', { name: 'Confirmar pedido' })).toBeEnabled();
+});
+
+test('no muestra el aviso cuando hay stock', async ({ page, context }) => {
+  await context.route(PEDIDOS, (route) => route.fulfill({ json: { ok: true, disponible: true } }));
+  const checked = page.waitForResponse(PEDIDOS);
+  await page.goto('#compra');
+  await checked;
+  await expect(page.locator('#order-stock')).toBeHidden();
 });

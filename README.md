@@ -118,6 +118,14 @@ Al confirmar el formulario de compra, el sitio guarda una copia numerada del ped
 - Desde el panel solo se pueden cambiar `estado` y `notas_internas`; no se pueden crear ni borrar pedidos. Las reglas están en la base (`supabase/migrations/20261006030000_panel_pedidos.sql`), no en la página.
 - La clave publicable de `site.panel` es pública por diseño; nunca pongas aquí la clave `service_role` ni otra secreta.
 
+### Stock
+
+- Tabla `inventario` (hoy un producto, `quimiver-50g`, con 100 potes al empezar) y registro de cada cambio en `movimientos_inventario`. Migración `supabase/migrations/20261006040000_inventario.sql`.
+- Regla del negocio: el pote se descuenta cuando el pedido pasa a **Confirmado** (o a Pagado, Enviado o Entregado sin haberse descontado) y vuelve si se **cancela** o regresa a Nuevo. Nunca se descuenta dos veces.
+- El descuento es atómico en la base: si no alcanza el stock, el cambio de estado se rechaza y el panel avisa "No hay stock suficiente".
+- En el panel se ve cuántos potes quedan (aviso desde 10), se registran potes nuevos o correcciones (número negativo) con su motivo, y se ven los últimos movimientos.
+- La web pregunta al servidor si hay stock (solo sí o no, nunca la cantidad). Si no hay, el formulario muestra "agotado" pero deja enviar el pedido como reserva.
+
 ## Libro de Reclamaciones virtual
 
 Cumple el D.S. 011-2011-PCM y sus modificatorias: cada hoja recibe un número correlativo (`LR-000001`), fecha y hora, se guarda al menos 2 años y se envía por correo al consumidor y al negocio. El plazo de respuesta es de 15 días hábiles.
