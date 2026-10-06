@@ -13,6 +13,7 @@ export const GET: APIRoute = async ({ site }) => {
   const paths = [
     pages.home,
     ...products.map((p) => productPath(p.id)),
+    pages.about,
     pages.shipping,
     pages.contact,
     pages.returns,

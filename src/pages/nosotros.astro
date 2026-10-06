@@ -1,0 +1,160 @@
+---
+import { pages } from '../config/pages';
+import { site } from '../config/site';
+import PageLayout from '../layouts/PageLayout.astro';
+import { assetUrl } from '../lib/paths';
+
+/**
+ * Historia de la marca. Datos confirmados por el negocio (6/10/2026): CELGIMED crea QUIMIVER
+ * en 2025; la congona es de la zona de Huaraz; la Dra. Yurfa Carolina Medina Bedón contaba que
+ * sus ancestros y mucha gente de la zona la usaban como remedio natural; se elabora en Lima.
+ * El relato no atribuye efectos de salud al producto.
+ */
+const chapters = [
+  {
+    number: '01',
+    title: 'Una planta de Huaraz',
+    text: [
+      'Entre los cerros de Huaraz, donde el aire es frío y la luz cae limpia sobre la tierra, crece la congona. Una planta pequeña, de hojas verdes y brillantes, que muchas familias de la zona tienen cerca de casa.',
+      'Para quienes crecieron allí, no es una planta cualquiera. Es parte del paisaje, de la cocina, de las conversaciones con los abuelos.',
+    ],
+    image: {
+      src: '/images/congona-rama.webp',
+      small: '/images/congona-rama-800.webp',
+      alt: 'Rama de congona con hojas verdes y brillantes sobre una pared clara',
+      position: '68% 50%',
+    },
+  },
+  {
+    number: '02',
+    title: 'Un saber que se heredó',
+    text: [
+      'La Dra. Yurfa Carolina Medina Bedón nos contaba que sus ancestros usaban la congona como remedio natural, y que lo mismo hacían muchas familias de la zona. Un conocimiento que no estaba escrito en ningún libro: se aprendía en casa, de madres a hijas, de abuelos a nietos.',
+      'Escucharla fue el comienzo. Sentimos que ese saber merecía cuidarse y llegar a más hogares.',
+    ],
+  },
+  {
+    number: '03',
+    title: 'Nace QUIMIVER',
+    text: [
+      'En 2025, desde CELGIMED, decidimos darle forma a esa herencia. Así nació QUIMIVER, una crema de congona pensada para acompañar tu rutina de cuidado con algo que viene de nuestra tierra.',
+      'La elaboramos en Lima, con paciencia y con el respeto que se le debe a lo que otros cuidaron antes que nosotros.',
+    ],
+    image: {
+      src: '/images/congona-bandeja.webp',
+      small: '/images/congona-bandeja-800.webp',
+      alt: 'Ramas de congona sobre una bandeja dorada junto a un recipiente de vidrio',
+      position: '62% 50%',
+    },
+  },
+];
+
+const values = [
+  {
+    title: 'Seguridad',
+    text: 'Te decimos con claridad qué es QUIMIVER, quién lo hace y cómo comprarlo. Sin promesas que no podamos cumplir.',
+  },
+  {
+    title: 'Calidez humana',
+    text: 'Detrás de cada frasco hay personas. Te atendemos de tú a tú, por WhatsApp, y respondemos tus dudas con tiempo.',
+  },
+  {
+    title: 'Lo ancestral y lo natural',
+    text: 'Partimos de una planta de los Andes y de un saber que pasó de generación en generación. Eso es lo que queremos honrar.',
+  },
+];
+---
+
+<PageLayout
+  title={`Nosotros | ${site.brand}`}
+  description={`La historia de ${site.brand}: una crema de congona inspirada en el saber ancestral de Huaraz, creada por CELGIMED en 2025 y elaborada en Lima.`}
+  crumb="Nosotros"
+>
+  <section class="about">
+    <div class="about-band">
+      <img
+        class="about-band-image"
+        src={assetUrl('/images/andes.webp')}
+        srcset={`${assetUrl('/images/andes-960.webp')} 960w, ${assetUrl('/images/andes.webp')} 1916w`}
+        sizes="100vw"
+        alt=""
+        width="1916"
+        height="821"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <div class="about-band-text">
+        <span class="eyebrow">Nuestra historia</span>
+        <h1>Lo que los Andes guardaron, ahora en tus manos</h1>
+        <p>
+          {site.brand} nace de una planta, de una familia que la conocía bien y de las ganas de
+          compartir ese cuidado con más personas.
+        </p>
+      </div>
+      <small class="image-note">Imagen referencial</small>
+    </div>
+
+    <ol class="section about-chapters">
+      {chapters.map((c) => (
+        <li class:list={['about-chapter', { 'about-chapter--text': !c.image }]}>
+          {c.image && (
+            <figure class="about-figure">
+              <img
+                src={assetUrl(c.image.src)}
+                srcset={`${assetUrl(c.image.small)} 800w, ${assetUrl(c.image.src)} 1600w`}
+                sizes="(max-width: 900px) calc(100vw - 48px), 560px"
+                alt={c.image.alt}
+                width="1600"
+                height="900"
+                style={`object-position: ${c.image.position}`}
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption>Imagen referencial</figcaption>
+            </figure>
+          )}
+          <div class="about-chapter-text">
+            <span class="story-fig">Capítulo {c.number}</span>
+            <h2>{c.title}</h2>
+            {c.text.map((p) => (
+              <p>{p}</p>
+            ))}
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <blockquote class="about-quote">
+      <p>
+        Lo que nuestros abuelos cuidaron con sus manos, hoy lo cuidamos nosotros para que llegue a
+        las tuyas.
+      </p>
+    </blockquote>
+
+    <div class="section about-values">
+      <div class="section-heading">
+        <span class="eyebrow">Lo que nos mueve</span>
+        <h2>Lo que queremos que sientas</h2>
+      </div>
+      <ul class="about-values-grid">
+        {values.map((v, i) => (
+          <li class="about-value">
+            <span class="step-number" aria-hidden="true">
+              {i + 1}
+            </span>
+            <h3>{v.title}</h3>
+            <p>{v.text}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="hero-actions">
+        <a class="btn primary" href={pages.order}>
+          Realizar pedido
+        </a>
+        <a class="btn ghost" href={pages.product}>
+          Conocer {site.brand}
+        </a>
+      </div>
+    </div>
+  </section>
+</PageLayout>
