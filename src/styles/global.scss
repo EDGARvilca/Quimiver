@@ -424,8 +424,6 @@ section {
   }
 }
 
-/* Aviso discreto en imágenes generadas (estilo común con las leyendas de fotos). */
-
 .hero-text h1 {
   font-family: var(--font-display);
   font-weight: 500;
@@ -547,13 +545,12 @@ section {
   border-radius: var(--radius-photo);
 }
 
-/* Etiqueta común para leyendas y avisos sobre fotos. */
+/* Etiqueta común para las leyendas sobre fotos. */
 .product-card figcaption,
 .story-frame figcaption,
 .story-inline figcaption,
 .steps-figure figcaption,
-.about-figure figcaption,
-.image-note {
+.about-figure figcaption {
   position: absolute;
   left: 14px;
   bottom: 14px;
@@ -1424,10 +1421,6 @@ section {
   color: var(--ink);
 }
 
-.about-band .image-note {
-  z-index: 2;
-}
-
 .about-chapters {
   list-style: none;
   display: grid;
@@ -1572,11 +1565,6 @@ section {
 
   .about-band-text {
     padding: 32px 24px 8px;
-  }
-
-  .about-band .image-note {
-    top: 228px;
-    bottom: auto;
   }
 
   .about-chapters {
@@ -1883,7 +1871,7 @@ section {
   overflow: hidden;
 }
 
-.hero > :not(.hero-backdrop, .image-note) {
+.hero > :not(.hero-backdrop) {
   position: relative;
   z-index: 1;
 }

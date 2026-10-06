@@ -1,11 +1,11 @@
 {
   "name": "QUIMIVER",
-  "manufacturer": "Química Verde Andina",
+  "manufacturer": "CELGIMED",
   "descriptor": "Crema de congona",
-  "intro": "QUIMIVER es elaborado por el grupo Química Verde Andina, inspirado en la sabiduría de Huaraz.",
+  "intro": "QUIMIVER es elaborado por CELGIMED, inspirado en la sabiduría de Huaraz.",
   "seo": {
-    "title": "QUIMIVER | Química Verde Andina",
-    "description": "QUIMIVER es un producto de Química Verde Andina elaborado a base de congona de Huaraz. Conoce el producto y realiza tu pedido por WhatsApp."
+    "title": "QUIMIVER | CELGIMED",
+    "description": "QUIMIVER es un producto de CELGIMED elaborado a base de congona de Huaraz. Conoce el producto y realiza tu pedido por WhatsApp."
   },
   "presentations": [
     {
@@ -90,7 +90,7 @@
     },
     "points": [
       {
-        "text": "Producido por Química Verde Andina con procesos artesanales certificados.",
+        "text": "Producido por CELGIMED con procesos artesanales certificados.",
         "verified": false
       },
       {

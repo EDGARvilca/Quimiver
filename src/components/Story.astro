@@ -14,8 +14,7 @@ const points = ingredients.points.filter((p) => p.verified);
 /**
  * Historia que se cuenta al bajar: en escritorio la imagen queda fija y cambia con cada paso;
  * en celular cada paso lleva su propia imagen. Los textos solo usan datos confirmados
- * (etiqueta, fabricante, presentación y modo de uso). Las imágenes generadas se marcan
- * como referenciales; la foto real se marca como tal.
+ * (etiqueta, fabricante, presentación y modo de uso). Solo la foto real lleva leyenda.
  */
 const steps = [
   {
@@ -29,7 +28,7 @@ const steps = [
       height: 941,
       position: '72% 50%',
     },
-    note: 'Imagen referencial',
+    note: '',
   },
   {
     title: 'El laboratorio',
@@ -42,7 +41,7 @@ const steps = [
       height: 941,
       position: '52% 60%',
     },
-    note: 'Imagen referencial',
+    note: '',
   },
   {
     title: 'La crema',
@@ -55,7 +54,7 @@ const steps = [
       height: 941,
       position: '45% 50%',
     },
-    note: 'Imagen referencial',
+    note: '',
   },
   {
     title: 'El frasco',
@@ -93,7 +92,6 @@ const fig = (i: number) => `Fig. ${String(i + 2).padStart(2, '0')}`;
       <h2>{ingredients.heading}</h2>
       {ingredients.description.verified && <p>{ingredients.description.text}</p>}
     </div>
-    <small class="image-note">Imagen referencial</small>
   </div>
 
   <div class="section story-body" data-story>
@@ -109,10 +107,12 @@ const fig = (i: number) => `Fig. ${String(i + 2).padStart(2, '0')}`;
             loading="lazy"
             decoding="async"
           />
-          <figcaption>
-            <span>{fig(i)}</span>
-            {step.note}
-          </figcaption>
+          {step.note && (
+            <figcaption>
+              <span>{fig(i)}</span>
+              {step.note}
+            </figcaption>
+          )}
         </figure>
       ))}
     </div>
@@ -130,7 +130,7 @@ const fig = (i: number) => `Fig. ${String(i + 2).padStart(2, '0')}`;
               loading="lazy"
               decoding="async"
             />
-            <figcaption>{step.note}</figcaption>
+            {step.note && <figcaption>{step.note}</figcaption>}
           </figure>
           <span class="story-fig">{fig(i)}</span>
           <h3>{step.title}</h3>

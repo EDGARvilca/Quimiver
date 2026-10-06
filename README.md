@@ -1,6 +1,6 @@
 # QUIMIVER
 
-Sitio web de **QUIMIVER**, producto de Química Verde Andina.
+Sitio web de **QUIMIVER**, producto de CELGIMED.
 
 Tienda de un solo producto: el pedido se registra con su número y se confirma por WhatsApp, con Libro de Reclamaciones virtual y un panel privado de pedidos. Arquitectura en `docs/architecture.md` y seguridad en `docs/seguridad.md`.
 

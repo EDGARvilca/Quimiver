@@ -24,7 +24,7 @@ const valid = {
 
 const provider = {
   tradeName: 'QUIMIVER',
-  businessName: 'Química Verde Andina S.A.C.',
+  businessName: 'CELGIMED',
   ruc: '20123456789',
   address: 'Jr. Ejemplo 1, Huaraz',
   email: 'ventas@quimicaverdeandina.pe',
