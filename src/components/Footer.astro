@@ -1,6 +1,6 @@
 ---
 import { pages } from '../config/pages';
-import { site, whatsappLink } from '../config/site';
+import { complaintsBookEnabled, site, whatsappLink } from '../config/site';
 
 const socialLinks = site.social.filter((s) => s.url !== null);
 const buildYear = new Date().getFullYear();
@@ -32,6 +32,11 @@ const buildYear = new Date().getFullYear();
         <li>
           <a href={pages.privacy}>Política de privacidad</a>
         </li>
+        {complaintsBookEnabled && (
+          <li>
+            <a href={pages.complaints}>Libro de Reclamaciones</a>
+          </li>
+        )}
         <li>
           <a href={pages.faq}>Preguntas frecuentes</a>
         </li>
@@ -69,6 +74,21 @@ const buildYear = new Date().getFullYear();
       </div>
     )}
   </div>
+  {complaintsBookEnabled && (
+    <a class="complaints-notice" href={pages.complaints}>
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="28" height="28">
+        <path
+          fill="currentColor"
+          d="M5 3h11a3 3 0 0 1 3 3v15H6a2 2 0 0 1-2-2V4a1 1 0 0 1 1-1Zm1 2v14h11V6a1 1 0 0 0-1-1H6Zm2 3h7v2H8V8Zm0 4h7v2H8v-2Z"
+        ></path>
+      </svg>
+      <span>
+        <strong>Libro de Reclamaciones</strong>
+        Conforme a lo establecido en el Código de Protección y Defensa del Consumidor, contamos con
+        un Libro de Reclamaciones virtual a tu disposición.
+      </span>
+    </a>
+  )}
   <p class="footer-note">
     © <span id="current-year">{buildYear}</span>&nbsp;{site.company}. Todos los derechos reservados.
   </p>

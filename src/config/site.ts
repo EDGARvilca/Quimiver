@@ -42,6 +42,14 @@ export const site = {
     ruc: null as string | null,
     address: null as string | null,
   },
+  /**
+   * Libro de Reclamaciones virtual (D.S. 011-2011-PCM). Las hojas se guardan en Supabase
+   * mediante esta Edge Function (dirección pública, no es una clave).
+   * Se muestra en el sitio solo cuando razón social, RUC y domicilio están completos.
+   */
+  complaintsBook: {
+    endpoint: 'https://buuelzmvfidigimbrplm.supabase.co/functions/v1/libro-reclamaciones',
+  },
   social: [
     { label: 'Facebook', url: null },
     { label: 'Instagram', url: null },
@@ -63,3 +71,8 @@ export function whatsappLink(text?: string): string {
   const base = `https://wa.me/${site.contact.whatsapp}`;
   return text ? `${base}?text=${encodeURIComponent(text)}` : base;
 }
+
+/** El libro se anuncia en el sitio solo cuando la hoja puede llevar los datos legales del proveedor. */
+export const complaintsBookEnabled = Boolean(
+  site.legal.businessName && site.legal.ruc && site.legal.address,
+);

@@ -47,6 +47,7 @@ Copia `.env.example` a `.env` si necesitas definirlas.
 | `/envios/`                    | Cómo comprar, precios, entregas y pagos                                        |
 | `/cambios-y-devoluciones/`    | Política de cambios y devoluciones (Ley 29571)                                 |
 | `/politica-de-privacidad/`    | Política de privacidad (Ley 29733)                                             |
+| `/libro-de-reclamaciones/`    | Libro de Reclamaciones virtual (se anuncia solo con datos legales completos)   |
 | `/sitemap.xml`, `/robots.txt` | Generados al compilar; el sitemap solo lista URLs si existe `SITE_URL`         |
 
 Las páginas fijas están en `src/config/pages.ts` (menú, pie y sitemap las leen de ahí). Los enlaces internos usan `withBase()` (`src/lib/paths.ts`) para funcionar también bajo `/Quimiver/` en GitHub Pages.
@@ -84,6 +85,27 @@ En la portada, la foto real del frasco gira en 3D al bajar. Para que dé la vuel
 
 Los cuadros se descargan solo cuando la sección está por aparecer, así que no frenan la carga inicial.
 
+## Libro de Reclamaciones virtual
+
+Cumple el D.S. 011-2011-PCM y sus modificatorias: cada hoja recibe un número correlativo (`LR-000001`), fecha y hora, se guarda al menos 2 años y se envía por correo al consumidor y al negocio. El plazo de respuesta es de 15 días hábiles.
+
+- Formulario: `src/pages/libro-de-reclamaciones.astro` y `src/scripts/complaints-form.ts`.
+- Reglas de la hoja (compartidas por el sitio, el servidor y las pruebas): `supabase/functions/libro-reclamaciones/complaint.ts`.
+- Servidor: Edge Function `libro-reclamaciones` en el proyecto Supabase `quimiver` (São Paulo). Tablas en `supabase/migrations/`.
+- `.github/workflows/libro-keepalive.yml` consulta el servidor dos veces por semana para que el proyecto gratuito no se pause.
+
+### Cómo activarlo
+
+1. **Datos del proveedor**, en dos lugares:
+   - `site.legal` de `src/config/site.ts` (razón social, RUC, domicilio). Con eso aparecen la página, el enlace y el aviso en el pie.
+   - En Supabase → Table Editor → `libro_proveedor`, la misma razón social, RUC y domicilio. Sin ellos el servidor responde "no habilitado".
+2. **Correo** (opcional pero recomendado, la norma pide enviar la copia): crea una cuenta en Brevo, verifica el remitente y en Supabase → Edge Functions → Secrets agrega `BREVO_API_KEY` y `MAIL_FROM`. Nunca pongas estas claves en el código. Sin ellas la hoja se guarda y el cliente puede imprimirla, pero no sale el correo.
+3. Si el sitio cambia de dominio, agrega la dirección nueva en el secreto `ALLOWED_ORIGINS` (lista separada por comas) y en `sitio_web` de `libro_proveedor`.
+
+### Cómo responder
+
+En Supabase → Table Editor → `reclamos` aparecen las hojas. Responde al correo del cliente dentro de 15 días hábiles y anota la respuesta en `acciones_proveedor` y la fecha en `respondido_en`.
+
 ## Estructura
 
 ```
@@ -97,6 +119,7 @@ src/
 ├── pages/           Rutas
 ├── scripts/         Código de navegador (formulario de pedido)
 └── styles/          SCSS global y tokens
+supabase/            Base de datos y servidor del Libro de Reclamaciones
 tests/               Pruebas unitarias
 docs/                Documentación técnica
 ```
