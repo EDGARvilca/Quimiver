@@ -24,11 +24,13 @@ Panel /panel/ ── Supabase Auth (correo y contraseña) ── REST + RLS ─�
 - **Pedido**: el total es una estimación que valida el servidor; el precio final y el envío se confirman por WhatsApp. Si el registro falla, WhatsApp se abre igual.
 - **Base de datos**: migraciones en `supabase/migrations/`. RLS activo en todas las tablas; el público no tiene acceso directo a ninguna.
 
+- **Monitoreo**: `.github/workflows/monitoreo.yml` revisa la web y los dos servidores cada 6 horas y abre un aviso en GitHub si algo falla.
+
 ## Limitaciones conocidas
 
 - No hay inventario ni pagos en línea: el stock y el cobro (Yape o Plin) se manejan por WhatsApp.
 - GitHub Pages no permite cabeceras HTTP propias; la política de seguridad va en una etiqueta `<meta>` (ver `docs/seguridad.md`).
-- Plan gratuito de Supabase: el proyecto se pausa sin actividad (lo evita `libro-keepalive.yml`) y no hay copias de seguridad descargables.
+- Plan gratuito de Supabase: el proyecto se pausa sin actividad (lo evita el monitoreo, que lo consulta cada 6 horas) y no hay copias de seguridad descargables.
 
 ## Evolución prevista
 

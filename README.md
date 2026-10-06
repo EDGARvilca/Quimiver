@@ -125,7 +125,7 @@ Cumple el D.S. 011-2011-PCM y sus modificatorias: cada hoja recibe un número co
 - Formulario: `src/pages/libro-de-reclamaciones.astro` y `src/scripts/complaints-form.ts`.
 - Reglas de la hoja (compartidas por el sitio, el servidor y las pruebas): `supabase/functions/libro-reclamaciones/complaint.ts`.
 - Servidor: Edge Function `libro-reclamaciones` en el proyecto Supabase `quimiver` (São Paulo). Tablas en `supabase/migrations/`.
-- `.github/workflows/libro-keepalive.yml` consulta el servidor dos veces por semana para que el proyecto gratuito no se pause.
+- El [monitoreo](#monitoreo) consulta el servidor cada 6 horas, y así el proyecto gratuito no se pausa.
 
 ### Cómo activarlo
 
@@ -138,6 +138,19 @@ Cumple el D.S. 011-2011-PCM y sus modificatorias: cada hoja recibe un número co
 ### Cómo responder
 
 En Supabase → Table Editor → `reclamos` aparecen las hojas. Responde al correo del cliente dentro de 15 días hábiles y anota la respuesta en `acciones_proveedor` y la fecha en `respondido_en`.
+
+## Monitoreo
+
+`.github/workflows/monitoreo.yml` corre cada 6 horas `scripts/monitoreo.mjs`, que revisa:
+
+- la página principal (con su formulario de pedido) y la del Libro de Reclamaciones;
+- el servidor de pedidos y el del Libro (que siga habilitado).
+
+Cada revisión se reintenta 3 veces antes de contar como falla. Si algo falla, se abre un aviso en **Issues** con la etiqueta `monitoreo` y GitHub lo envía por correo al dueño del repositorio. Si sigue fallando, el mismo aviso recibe un comentario, y cuando todo vuelve a responder se cierra solo con "Se recuperó".
+
+- Probar que el aviso llega: Actions → Monitoreo → _Run workflow_ → marcar "Simular una falla". Se abre un aviso de prueba; al correrlo de nuevo sin marcar, se cierra.
+- GitHub desactiva los flujos programados de un repositorio sin cambios durante 60 días; si pasa, se reactiva en Actions → Monitoreo → _Enable workflow_.
+- Consultar los servidores también evita que el proyecto gratuito de Supabase se pause.
 
 ## Estructura
 

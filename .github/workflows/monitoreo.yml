@@ -1,0 +1,64 @@
+# Monitoreo: cada 6 horas revisa la web y los servidores de pedidos y del Libro de
+# Reclamaciones (scripts/monitoreo.mjs). Si algo falla, abre un aviso (issue) con la etiqueta
+# "monitoreo", que le llega por correo al dueño del repositorio; si sigue fallando, comenta en
+# el mismo aviso, y cuando todo vuelve a responder lo cierra. Consultar los servidores también
+# evita que el proyecto gratuito de Supabase se pause por falta de uso.
+name: Monitoreo
+
+on:
+  schedule:
+    - cron: '23 */6 * * *' # 01:23, 07:23, 13:23 y 19:23 en Lima
+  workflow_dispatch:
+    inputs:
+      simular_fallo:
+        description: 'Simular una falla para probar que el aviso llega'
+        type: boolean
+        default: false
+
+permissions:
+  issues: write
+
+concurrency:
+  group: monitoreo
+  cancel-in-progress: false
+
+jobs:
+  revisar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Revisar la web y los servidores
+        id: revision
+        continue-on-error: true
+        env:
+          MONITOREO_SIMULAR_FALLO: ${{ inputs.simular_fallo && '1' || '' }}
+        run: node scripts/monitoreo.mjs informe.md
+      - name: Abrir, actualizar o cerrar el aviso
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RESULTADO: ${{ steps.revision.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          abierto=$(gh issue list --label monitoreo --state open --json number --jq '.[0].number // empty')
+          printf '\n[Ver la revisión](%s)\n' "$RUN_URL" >> informe.md
+          if [ "$RESULTADO" = "success" ]; then
+            if [ -n "$abierto" ]; then
+              gh issue close "$abierto" --comment "$(printf 'Se recuperó.\n\n'; cat informe.md)"
+            fi
+          elif [ -n "$abierto" ]; then
+            gh issue comment "$abierto" --body-file informe.md
+          else
+            gh label create monitoreo --color B60205 --description "Avisos automáticos del monitoreo" --force
+            gh issue create --label monitoreo \
+              --title "Alerta: algo de la web de QUIMIVER no responde" --body-file informe.md
+          fi
+      - name: Marcar la revisión como fallida
+        if: steps.revision.outcome != 'success'
+        run: exit 1
