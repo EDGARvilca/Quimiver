@@ -119,12 +119,26 @@ test('el administrador filtra y cambia el estado', async ({ page, context, error
   await page.getByRole('button', { name: 'Todos (2)' }).click();
 
   const first = page.locator('.panel-order').first();
-  await expect(first.locator('a[href^="https://wa.me/51987654321"]')).toBeVisible();
+  await expect(first.getByRole('link', { name: '987654321' })).toHaveAttribute(
+    'href',
+    /^https:\/\/wa\.me\/51987654321/,
+  );
   await first.locator('select').selectOption('confirmado');
   await first.locator('textarea').fill('Pagó por Yape');
   await first.getByRole('button', { name: 'Guardar' }).click();
 
   await expect(page.locator('#panel-status')).toContainText('P-000002 quedó como Confirmado');
+  const notice = page.locator('#panel-status a');
+  await expect(notice).toHaveText('Avisar a Cliente de prueba por WhatsApp');
+  const text = decodeURIComponent((await notice.getAttribute('href'))!.split('text=')[1]);
+  expect(text).toContain('Tu pedido P-000002: *Confirmado*.');
+  expect(text).toMatch(/\/seguimiento\/\?pedido=P-000002$/);
+  await expect(
+    page
+      .locator('.panel-order')
+      .first()
+      .getByRole('link', { name: 'Avisar al cliente: Confirmado' }),
+  ).toHaveAttribute('href', /^https:\/\/wa\.me\/51987654321\?text=/);
   expect(patches).toEqual([
     {
       url: expect.stringContaining('pedidos?id=eq.2'),

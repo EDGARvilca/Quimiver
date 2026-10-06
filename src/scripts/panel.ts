@@ -1,3 +1,4 @@
+import { pages } from '../config/pages';
 import { site } from '../config/site';
 import { formatCurrency } from '../lib/order';
 import {
@@ -5,6 +6,7 @@ import {
   ORDER_STATES,
   STATE_LABELS,
   countByState,
+  customerNotice,
   customerWhatsApp,
   exportFileName,
   filterByState,
@@ -17,6 +19,7 @@ import {
   plural,
   summarizeSales,
   stockLevel,
+  trackingLink,
   type StockMove,
   type OrderState,
   type PanelOrder,
@@ -167,6 +170,22 @@ export function initPanel(): void {
     loginForm.hidden = false;
     if (message) say(loginStatus, 'error', message);
     else loginStatus.hidden = true;
+  };
+
+  /** Enlace que abre WhatsApp con el aviso del estado guardado y el enlace de seguimiento. */
+  const noticeLink = (
+    order: PanelOrder,
+    text = `Avisar al cliente: ${STATE_LABELS[order.estado]}`,
+  ) => {
+    const link = el('a', 'btn ghost panel-notify', text);
+    link.href = customerWhatsApp(
+      order.telefono,
+      order.codigo,
+      customerNotice(order, trackingLink(location.origin, pages.tracking, order.codigo)),
+    );
+    link.target = '_blank';
+    link.rel = 'noopener';
+    return link;
   };
 
   const renderStock = (stock: number, moves: StockMove[]) => {
@@ -322,7 +341,8 @@ export function initPanel(): void {
     status.hidden = true;
     status.setAttribute('role', 'status');
 
-    form.append(stateLabel, select, notesLabel, notes, save, status);
+    const notify = noticeLink(order);
+    form.append(stateLabel, select, notesLabel, notes, save, notify, status);
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const estado = select.value;
@@ -344,11 +364,15 @@ export function initPanel(): void {
         orders = orders.map((o) => (o.id === updated.id ? updated : o));
         render();
         await loadStock().catch(() => undefined);
-        say(
-          boardStatus,
-          'success',
-          `Guardado: ${updated.codigo} quedó como ${STATE_LABELS[updated.estado]}.`,
+        const saved = el(
+          'span',
+          undefined,
+          `Guardado: ${updated.codigo} quedó como ${STATE_LABELS[updated.estado]}. `,
         );
+        const link = noticeLink(updated, `Avisar a ${updated.cliente_nombre} por WhatsApp`);
+        link.className = 'text-link';
+        say(boardStatus, 'success', '');
+        boardStatus.replaceChildren(saved, link);
       } catch (error) {
         if (error instanceof Error && error.message === 'sesion') return showLogin();
         say(status, 'error', 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.');

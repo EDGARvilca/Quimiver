@@ -2597,7 +2597,15 @@ summary:focus-visible {
 }
 
 .panel-edit .form-status {
+  grid-row: 4;
+  grid-column: 1 / -1;
+}
+
+/* Aviso al cliente: debajo del formulario, a lo ancho en celulares. */
+.panel-edit .panel-notify {
   grid-row: 3;
+  grid-column: 1 / -1;
+  justify-self: start;
 }
 
 @media (max-width: 640px) {
@@ -2629,6 +2637,10 @@ summary:focus-visible {
   .panel-edit .btn,
   .panel-edit .form-status {
     grid-row: auto;
+  }
+
+  .panel-edit .panel-notify {
+    justify-self: stretch;
   }
 }
 

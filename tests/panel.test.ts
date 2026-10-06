@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest';
 import {
   ORDER_STATES,
   countByState,
+  customerNotice,
   customerWhatsApp,
   exportFileName,
   filterByState,
+  firstName,
   formatOrderDate,
   isOrderState,
   isStockError,
@@ -15,6 +17,7 @@ import {
   plural,
   summarizeSales,
   stockLevel,
+  trackingLink,
   type PanelOrder,
 } from '../src/lib/panel';
 import { ORDER_STATES as DB_STATES } from '../supabase/functions/pedidos/pedido';
@@ -193,5 +196,41 @@ describe('exportar pedidos', () => {
     expect(limaDateTime(now.toISOString())).toBe('2026-10-06 22:00');
     expect(exportFileName('todos', now)).toBe('pedidos-quimiver-2026-10-06.xlsx');
     expect(exportFileName('pagado', now)).toBe('pedidos-quimiver-pagado-2026-10-06.xlsx');
+  });
+});
+
+describe('aviso al cliente', () => {
+  const base = { codigo: 'P-000007', cliente_nombre: '  María López ', entrega: 'Envío por Olva' };
+  const url = 'https://edgarvilca.github.io/Quimiver/seguimiento/?pedido=P-000007';
+
+  it('saluda por el nombre y dice el estado con el enlace de seguimiento', () => {
+    expect(customerNotice({ ...base, estado: 'enviado' }, url)).toBe(
+      [
+        'Hola María, te escribimos de QUIMIVER.',
+        'Tu pedido P-000007: *Enviado*.',
+        'Tu pedido va en camino. Por WhatsApp te enviamos los datos del envío.',
+        `Puedes ver cómo va aquí: ${url}`,
+      ].join('\n'),
+    );
+  });
+
+  it('usa "Listo para recoger" en recojos y avisa la cancelación', () => {
+    expect(
+      customerNotice({ ...base, estado: 'enviado', entrega: 'Recojo en Lima' }, url),
+    ).toContain('*Listo para recoger*');
+    expect(customerNotice({ ...base, estado: 'cancelado' }, url)).toContain('*Cancelado*');
+  });
+
+  it('arma el enlace de seguimiento y lo pone en el mensaje de WhatsApp', () => {
+    const link = trackingLink('https://edgarvilca.github.io', '/Quimiver/seguimiento/', 'P-000007');
+    expect(link).toBe(url);
+    const wa = customerWhatsApp(
+      '987654321',
+      'P-000007',
+      customerNotice({ ...base, estado: 'pagado' }, link),
+    );
+    expect(wa.startsWith('https://wa.me/51987654321?text=')).toBe(true);
+    expect(decodeURIComponent(wa.split('text=')[1])).toContain(url);
+    expect(firstName('')).toBe('');
   });
 });

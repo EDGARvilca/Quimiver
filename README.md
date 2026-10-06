@@ -123,6 +123,7 @@ Al confirmar el formulario de compra, el sitio guarda una copia numerada del ped
 
 - Se entra con correo y contraseña de **Supabase Auth**. Solo entran los correos que estén en la tabla `administradores`; el resto ve "Esta cuenta no tiene permiso".
 - Para dar acceso: en Supabase → Authentication → Users → _Add user_ crea el usuario (correo y contraseña) y en SQL Editor ejecuta `insert into administradores (correo) values ('correo@ejemplo.com');` (en minúsculas). Para quitarlo, borra la fila.
+- **Avisar al cliente**: cada pedido tiene un botón que abre WhatsApp con un mensaje listo para el cliente según el estado guardado (las mismas frases de "Sigue tu pedido") y el enlace de seguimiento con su número. Al guardar un cambio de estado, el aviso de "Guardado" también trae ese enlace. Nada se envía solo: Hluot revisa el mensaje y lo manda desde su WhatsApp. Lógica en `customerNotice` de `src/lib/panel.ts`.
 - Desde el panel solo se pueden cambiar `estado` y `notas_internas`; no se pueden crear ni borrar pedidos. Las reglas están en la base (`supabase/migrations/20261006030000_panel_pedidos.sql`), no en la página.
 - La clave publicable de `site.panel` es pública por diseño; nunca pongas aquí la clave `service_role` ni otra secreta.
 
