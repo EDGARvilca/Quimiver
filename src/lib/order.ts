@@ -2,8 +2,8 @@
  * Lógica pura del formulario de pedido (sin DOM), para poder probarla.
  *
  * El total es solo una estimación para el cliente: el precio final y el
- * costo de envío se confirman por WhatsApp. No existe backend que registre
- * el pedido.
+ * costo de envío se confirman por WhatsApp. Una copia numerada del pedido se
+ * guarda en Supabase (`supabase/functions/pedidos`).
  */
 
 export interface Presentation {
@@ -95,7 +95,12 @@ export function quoteOrder(
   };
 }
 
-export function buildOrderMessage(config: OrderConfig, input: OrderInput): string {
+export function buildOrderMessage(
+  config: OrderConfig,
+  input: OrderInput,
+  /** Número del pedido registrado, si el registro respondió a tiempo. */
+  orderCode?: string,
+): string {
   const presentation = config.presentations.find((p) => p.id === input.presentationId);
   const shipping = config.shippingOptions.find((s) => s.id === input.shippingId);
   const quote = quoteOrder(config, input);
@@ -107,6 +112,7 @@ export function buildOrderMessage(config: OrderConfig, input: OrderInput): strin
 
   const lines = [
     `*¡Hola! Quiero hacer un pedido de ${config.productName}:*`,
+    ...(orderCode ? [`*Pedido N.º:* ${orderCode}`] : []),
     `*Cliente:* ${input.customerName.trim()}`,
     `*Celular:* ${input.phone.trim()}`,
     `*Ciudad:* ${input.city.trim()}`,

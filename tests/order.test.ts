@@ -123,6 +123,11 @@ describe('buildOrderMessage', () => {
     expect(notesAt).toBeLessThan(message.indexOf('*Métodos de pago:*'));
   });
 
+  it('incluye el número de pedido solo cuando quedó registrado', () => {
+    expect(buildOrderMessage(config, input, 'P-000007')).toContain('*Pedido N.º:* P-000007');
+    expect(buildOrderMessage(config, input)).not.toContain('Pedido N.º');
+  });
+
   it('no deja espacios sueltos al inicio de las líneas', () => {
     const lines = buildOrderMessage(config, input).split('\n');
     expect(lines.every((line) => !line.startsWith(' '))).toBe(true);

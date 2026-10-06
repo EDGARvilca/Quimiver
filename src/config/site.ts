@@ -42,6 +42,18 @@ export const site = {
     ruc: '10746979156' as string | null,
     address: 'Av. Enrique Guzmán y Valle - La Cantuta, Lurigancho-Chosica, Lima' as string | null,
   },
+  /** Registro de pedidos (Edge Function de Supabase; dirección pública, no es una clave). */
+  orders: {
+    endpoint: 'https://buuelzmvfidigimbrplm.supabase.co/functions/v1/pedidos',
+  },
+  /**
+   * Panel privado de pedidos (/panel/). La clave publicable de Supabase es pública por diseño:
+   * sin sesión de un administrador no da acceso a ningún dato (reglas RLS de la tabla `pedidos`).
+   */
+  panel: {
+    supabaseUrl: 'https://buuelzmvfidigimbrplm.supabase.co',
+    publishableKey: 'sb_publishable_q2FSVRBLl-JMvXjPXWchXw_ZFoBAMwW',
+  },
   /**
    * Libro de Reclamaciones virtual (D.S. 011-2011-PCM). Las hojas se guardan en Supabase
    * mediante esta Edge Function (dirección pública, no es una clave).
