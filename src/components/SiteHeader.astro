@@ -1,6 +1,7 @@
 ---
 import { site } from '../config/site';
 import { pages } from '../config/pages';
+import LogoMark from './LogoMark.astro';
 
 const links = [
   { href: pages.product, label: 'Producto' },
@@ -14,7 +15,8 @@ const currentPath = Astro.url.pathname;
 
 <nav class="navbar" aria-label="Principal" data-navbar>
   <a class="brand" href={pages.home}>
-    {site.brand}
+    <LogoMark class="brand-mark" size={36} />
+    <span>{site.brand}</span>
   </a>
   <button
     type="button"

@@ -1,15 +1,18 @@
 import { site } from '../config/site';
 import { formatCurrency } from '../lib/order';
 import {
+  EXPORT_COLUMNS,
   ORDER_STATES,
   STATE_LABELS,
   countByState,
   customerWhatsApp,
+  exportFileName,
   filterByState,
   formatOrderDate,
   isOrderState,
   isStockError,
   monthLabel,
+  ordersToRows,
   parseStockAdjustment,
   plural,
   summarizeSales,
@@ -18,6 +21,7 @@ import {
   type OrderState,
   type PanelOrder,
 } from '../lib/panel';
+import { buildXlsx } from '../lib/xlsx';
 
 /**
  * Panel privado de pedidos. Inicia sesión con Supabase Auth (correo y contraseña) y lee o
@@ -114,6 +118,7 @@ export function initPanel(): void {
   const list = document.getElementById('panel-list');
   const boardStatus = document.getElementById('panel-status');
   const refresh = document.getElementById('panel-refresh');
+  const download = document.getElementById('panel-download');
   const logout = document.getElementById('panel-logout');
   const stockCount = document.getElementById('panel-stock-count');
   const stockWarning = document.getElementById('panel-stock-warning');
@@ -132,6 +137,7 @@ export function initPanel(): void {
     !list ||
     !boardStatus ||
     !refresh ||
+    !(download instanceof HTMLButtonElement) ||
     !logout ||
     !stockCount ||
     !stockWarning ||
@@ -359,6 +365,11 @@ export function initPanel(): void {
     renderFilters();
     renderSales();
     const visible = filterByState(orders, current);
+    download.disabled = visible.length === 0;
+    download.textContent =
+      current === 'todos'
+        ? 'Descargar Excel'
+        : `Descargar Excel (${STATE_LABELS[current].toLowerCase()})`;
     if (visible.length === 0) {
       list.replaceChildren(
         el(
@@ -461,6 +472,27 @@ export function initPanel(): void {
   });
 
   refresh.addEventListener('click', () => void load());
+  download.addEventListener('click', () => {
+    const visible = filterByState(orders, current);
+    if (visible.length === 0) return;
+    const file = buildXlsx(
+      'Pedidos',
+      ordersToRows(visible),
+      EXPORT_COLUMNS.map((c) => c.width),
+    );
+    const url = URL.createObjectURL(
+      new Blob([file], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      }),
+    );
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = exportFileName(current);
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
   logout.addEventListener('click', () => {
     if (session) {
       void fetch(`${supabaseUrl}/auth/v1/logout`, {

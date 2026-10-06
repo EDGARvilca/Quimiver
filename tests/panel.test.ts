@@ -3,11 +3,14 @@ import {
   ORDER_STATES,
   countByState,
   customerWhatsApp,
+  exportFileName,
   filterByState,
   formatOrderDate,
   isOrderState,
   isStockError,
+  limaDateTime,
   monthLabel,
+  ordersToRows,
   parseStockAdjustment,
   plural,
   summarizeSales,
@@ -158,5 +161,37 @@ describe('resumen de ventas', () => {
 
   it('nombra los meses en español', () => {
     expect(monthLabel('2026-10')).toBe('octubre de 2026');
+  });
+});
+
+describe('exportar pedidos', () => {
+  it('pone un pedido por fila con la hora de Lima y montos como números', () => {
+    const rows = ordersToRows([{ ...order(7, 'pagado'), notas_internas: 'Yape' }]);
+    expect(rows[0][0]).toBe('Pedido');
+    expect(rows[1]).toEqual([
+      'P-000007',
+      '2026-10-06 10:30',
+      'Pagado',
+      'Cliente',
+      '987654321',
+      'Lima',
+      'Pote 50 g',
+      1,
+      25,
+      'menudeo',
+      'Recojo en Lima',
+      25,
+      null,
+      'Yape',
+    ]);
+    expect(rows[0]).toHaveLength(rows[1].length);
+  });
+
+  it('usa la fecha de Lima en el nombre del archivo', () => {
+    // 03:00 UTC del 7 es todavía el 6 en Lima.
+    const now = new Date('2026-10-07T03:00:00Z');
+    expect(limaDateTime(now.toISOString())).toBe('2026-10-06 22:00');
+    expect(exportFileName('todos', now)).toBe('pedidos-quimiver-2026-10-06.xlsx');
+    expect(exportFileName('pagado', now)).toBe('pedidos-quimiver-pagado-2026-10-06.xlsx');
   });
 });

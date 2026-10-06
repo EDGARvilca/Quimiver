@@ -193,6 +193,9 @@ section {
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   font-family: var(--font-display);
   font-size: 1.6rem;
   font-weight: 600;
@@ -203,8 +206,14 @@ section {
 /* Teléfonos de 320 px: el nombre y el botón del menú caben en una sola línea. */
 @media (max-width: 360px) {
   .brand {
+    gap: 8px;
     font-size: 1.35rem;
     letter-spacing: 0.2em;
+  }
+
+  .brand .brand-mark {
+    width: 30px;
+    height: 30px;
   }
 }
 
@@ -1614,6 +1623,9 @@ section {
 }
 
 .footer .footer-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.6rem;

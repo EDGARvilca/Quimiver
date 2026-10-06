@@ -188,3 +188,37 @@ test('el resumen de ventas suma solo lo confirmado y se actualiza al guardar', a
   await expect(total).toContainText('S/ 240.00');
   expect(errors).toEqual([]);
 });
+
+test('descarga los pedidos en Excel, todos o solo el estado filtrado', async ({
+  page,
+  context,
+  errors,
+}) => {
+  await mockSupabase(context, { admin: true });
+  await login(page, 'correcta');
+  await expect(page.locator('.panel-order')).toHaveCount(2);
+
+  const read = async () => {
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.locator('#panel-download').click(),
+    ]);
+    const path = await download.path();
+    const text = (await import('node:fs')).readFileSync(path).toString('utf8');
+    return { name: download.suggestedFilename(), text };
+  };
+
+  const all = await read();
+  expect(all.name).toMatch(/^pedidos-quimiver-\d{4}-\d{2}-\d{2}\.xlsx$/);
+  expect(all.text.startsWith('PK')).toBe(true);
+  expect(all.text).toContain('P-000002');
+  expect(all.text).toContain('P-000001');
+
+  await page.getByRole('button', { name: 'Pagado (1)' }).click();
+  await expect(page.locator('#panel-download')).toHaveText('Descargar Excel (pagado)');
+  const paid = await read();
+  expect(paid.name).toMatch(/^pedidos-quimiver-pagado-/);
+  expect(paid.text).toContain('P-000001');
+  expect(paid.text).not.toContain('P-000002');
+  expect(errors).toEqual([]);
+});
