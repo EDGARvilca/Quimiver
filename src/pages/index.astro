@@ -10,16 +10,34 @@ import Story from '../components/Story.astro';
 import Testimonials from '../components/Testimonials.astro';
 import Usage from '../components/Usage.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { site } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/paths';
 
 const entry = await getEntry('products', 'quimiver');
 if (!entry) {
   throw new Error('No se encontró el producto "quimiver" en src/content/products.');
 }
 const product = entry.data;
+
+/** Datos del negocio para Google (solo datos confirmados). */
+const { legal, contact } = site;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.brand,
+  ...(Astro.site && { url: new URL(withBase('/'), Astro.site).href }),
+  ...(legal.businessName && { legalName: legal.businessName }),
+  ...(legal.ruc && { taxID: legal.ruc }),
+  email: contact.email,
+  telephone: contact.phoneHref.replace('tel:', ''),
+  ...(legal.address && {
+    address: { '@type': 'PostalAddress', streetAddress: legal.address, addressCountry: 'PE' },
+  }),
+};
 ---
 
-<BaseLayout title={product.seo.title} description={product.seo.description}>
+<BaseLayout title={product.seo.title} description={product.seo.description} jsonLd={jsonLd}>
   <Hero product={product} />
   <main class="home">
     <Showcase product={product} />
