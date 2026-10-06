@@ -38,9 +38,9 @@ export const site = {
    * y Ley 29733). `null` los oculta hasta que el negocio los confirme.
    */
   legal: {
-    businessName: null as string | null,
-    ruc: null as string | null,
-    address: null as string | null,
+    businessName: 'CELGIMED' as string | null,
+    ruc: '10746979156' as string | null,
+    address: 'Av. Enrique Guzmán y Valle - La Cantuta' as string | null,
   },
   /**
    * Libro de Reclamaciones virtual (D.S. 011-2011-PCM). Las hojas se guardan en Supabase
