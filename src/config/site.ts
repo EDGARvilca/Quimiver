@@ -40,7 +40,7 @@ export const site = {
   legal: {
     businessName: 'CELGIMED' as string | null,
     ruc: '10746979156' as string | null,
-    address: 'Av. Enrique Guzmán y Valle - La Cantuta' as string | null,
+    address: 'Av. Enrique Guzmán y Valle - La Cantuta, Lurigancho-Chosica, Lima' as string | null,
   },
   /**
    * Libro de Reclamaciones virtual (D.S. 011-2011-PCM). Las hojas se guardan en Supabase
