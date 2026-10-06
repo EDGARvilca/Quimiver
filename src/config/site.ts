@@ -47,6 +47,14 @@ export const site = {
     endpoint: 'https://buuelzmvfidigimbrplm.supabase.co/functions/v1/pedidos',
   },
   /**
+   * Panel privado de pedidos (/panel/). La clave publicable de Supabase es pública por diseño:
+   * sin sesión de un administrador no da acceso a ningún dato (reglas RLS de la tabla `pedidos`).
+   */
+  panel: {
+    supabaseUrl: 'https://buuelzmvfidigimbrplm.supabase.co',
+    publishableKey: 'sb_publishable_q2FSVRBLl-JMvXjPXWchXw_ZFoBAMwW',
+  },
+  /**
    * Libro de Reclamaciones virtual (D.S. 011-2011-PCM). Las hojas se guardan en Supabase
    * mediante esta Edge Function (dirección pública, no es una clave).
    * Se muestra en el sitio solo cuando razón social, RUC y domicilio están completos.

@@ -2222,3 +2222,205 @@ summary:focus-visible {
     bottom: 16px;
   }
 }
+
+/* ---------- Panel de pedidos (privado) ---------- */
+
+.panel-login {
+  max-width: 460px;
+  border: 1px solid var(--line);
+}
+
+.panel-login[hidden],
+.panel-board[hidden] {
+  display: none;
+}
+
+.panel-login .lead {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.panel-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.panel-filters,
+.panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.panel-filter {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.panel-filter[aria-pressed='true'] {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: var(--surface);
+}
+
+.panel-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.panel-order,
+.panel-empty {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.panel-order[data-state='cancelado'] {
+  opacity: 0.7;
+}
+
+.panel-order-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.panel-code {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  color: var(--forest);
+}
+
+.panel-date {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.panel-badge {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--sage);
+  color: var(--forest-deep);
+}
+
+.panel-order[data-state='nuevo'] .panel-badge {
+  background: var(--forest);
+  color: var(--surface);
+}
+
+.panel-order[data-state='cancelado'] .panel-badge {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.panel-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px 24px;
+  margin: 16px 0;
+}
+
+.panel-facts dt {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.panel-facts dd {
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.panel-edit {
+  display: grid;
+  grid-template-columns: minmax(0, 200px) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.panel-edit label {
+  grid-row: 1;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.panel-edit select,
+.panel-edit textarea {
+  grid-row: 2;
+  min-width: 0;
+  font: inherit;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.panel-edit textarea {
+  resize: vertical;
+}
+
+.panel-edit .btn {
+  grid-row: 2;
+}
+
+.panel-edit .form-status {
+  grid-row: 3;
+}
+
+@media (max-width: 640px) {
+  .panel-order,
+  .panel-empty {
+    padding: 18px;
+  }
+
+  .panel-badge {
+    margin-left: 0;
+  }
+
+  .panel-edit {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel-edit label,
+  .panel-edit select,
+  .panel-edit textarea,
+  .panel-edit .btn,
+  .panel-edit .form-status {
+    grid-row: auto;
+  }
+}
+
+/* El botón flotante de WhatsApp es para clientes; en el panel tapa los botones. */
+body:has(.panel) .floating-whatsapp {
+  display: none;
+}

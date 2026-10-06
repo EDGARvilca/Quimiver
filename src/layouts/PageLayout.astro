@@ -12,12 +12,13 @@ interface Props {
   /** Texto de la última miga de pan (la página actual). */
   crumb: string;
   jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
 }
 
-const { title, description, crumb, jsonLd } = Astro.props;
+const { title, description, crumb, jsonLd, noindex } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+<BaseLayout title={title} description={description} jsonLd={jsonLd} noindex={noindex}>
   <header class="hero hero--compact">
     <SiteHeader />
   </header>

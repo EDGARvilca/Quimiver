@@ -1,0 +1,64 @@
+---
+import { site } from '../config/site';
+import PageLayout from '../layouts/PageLayout.astro';
+---
+
+<PageLayout
+  title={`Panel de pedidos | ${site.brand}`}
+  description="Panel privado para revisar los pedidos de la tienda."
+  crumb="Panel de pedidos"
+  noindex
+>
+  <section class="section info-page panel" aria-labelledby="page-title">
+    <span class="eyebrow">Uso interno</span>
+    <h1 id="page-title">Panel de pedidos</h1>
+
+    <form class="order-form panel-login" id="panel-login">
+      <p class="lead">Entra con el correo y la contraseña de administrador.</p>
+      <div class="form-field full">
+        <label for="panel-email">Correo</label>
+        <input id="panel-email" name="email" type="email" required autocomplete="username" />
+      </div>
+      <div class="form-field full">
+        <label for="panel-password">Contraseña</label>
+        <input
+          id="panel-password"
+          name="password"
+          type="password"
+          required
+          autocomplete="current-password"
+        />
+      </div>
+      <button type="submit" class="btn primary full">
+        Entrar
+      </button>
+      <p class="form-status" id="panel-login-status" role="status" hidden></p>
+    </form>
+
+    <div class="panel-board" id="panel-board" hidden>
+      <div class="panel-toolbar">
+        <div
+          class="panel-filters"
+          id="panel-filters"
+          role="group"
+          aria-label="Filtrar por estado"
+        ></div>
+        <div class="panel-actions">
+          <button type="button" class="btn ghost" id="panel-refresh">
+            Actualizar
+          </button>
+          <button type="button" class="btn ghost" id="panel-logout">
+            Salir
+          </button>
+        </div>
+      </div>
+      <p class="form-status" id="panel-status" role="status" hidden></p>
+      <ul class="panel-list" id="panel-list"></ul>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  import { initPanel } from '../scripts/panel';
+  initPanel();
+</script>

@@ -10,9 +10,11 @@ interface Props {
   description: string;
   /** Datos estructurados JSON-LD opcionales. */
   jsonLd?: Record<string, unknown>;
+  /** Páginas privadas (panel): que Google no las muestre. */
+  noindex?: boolean;
 }
 
-const { title, description, jsonLd } = Astro.props;
+const { title, description, jsonLd, noindex = false } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 const ogImage = Astro.site
   ? new URL(withBase('/images/quimiver-og.jpg'), Astro.site).href
@@ -26,6 +28,7 @@ const ogImage = Astro.site
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     {canonical && <link rel="canonical" href={canonical} />}
 
     <meta property="og:type" content="website" />

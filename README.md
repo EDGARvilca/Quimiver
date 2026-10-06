@@ -48,6 +48,7 @@ Copia `.env.example` a `.env` si necesitas definirlas.
 | `/cambios-y-devoluciones/`    | Política de cambios y devoluciones (Ley 29571)                                 |
 | `/politica-de-privacidad/`    | Política de privacidad (Ley 29733)                                             |
 | `/libro-de-reclamaciones/`    | Libro de Reclamaciones virtual (se anuncia solo con datos legales completos)   |
+| `/panel/`                     | Panel privado de pedidos (con contraseña, sin indexar)                         |
 | `/sitemap.xml`, `/robots.txt` | Generados al compilar; el sitemap solo lista URLs si existe `SITE_URL`         |
 
 Las páginas fijas están en `src/config/pages.ts` (menú, pie y sitemap las leen de ahí). Los enlaces internos usan `withBase()` (`src/lib/paths.ts`) para funcionar también bajo `/Quimiver/` en GitHub Pages.
@@ -91,8 +92,17 @@ Al confirmar el formulario de compra, el sitio guarda una copia numerada del ped
 
 - Servidor: Edge Function `pedidos` (`supabase/functions/pedidos/`), validación en `pedido.ts` (la usan el servidor y las pruebas).
 - Tabla `pedidos` (migración en `supabase/migrations/`). Los montos son la estimación que vio el cliente; el precio final y el envío se confirman por WhatsApp.
-- Para ver los pedidos: Supabase → Table Editor → `pedidos`. Cambia la columna `estado` (`nuevo`, `confirmado`, `pagado`, `enviado`, `entregado`, `cancelado`) y usa `notas_internas` para el seguimiento.
+- Para ver los pedidos: el [panel de pedidos](#panel-de-pedidos) o Supabase → Table Editor → `pedidos`. Cambia la columna `estado` (`nuevo`, `confirmado`, `pagado`, `enviado`, `entregado`, `cancelado`) y usa `notas_internas` para el seguimiento.
 - Aviso por correo de cada pedido: se activa solo con los mismos secretos de Brevo del libro (`BREVO_API_KEY`, `MAIL_FROM`); llega al correo de `libro_proveedor` o al del secreto `PEDIDOS_CORREO`.
+
+### Panel de pedidos
+
+`/panel/` es una página privada (no aparece en el menú, el sitemap ni Google) para ver los pedidos, filtrarlos por estado, cambiar el estado, anotar notas internas y escribir al cliente por WhatsApp.
+
+- Se entra con correo y contraseña de **Supabase Auth**. Solo entran los correos que estén en la tabla `administradores`; el resto ve "Esta cuenta no tiene permiso".
+- Para dar acceso: en Supabase → Authentication → Users → _Add user_ crea el usuario (correo y contraseña) y en SQL Editor ejecuta `insert into administradores (correo) values ('correo@ejemplo.com');` (en minúsculas). Para quitarlo, borra la fila.
+- Desde el panel solo se pueden cambiar `estado` y `notas_internas`; no se pueden crear ni borrar pedidos. Las reglas están en la base (`supabase/migrations/20261006030000_panel_pedidos.sql`), no en la página.
+- La clave publicable de `site.panel` es pública por diseño; nunca pongas aquí la clave `service_role` ni otra secreta.
 
 ## Libro de Reclamaciones virtual
 
