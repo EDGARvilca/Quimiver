@@ -167,3 +167,24 @@ test('no deja confirmar un pedido sin stock suficiente', async ({ page, context 
   await expect(first.locator('.form-status')).toContainText('No hay stock suficiente');
   await expect(page.locator('#panel-stock-count')).toHaveText('2');
 });
+
+test('el resumen de ventas suma solo lo confirmado y se actualiza al guardar', async ({
+  page,
+  context,
+  errors,
+}) => {
+  await mockSupabase(context, { admin: true });
+  await login(page, 'correcta');
+
+  const total = page.locator('.panel-sales-card').nth(2);
+  await expect(total).toContainText('S/ 120.00');
+  await expect(total).toContainText('6 potes · 1 pedido');
+  await expect(page.locator('#panel-sales-cities')).toContainText('Huaraz: 6 potes');
+  await expect(page.locator('#panel-sales-months tr')).toHaveCount(6);
+
+  const first = page.locator('.panel-order').first();
+  await first.locator('select').selectOption('confirmado');
+  await first.getByRole('button', { name: 'Guardar' }).click();
+  await expect(total).toContainText('S/ 240.00');
+  expect(errors).toEqual([]);
+});

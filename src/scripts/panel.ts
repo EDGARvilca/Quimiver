@@ -9,7 +9,10 @@ import {
   formatOrderDate,
   isOrderState,
   isStockError,
+  monthLabel,
   parseStockAdjustment,
+  plural,
+  summarizeSales,
   stockLevel,
   type StockMove,
   type OrderState,
@@ -117,6 +120,9 @@ export function initPanel(): void {
   const stockForm = document.getElementById('panel-stock-form');
   const stockStatus = document.getElementById('panel-stock-status');
   const stockMoves = document.getElementById('panel-stock-moves');
+  const salesCards = document.getElementById('panel-sales-cards');
+  const salesMonths = document.getElementById('panel-sales-months');
+  const salesCities = document.getElementById('panel-sales-cities');
 
   if (
     !(loginForm instanceof HTMLFormElement) ||
@@ -131,7 +137,10 @@ export function initPanel(): void {
     !stockWarning ||
     !(stockForm instanceof HTMLFormElement) ||
     !stockStatus ||
-    !stockMoves
+    !stockMoves ||
+    !salesCards ||
+    !salesMonths ||
+    !salesCities
   ) {
     return;
   }
@@ -182,6 +191,52 @@ export function initPanel(): void {
     if (!res.ok) throw new Error(String(res.status));
     const data = (await res.json()) as { stock: number; movimientos: StockMove[] };
     renderStock(data.stock, data.movimientos);
+  };
+
+  const renderSales = () => {
+    const sales = summarizeSales(orders);
+    const card = (title: string, t: { pedidos: number; potes: number; soles: number }) => {
+      const box = el('div', 'panel-sales-card');
+      box.append(
+        el('span', 'panel-sales-label', title),
+        el('strong', undefined, formatCurrency(t.soles)),
+        el(
+          'span',
+          undefined,
+          `${plural(t.potes, 'pote', 'potes')} · ${plural(t.pedidos, 'pedido', 'pedidos')}`,
+        ),
+      );
+      return box;
+    };
+    salesCards.replaceChildren(
+      card('Esta semana', sales.semana),
+      card('Este mes', sales.mes),
+      card('Desde el inicio', sales.total),
+    );
+    salesMonths.replaceChildren(
+      ...sales.meses.map((m) => {
+        const row = el('tr');
+        row.append(
+          el('th', undefined, monthLabel(m.mes)),
+          el('td', undefined, String(m.pedidos)),
+          el('td', undefined, String(m.potes)),
+          el('td', undefined, formatCurrency(m.soles)),
+        );
+        row.firstElementChild?.setAttribute('scope', 'row');
+        return row;
+      }),
+    );
+    salesCities.replaceChildren(
+      ...(sales.ciudades.length === 0
+        ? [el('li', 'panel-empty-inline', 'Todavía no hay ventas confirmadas.')]
+        : sales.ciudades.map((c) =>
+            el(
+              'li',
+              undefined,
+              `${c.ciudad}: ${plural(c.potes, 'pote', 'potes')} (${formatCurrency(c.soles)})`,
+            ),
+          )),
+    );
   };
 
   const renderFilters = () => {
@@ -302,6 +357,7 @@ export function initPanel(): void {
 
   const render = () => {
     renderFilters();
+    renderSales();
     const visible = filterByState(orders, current);
     if (visible.length === 0) {
       list.replaceChildren(

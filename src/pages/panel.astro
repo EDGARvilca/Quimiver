@@ -73,6 +73,33 @@ import PageLayout from '../layouts/PageLayout.astro';
         </details>
       </section>
 
+      <section class="panel-sales" aria-labelledby="panel-sales-title">
+        <h2 id="panel-sales-title">Resumen de ventas</h2>
+        <div class="panel-sales-cards" id="panel-sales-cards"></div>
+        <div class="panel-sales-grid">
+          <table class="panel-sales-months">
+            <caption>Últimos 6 meses</caption>
+            <thead>
+              <tr>
+                <th scope="col">Mes</th>
+                <th scope="col">Pedidos</th>
+                <th scope="col">Potes</th>
+                <th scope="col">Soles</th>
+              </tr>
+            </thead>
+            <tbody id="panel-sales-months"></tbody>
+          </table>
+          <div>
+            <h3>Ciudades que más compran</h3>
+            <ol class="panel-sales-cities" id="panel-sales-cities"></ol>
+          </div>
+        </div>
+        <p class="footnote">
+          Cuenta los pedidos confirmados, pagados, enviados o entregados. Los montos son los
+          estimados del pedido, sin el envío.
+        </p>
+      </section>
+
       <div class="panel-toolbar">
         <div
           class="panel-filters"

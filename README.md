@@ -118,6 +118,10 @@ Al confirmar el formulario de compra, el sitio guarda una copia numerada del ped
 - Desde el panel solo se pueden cambiar `estado` y `notas_internas`; no se pueden crear ni borrar pedidos. Las reglas están en la base (`supabase/migrations/20261006030000_panel_pedidos.sql`), no en la página.
 - La clave publicable de `site.panel` es pública por diseño; nunca pongas aquí la clave `service_role` ni otra secreta.
 
+### Resumen de ventas
+
+Arriba del panel: soles y potes vendidos esta semana (desde el lunes), este mes y desde el inicio; una tabla de los últimos 6 meses y las 5 ciudades que más compran. Cuenta los pedidos confirmados, pagados, enviados o entregados (los mismos que descuentan stock) y usa el total estimado del pedido, sin envío. Se calcula en el navegador con los pedidos cargados (hasta 500); la lógica está en `summarizeSales` de `src/lib/panel.ts`, con pruebas.
+
 ### Stock
 
 - Tabla `inventario` (hoy un producto, `quimiver-50g`, con 100 potes al empezar) y registro de cada cambio en `movimientos_inventario`. Migración `supabase/migrations/20261006040000_inventario.sql`.
