@@ -4,6 +4,7 @@ import { productPath, withBase } from '../lib/paths';
 export const pages = {
   home: withBase('/'),
   product: productPath('quimiver'),
+  about: withBase('/nosotros/'),
   shipping: withBase('/envios/'),
   contact: withBase('/contacto/'),
   returns: withBase('/cambios-y-devoluciones/'),
