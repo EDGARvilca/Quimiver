@@ -12,6 +12,11 @@
   box-sizing: border-box;
 }
 
+/* `hidden` siempre oculta, aunque la clase del elemento le dé otro display (grid, flex). */
+[hidden] {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -2228,11 +2233,6 @@ summary:focus-visible {
 .panel-login {
   max-width: 460px;
   border: 1px solid var(--line);
-}
-
-.panel-login[hidden],
-.panel-board[hidden] {
-  display: none;
 }
 
 .panel-login .lead {

@@ -11,18 +11,32 @@ Hoy es una landing de un solo producto. El pedido se arma en el navegador y se e
 
 ## Comandos
 
-| Comando                           | Qué hace                                          |
-| --------------------------------- | ------------------------------------------------- |
-| `npm install`                     | Instala dependencias                              |
-| `npm run dev`                     | Servidor de desarrollo en `http://localhost:4321` |
-| `npm run build`                   | Genera el sitio estático en `dist/`               |
-| `npm run preview`                 | Sirve `dist/` localmente                          |
-| `npm run lint`                    | ESLint                                            |
-| `npm run format` / `format:check` | Prettier                                          |
-| `npm run check`                   | Verificación de tipos de Astro y TypeScript       |
-| `npm test`                        | Pruebas unitarias (Vitest)                        |
+| Comando                           | Qué hace                                                   |
+| --------------------------------- | ---------------------------------------------------------- |
+| `npm install`                     | Instala dependencias                                       |
+| `npm run dev`                     | Servidor de desarrollo en `http://localhost:4321`          |
+| `npm run build`                   | Genera el sitio estático en `dist/`                        |
+| `npm run preview`                 | Sirve `dist/` localmente                                   |
+| `npm run lint`                    | ESLint                                                     |
+| `npm run format` / `format:check` | Prettier                                                   |
+| `npm run check`                   | Verificación de tipos de Astro y TypeScript                |
+| `npm test`                        | Pruebas unitarias (Vitest)                                 |
+| `npm run test:e2e`                | Pruebas en el navegador (Playwright), escritorio y celular |
 
-CI (`.github/workflows/ci.yml`) ejecuta lint, formato, tipos, pruebas y build en cada PR y en `main`.
+CI (`.github/workflows/ci.yml`) ejecuta lint, formato, tipos, pruebas y build en cada PR y en `main`, y en otro trabajo las pruebas en el navegador.
+
+### Pruebas en el navegador
+
+`tests/e2e/` abre el sitio compilado como en GitHub Pages en Chromium, en tamaño escritorio y celular, y recorre lo que no puede fallar en producción:
+
+- todas las páginas cargan sin errores de JavaScript ni desborde lateral, y no hay enlaces internos rotos;
+- el panel no se indexa y no está en el sitemap;
+- el menú del celular;
+- el pedido: precio por mayor desde 6 unidades, registro con número y apertura de WhatsApp, WhatsApp igual si el registro falla, y nada se envía si faltan datos;
+- el Libro de Reclamaciones: campos obligatorios, hoja registrada, sin conexión y el campo del apoderado;
+- el panel: contraseña incorrecta, cuenta sin permiso y cambio de estado por el administrador.
+
+Supabase y WhatsApp se simulan en cada prueba (`tests/e2e/fixtures.ts`): las pruebas nunca crean pedidos ni hojas reales. La primera vez instala el navegador con `npx playwright install chromium`. Las reglas de acceso de la base de datos se comprueban aparte, contra Supabase (ver _Panel de pedidos_).
 
 ## Publicación
 
