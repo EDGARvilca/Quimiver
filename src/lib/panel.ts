@@ -2,6 +2,8 @@
  * Lógica pura del panel de pedidos (sin DOM), para poder probarla.
  */
 
+import { trackingMessage, trackingSteps } from './tracking';
+
 export const ORDER_STATES = [
   'nuevo',
   'confirmado',
@@ -70,11 +72,45 @@ export function formatOrderDate(iso: string): string {
 }
 
 /** Enlace de WhatsApp al cliente; agrega el 51 de Perú a celulares de 9 dígitos. */
-export function customerWhatsApp(phone: string, code: string): string {
+export function customerWhatsApp(
+  phone: string,
+  code: string,
+  text = `Hola, te escribimos de QUIMIVER por tu pedido ${code}.`,
+): string {
   const digits = phone.replace(/\D/g, '');
   const full = digits.length === 9 ? `51${digits}` : digits;
-  const text = `Hola, te escribimos de QUIMIVER por tu pedido ${code}.`;
   return `https://wa.me/${full}?text=${encodeURIComponent(text)}`;
+}
+
+/** Nombre de pila del cliente para el saludo ("María" de "María López"). */
+export function firstName(fullName: string): string {
+  return fullName.trim().split(/\s+/)[0] ?? '';
+}
+
+/**
+ * Aviso del estado del pedido para el cliente, con el enlace a "Sigue tu pedido".
+ * Usa las mismas frases que ve el cliente en la página de seguimiento.
+ */
+export function customerNotice(
+  order: Pick<PanelOrder, 'codigo' | 'estado' | 'entrega' | 'cliente_nombre'>,
+  trackingUrl: string,
+): string {
+  const name = firstName(order.cliente_nombre);
+  const step =
+    order.estado === 'cancelado'
+      ? 'Cancelado'
+      : trackingSteps(order).find((s) => s.status === 'actual')?.label;
+  return [
+    `Hola${name ? ` ${name}` : ''}, te escribimos de QUIMIVER.`,
+    `Tu pedido ${order.codigo}: *${step ?? STATE_LABELS[order.estado]}*.`,
+    trackingMessage(order),
+    `Puedes ver cómo va aquí: ${trackingUrl}`,
+  ].join('\n');
+}
+
+/** Enlace absoluto a "Sigue tu pedido" con el número ya escrito. */
+export function trackingLink(origin: string, trackingPath: string, code: string): string {
+  return new URL(`${trackingPath}?pedido=${encodeURIComponent(code)}`, origin).href;
 }
 
 /** Desde cuántos potes el panel avisa que quedan pocos. */
