@@ -10,6 +10,7 @@ export const pages = {
   returns: withBase('/cambios-y-devoluciones/'),
   privacy: withBase('/politica-de-privacidad/'),
   complaints: withBase('/libro-de-reclamaciones/'),
+  tracking: withBase('/seguimiento/'),
   faq: withBase('/#faq'),
   order: withBase('/#compra'),
 };

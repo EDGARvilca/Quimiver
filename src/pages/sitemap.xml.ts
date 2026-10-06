@@ -16,6 +16,7 @@ export const GET: APIRoute = async ({ site }) => {
     pages.about,
     pages.shipping,
     pages.contact,
+    pages.tracking,
     pages.returns,
     pages.privacy,
     ...(complaintsBookEnabled ? [pages.complaints] : []),
