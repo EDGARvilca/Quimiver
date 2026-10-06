@@ -9,6 +9,7 @@ const PAGES = [
   'cambios-y-devoluciones/',
   'politica-de-privacidad/',
   'libro-de-reclamaciones/',
+  'seguimiento/',
   'panel/',
 ];
 

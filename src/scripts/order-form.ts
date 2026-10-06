@@ -6,6 +6,7 @@ import {
   type OrderConfig,
   type OrderInput,
 } from '../lib/order';
+import { pages } from '../config/pages';
 import { site } from '../config/site';
 
 /** Tiempo máximo que esperamos al registro antes de abrir WhatsApp igual. */
@@ -165,13 +166,25 @@ export function initOrderForm(): void {
     newWindow.location.href = url;
     form.reset();
     refreshTotal();
-    showStatus(
-      status,
-      'success',
-      code
-        ? `Registramos tu pedido ${code} y abrimos WhatsApp. Envía el mensaje para confirmarlo.`
-        : 'Abrimos WhatsApp con tu pedido. Envía el mensaje para confirmarlo.',
-    );
+    if (code) {
+      const track = document.createElement('a');
+      track.className = 'text-link';
+      track.href = `${pages.tracking}?pedido=${encodeURIComponent(code)}`;
+      track.textContent = 'Sigue tu pedido aquí';
+      const wrapper = document.createElement('span');
+      wrapper.append(
+        `Registramos tu pedido ${code} y abrimos WhatsApp. Envía el mensaje para confirmarlo. `,
+        track,
+        '.',
+      );
+      showStatus(status, 'success', wrapper);
+    } else {
+      showStatus(
+        status,
+        'success',
+        'Abrimos WhatsApp con tu pedido. Envía el mensaje para confirmarlo.',
+      );
+    }
   });
 
   refreshTotal();

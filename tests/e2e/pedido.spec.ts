@@ -49,6 +49,10 @@ test('registra el pedido y abre WhatsApp con su número', async ({ page, context
     sitio_web: '',
   });
   await expect(page.locator('#order-status')).toContainText('P-000123');
+  await expect(page.locator('#order-status a')).toHaveAttribute(
+    'href',
+    /\/seguimiento\/\?pedido=P-000123$/,
+  );
   expect(errors).toEqual([]);
 });
 

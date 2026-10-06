@@ -1,0 +1,86 @@
+---
+import { pages } from '../config/pages';
+import { site, whatsappLink } from '../config/site';
+import PageLayout from '../layouts/PageLayout.astro';
+---
+
+<PageLayout
+  title={`Sigue tu pedido | ${site.brand}`}
+  description={`Consulta cómo va tu pedido de ${site.brand} con tu número de pedido y tu celular.`}
+  crumb="Sigue tu pedido"
+>
+  <section class="section info-page tracking" aria-labelledby="page-title">
+    <span class="eyebrow">Pedidos</span>
+    <h1 id="page-title">Sigue tu pedido</h1>
+    <p class="lead">
+      Escribe el número que te dimos al hacer tu pedido (por ejemplo P-000123) y el celular con el
+      que lo hiciste.
+    </p>
+
+    <form class="order-form tracking-form" id="tracking-form" novalidate>
+      <div class="form-field">
+        <label for="tracking-code">Número de pedido</label>
+        <input
+          id="tracking-code"
+          name="codigo"
+          required
+          autocomplete="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          placeholder="P-000123"
+          maxlength="12"
+        />
+      </div>
+      <div class="form-field">
+        <label for="tracking-phone">Celular</label>
+        <input
+          id="tracking-phone"
+          name="telefono"
+          type="tel"
+          required
+          autocomplete="tel"
+          inputmode="tel"
+          placeholder="987 654 321"
+          maxlength="20"
+        />
+      </div>
+      <p id="tracking-status" class="form-status" role="status" aria-live="polite" hidden></p>
+      <button type="submit" class="btn primary full">
+        Consultar
+      </button>
+    </form>
+
+    <article class="card tracking-result" id="tracking-result" aria-live="polite" hidden>
+      <p class="eyebrow" id="tracking-result-code"></p>
+      <h2 id="tracking-result-title"></h2>
+      <p id="tracking-result-message"></p>
+      <ol class="tracking-steps" id="tracking-steps"></ol>
+      <dl class="tracking-details" id="tracking-details"></dl>
+      <p class="footnote">
+        El monto es el estimado del pedido, sin el envío. Para cualquier cambio,{' '}
+        <a
+          class="text-link"
+          href={whatsappLink(`Hola, quiero consultar por mi pedido de ${site.brand}.`)}
+          target="_blank"
+          rel="noopener"
+        >
+          escríbenos por WhatsApp
+        </a>
+        .
+      </p>
+    </article>
+
+    <p class="footnote">
+      ¿No tienes el número? Lo enviamos en el mensaje de WhatsApp de tu pedido. También puedes{' '}
+      <a class="text-link" href={pages.contact}>
+        contactarnos
+      </a>
+      .
+    </p>
+  </section>
+</PageLayout>
+
+<script>
+  import { initTracking } from '../scripts/tracking';
+  initTracking();
+</script>

@@ -109,6 +109,14 @@ Al confirmar el formulario de compra, el sitio guarda una copia numerada del ped
 - Para ver los pedidos: el [panel de pedidos](#panel-de-pedidos) o Supabase → Table Editor → `pedidos`. Cambia la columna `estado` (`nuevo`, `confirmado`, `pagado`, `enviado`, `entregado`, `cancelado`) y usa `notas_internas` para el seguimiento.
 - Aviso por correo de cada pedido: se activa solo con los mismos secretos de Brevo del libro (`BREVO_API_KEY`, `MAIL_FROM`); llega al correo de `libro_proveedor` o al del secreto `PEDIDOS_CORREO`.
 
+### Sigue tu pedido
+
+`/seguimiento/` deja al cliente consultar su pedido con el número (P-000123) y el celular con el que lo hizo. Muestra el avance (Recibido, Confirmado, Pagado, Enviado o "Listo para recoger" si es recojo, Entregado), la fecha, el producto, la entrega y el total estimado. Al terminar un pedido, el formulario enlaza a esta página con el número ya escrito (`/seguimiento/?pedido=P-000123`). También está en el pie de página.
+
+- La consulta es la función `seguir_pedido` de la base (`supabase/migrations/20261006050000_seguimiento_pedido.sql`), llamada con la clave publicable. Solo responde si coinciden número y celular (acepta el celular con o sin +51, espacios o guiones).
+- Frena a quien intente adivinar: tras 10 consultas fallidas de un mismo número, o 300 en total, en una hora, responde "muchos intentos" por un rato.
+- Lógica y textos para el cliente en `src/lib/tracking.ts`; página en `src/pages/seguimiento.astro`.
+
 ### Panel de pedidos
 
 `/panel/` es una página privada (no aparece en el menú, el sitemap ni Google) para ver los pedidos, filtrarlos por estado, cambiar el estado, anotar notas internas y escribir al cliente por WhatsApp.
