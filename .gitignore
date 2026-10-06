@@ -15,3 +15,7 @@ npm-debug.log*
 
 # sistema
 .DS_Store
+
+# pruebas de punta a punta
+test-results/
+playwright-report/
