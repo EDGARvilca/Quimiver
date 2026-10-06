@@ -20,6 +20,9 @@ interface Props {
 
 const { entry } = Astro.props;
 const product = entry.data;
+const [presentation] = product.presentations;
+const pageTitle = `${product.descriptor} ${product.name} · ${presentation.label} | ${site.company}`;
+const pageDescription = `${product.descriptor} ${product.name}, ${presentation.label.toLowerCase()}: S/ ${presentation.price.toFixed(2)} por frasco y S/ ${presentation.wholesalePrice.toFixed(2)} desde ${site.order.wholesaleMinQuantity} frascos. Envíos por Shalom y Olva; pedidos por WhatsApp.`;
 const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 
 const jsonLd = {
@@ -42,12 +45,7 @@ const jsonLd = {
 };
 ---
 
-<PageLayout
-  title={`${product.name} | ${product.manufacturer}`}
-  description={product.seo.description}
-  crumb={product.name}
-  jsonLd={jsonLd}
->
+<PageLayout title={pageTitle} description={pageDescription} crumb={product.name} jsonLd={jsonLd}>
   <section class="section product-detail" aria-labelledby="product-title">
     <div class="product-detail-grid">
       <div class="product-card" data-tilt>

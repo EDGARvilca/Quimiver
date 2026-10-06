@@ -195,6 +195,14 @@ section {
   color: var(--forest);
 }
 
+/* Teléfonos de 320 px: el nombre y el botón del menú caben en una sola línea. */
+@media (max-width: 360px) {
+  .brand {
+    font-size: 1.35rem;
+    letter-spacing: 0.2em;
+  }
+}
+
 .nav-links {
   display: flex;
   gap: 8px;
@@ -1165,6 +1173,7 @@ section {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
+  overflow-wrap: anywhere;
 }
 
 .complaints-provider h2 {
