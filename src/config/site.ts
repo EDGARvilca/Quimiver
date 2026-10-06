@@ -16,7 +16,7 @@ export interface SocialLink {
 
 export const site = {
   brand: 'QUIMIVER',
-  company: 'Química Verde Andina',
+  company: 'CELGIMED',
   lang: 'es',
   locale: 'es_PE',
   currency: 'PEN',
