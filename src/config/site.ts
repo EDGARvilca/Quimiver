@@ -38,7 +38,7 @@ export const site = {
    * y Ley 29733). `null` los oculta hasta que el negocio los confirme.
    */
   legal: {
-    businessName: 'CELGIMED' as string | null,
+    businessName: 'Edgar Luis Vilcapoma Orihuela' as string | null,
     ruc: '10746979156' as string | null,
     address: 'Av. Enrique Guzmán y Valle - La Cantuta, Lurigancho-Chosica, Lima' as string | null,
   },
