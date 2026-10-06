@@ -2,7 +2,7 @@
 
 Sitio web de **QUIMIVER**, producto de Química Verde Andina.
 
-Hoy es una landing de un solo producto. El pedido se arma en el navegador y se envía por WhatsApp; no hay backend ni base de datos. La arquitectura está pensada para crecer por fases (ver `docs/architecture.md`).
+Tienda de un solo producto: el pedido se registra con su número y se confirma por WhatsApp, con Libro de Reclamaciones virtual y un panel privado de pedidos. Arquitectura en `docs/architecture.md` y seguridad en `docs/seguridad.md`.
 
 ## Requisitos
 

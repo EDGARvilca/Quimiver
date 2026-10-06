@@ -22,6 +22,9 @@ declare const Deno: {
 const env = (name: string) => Deno.env.get(name)?.trim() ?? '';
 const MAX_BODY_BYTES = 8_000;
 const MAX_PER_PHONE_PER_HOUR = 5;
+// Tope de todo el sitio: frena a un robot que cambie de número en cada envío. Si se alcanza,
+// el cliente igual pide por WhatsApp (el sitio lo abre aunque el registro falle).
+const MAX_PER_HOUR = 60;
 
 const DEFAULT_ORIGINS = 'https://edgarvilca.github.io,http://localhost:4321,http://localhost:4329';
 
@@ -138,14 +141,21 @@ Deno.serve(async (req) => {
   }
   const order = result.value;
 
-  const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-  const recent = await db(
-    `pedidos?select=id&telefono=eq.${encodeURIComponent(order.telefono)}&creado_en=gte.${encodeURIComponent(since)}`,
-    { headers: { Prefer: 'count=exact', Range: '0-0' } },
-  );
-  const total = Number(recent.headers.get('Content-Range')?.split('/')[1] ?? '0');
-  if (total >= MAX_PER_PHONE_PER_HOUR) {
+  const since = encodeURIComponent(new Date(Date.now() - 60 * 60 * 1000).toISOString());
+  const count = async (filter: string) => {
+    const res = await db(`pedidos?select=id&creado_en=gte.${since}${filter}`, {
+      headers: { Prefer: 'count=exact', Range: '0-0' },
+    });
+    return Number(res.headers.get('Content-Range')?.split('/')[1] ?? '0');
+  };
+  if (
+    (await count(`&telefono=eq.${encodeURIComponent(order.telefono)}`)) >= MAX_PER_PHONE_PER_HOUR
+  ) {
     return json({ error: 'Demasiados pedidos seguidos desde este número.' }, 429, origin);
+  }
+  if ((await count('')) >= MAX_PER_HOUR) {
+    console.error('Tope de pedidos por hora alcanzado');
+    return json({ error: 'Recibimos muchos pedidos en este momento.' }, 429, origin);
   }
 
   const insert = await db('pedidos?select=codigo,creado_en', {

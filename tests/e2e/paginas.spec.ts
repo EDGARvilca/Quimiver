@@ -49,3 +49,19 @@ test('el panel no se indexa y no aparece en el sitemap', async ({ page, request 
   expect(sitemap).toContain('/Quimiver/nosotros/');
   expect(sitemap).not.toContain('/panel/');
 });
+
+test('la política de seguridad bloquea scripts inyectados', async ({ page }) => {
+  await page.goto('');
+  await expect(page.locator('meta[http-equiv="content-security-policy"]')).toHaveAttribute(
+    'content',
+    /script-src 'self'/,
+  );
+  const ran = await page.evaluate(async () => {
+    const script = document.createElement('script');
+    script.textContent = 'window.__inyectado = true;';
+    document.body.append(script);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    return (window as unknown as { __inyectado?: boolean }).__inyectado === true;
+  });
+  expect(ran).toBe(false);
+});

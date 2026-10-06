@@ -13,10 +13,16 @@ export const test = base.extend<{ errors: string[] }>({
     );
     await use(context);
   },
-  // Errores de JavaScript de la página; cada prueba confirma al final que no hubo ninguno.
+  // Errores de JavaScript y bloqueos de la política de seguridad (CSP); cada prueba confirma
+  // al final que no hubo ninguno.
   errors: async ({ page }, use) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
+    page.on('console', (message) => {
+      if (message.type() === 'error' && message.text().includes('Content Security Policy')) {
+        errors.push(message.text());
+      }
+    });
     await use(errors);
   },
 });

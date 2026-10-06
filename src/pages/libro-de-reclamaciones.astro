@@ -1,4 +1,5 @@
 ---
+import { inlineJson } from '../lib/json';
 import LegalData from '../components/LegalData.astro';
 import { pages } from '../config/pages';
 import { complaintsBookEnabled, site } from '../config/site';
@@ -192,7 +193,7 @@ const config = { endpoint: site.complaintsBook.endpoint, email: site.contact.ema
       </p>
     </div>
   </section>
-  <script type="application/json" id="complaints-config" set:html={JSON.stringify(config)} />
+  <script type="application/json" id="complaints-config" set:html={inlineJson(config)} />
 </PageLayout>
 
 <script>

@@ -1,4 +1,5 @@
 ---
+import { inlineJson } from '../lib/json';
 import '../styles/global.scss';
 import { site } from '../config/site';
 import { withBase } from '../lib/paths';
@@ -46,7 +47,7 @@ const ogImage = Astro.site
       // Marca temprana para que el menú móvil se pinte ya plegado y la página no salte.
       document.documentElement.classList.add('js');
     </script>
-    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    {jsonLd && <script type="application/ld+json" set:html={inlineJson(jsonLd)} />}
   </head>
   <body>
     <slot />

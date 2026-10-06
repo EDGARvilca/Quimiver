@@ -49,16 +49,22 @@ function showErrors(form: HTMLFormElement, errors: Record<string, string>): void
   first?.focus();
 }
 
-const escapeHtml = (value: string) =>
-  value.replace(
-    /[&<>"]/g,
-    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c] ?? c,
-  );
-
-function setStatus(node: HTMLElement, kind: 'error' | 'success', html: string): void {
+/** Muestra un aviso; el texto se inserta como texto, nunca como HTML. */
+function setStatus(
+  node: HTMLElement,
+  kind: 'error' | 'success',
+  ...parts: (string | Node)[]
+): void {
   node.hidden = false;
   node.dataset.kind = kind;
-  node.innerHTML = html;
+  node.replaceChildren(...parts);
+}
+
+function mailLink(email: string): HTMLAnchorElement {
+  const link = document.createElement('a');
+  link.href = `mailto:${email}`;
+  link.textContent = email;
+  return link;
 }
 
 function renderReceipt(receipt: Receipt, email: string): void {
@@ -135,18 +141,21 @@ export function initComplaintsForm(): void {
         renderReceipt(body as Receipt, config.email);
         return;
       }
-      const message = escapeHtml(body.error ?? 'No se pudo registrar la hoja.');
       setStatus(
         status,
         'error',
-        `${message} Si el problema sigue, escríbenos a <a href="mailto:${config.email}">${config.email}</a>.`,
+        `${body.error ?? 'No se pudo registrar la hoja.'} Si el problema sigue, escríbenos a `,
+        mailLink(config.email),
+        '.',
       );
       if (body.errors) showErrors(form, body.errors);
     } catch {
       setStatus(
         status,
         'error',
-        `No hay conexión con el libro en este momento. Intenta de nuevo o escríbenos a <a href="mailto:${config.email}">${config.email}</a>.`,
+        'No hay conexión con el libro en este momento. Intenta de nuevo o escríbenos a ',
+        mailLink(config.email),
+        '.',
       );
     } finally {
       if (button) {
