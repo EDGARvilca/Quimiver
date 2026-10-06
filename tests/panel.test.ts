@@ -6,6 +6,9 @@ import {
   filterByState,
   formatOrderDate,
   isOrderState,
+  isStockError,
+  parseStockAdjustment,
+  stockLevel,
   type PanelOrder,
 } from '../src/lib/panel';
 import { ORDER_STATES as DB_STATES } from '../supabase/functions/pedidos/pedido';
@@ -61,5 +64,29 @@ describe('panel de pedidos', () => {
     expect(url.startsWith('https://wa.me/51987654321?text=')).toBe(true);
     expect(decodeURIComponent(url.split('text=')[1])).toContain('P-000007');
     expect(customerWhatsApp('+51987654321', 'P-1')).toContain('wa.me/51987654321');
+  });
+
+  it('clasifica el nivel de stock', () => {
+    expect(stockLevel(0)).toBe('agotado');
+    expect(stockLevel(10)).toBe('bajo');
+    expect(stockLevel(11)).toBe('ok');
+  });
+
+  it('valida el ajuste de stock', () => {
+    expect(parseStockAdjustment('50', ' Producción ')).toEqual({
+      ok: true,
+      cantidad: 50,
+      motivo: 'Producción',
+    });
+    expect(parseStockAdjustment('-3', 'Potes dañados')).toMatchObject({ ok: true, cantidad: -3 });
+    expect(parseStockAdjustment('0', 'x x').ok).toBe(false);
+    expect(parseStockAdjustment('2.5', 'Producción').ok).toBe(false);
+    expect(parseStockAdjustment('5', ' ').ok).toBe(false);
+  });
+
+  it('reconoce el rechazo por falta de stock', () => {
+    expect(isStockError({ code: 'P0001', message: 'Stock insuficiente' })).toBe(true);
+    expect(isStockError({ message: 'otra cosa' })).toBe(false);
+    expect(isStockError(null)).toBe(false);
   });
 });

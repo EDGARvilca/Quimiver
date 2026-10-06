@@ -8,6 +8,10 @@ import {
   filterByState,
   formatOrderDate,
   isOrderState,
+  isStockError,
+  parseStockAdjustment,
+  stockLevel,
+  type StockMove,
   type OrderState,
   type PanelOrder,
 } from '../lib/panel';
@@ -108,6 +112,11 @@ export function initPanel(): void {
   const boardStatus = document.getElementById('panel-status');
   const refresh = document.getElementById('panel-refresh');
   const logout = document.getElementById('panel-logout');
+  const stockCount = document.getElementById('panel-stock-count');
+  const stockWarning = document.getElementById('panel-stock-warning');
+  const stockForm = document.getElementById('panel-stock-form');
+  const stockStatus = document.getElementById('panel-stock-status');
+  const stockMoves = document.getElementById('panel-stock-moves');
 
   if (
     !(loginForm instanceof HTMLFormElement) ||
@@ -117,7 +126,12 @@ export function initPanel(): void {
     !list ||
     !boardStatus ||
     !refresh ||
-    !logout
+    !logout ||
+    !stockCount ||
+    !stockWarning ||
+    !(stockForm instanceof HTMLFormElement) ||
+    !stockStatus ||
+    !stockMoves
   ) {
     return;
   }
@@ -138,6 +152,36 @@ export function initPanel(): void {
     loginForm.hidden = false;
     if (message) say(loginStatus, 'error', message);
     else loginStatus.hidden = true;
+  };
+
+  const renderStock = (stock: number, moves: StockMove[]) => {
+    stockCount.textContent = String(stock);
+    const level = stockLevel(stock);
+    if (level === 'ok') stockWarning.hidden = true;
+    else
+      say(
+        stockWarning,
+        'error',
+        level === 'agotado'
+          ? 'Sin stock: la web muestra "Agotado". Registra los potes nuevos aquí.'
+          : `Quedan pocos potes (${stock}).`,
+      );
+    stockMoves.replaceChildren(
+      ...moves.map((m) =>
+        el(
+          'li',
+          undefined,
+          `${formatOrderDate(m.creado_en)} · ${m.cantidad > 0 ? '+' : ''}${m.cantidad} · ${m.motivo} · quedan ${m.stock_resultante}`,
+        ),
+      ),
+    );
+  };
+
+  const loadStock = async () => {
+    const res = await api('rpc/ver_stock', { method: 'POST', body: '{}' });
+    if (!res.ok) throw new Error(String(res.status));
+    const data = (await res.json()) as { stock: number; movimientos: StockMove[] };
+    renderStock(data.stock, data.movimientos);
   };
 
   const renderFilters = () => {
@@ -229,10 +273,16 @@ export function initPanel(): void {
           headers: { Prefer: 'return=representation' },
           body: JSON.stringify({ estado, notas_internas: notes.value.trim() || null }),
         });
-        const [updated] = res.ok ? ((await res.json()) as PanelOrder[]) : [];
+        const payload: unknown = await res.json().catch(() => null);
+        if (!res.ok && isStockError(payload)) {
+          say(status, 'error', 'No hay stock suficiente para este pedido. Registra potes arriba.');
+          return;
+        }
+        const [updated] = res.ok ? (payload as PanelOrder[]) : [];
         if (!updated) throw new Error(String(res.status));
         orders = orders.map((o) => (o.id === updated.id ? updated : o));
         render();
+        await loadStock().catch(() => undefined);
         say(
           boardStatus,
           'success',
@@ -277,6 +327,7 @@ export function initPanel(): void {
       const res = await api('pedidos?select=*&order=creado_en.desc&limit=500');
       if (!res.ok) throw new Error(String(res.status));
       orders = (await res.json()) as PanelOrder[];
+      await loadStock();
       loginForm.hidden = true;
       board.hidden = false;
       render();
@@ -311,6 +362,43 @@ export function initPanel(): void {
           ? 'Correo o contraseña incorrectos.'
           : 'No se pudo conectar. Revisa tu conexión.',
       );
+    } finally {
+      if (submit) submit.disabled = false;
+    }
+  });
+
+  stockForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const data = new FormData(stockForm);
+    const parsed = parseStockAdjustment(
+      String(data.get('cantidad') ?? ''),
+      String(data.get('motivo') ?? ''),
+    );
+    if (!parsed.ok) return say(stockStatus, 'error', parsed.error);
+    const submit = stockForm.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (submit) submit.disabled = true;
+    try {
+      const res = await api('rpc/ajustar_stock', {
+        method: 'POST',
+        body: JSON.stringify({ p_cantidad: parsed.cantidad, p_motivo: parsed.motivo }),
+      });
+      const payload: unknown = await res.json().catch(() => null);
+      if (!res.ok) {
+        say(
+          stockStatus,
+          'error',
+          isStockError(payload)
+            ? 'No puedes restar más potes de los que hay.'
+            : 'No se pudo registrar. Revisa tu conexión.',
+        );
+        return;
+      }
+      stockForm.reset();
+      await loadStock();
+      say(stockStatus, 'success', `Registrado. Ahora hay ${String(payload)} potes.`);
+    } catch (error) {
+      if (error instanceof Error && error.message === 'sesion') return showLogin();
+      say(stockStatus, 'error', 'No se pudo registrar. Revisa tu conexión.');
     } finally {
       if (submit) submit.disabled = false;
     }

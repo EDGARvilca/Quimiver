@@ -20,9 +20,38 @@ const order = (id: number, estado: string) => ({
 });
 
 /** Simula Supabase: inicio de sesión, permiso de administrador y la tabla de pedidos. */
-async function mockSupabase(context: BrowserContext, { admin }: { admin: boolean }) {
+async function mockSupabase(
+  context: BrowserContext,
+  { admin, stock: initialStock = 100 }: { admin: boolean; stock?: number },
+) {
   const orders = [order(2, 'nuevo'), order(1, 'pagado')];
   const patches: unknown[] = [];
+  let stock = initialStock;
+  const moves = [
+    {
+      cantidad: 100,
+      stock_resultante: 100,
+      motivo: 'Stock inicial',
+      creado_en: '2026-10-06T08:00:00Z',
+    },
+  ];
+  await context.route(/\/rest\/v1\/rpc\/ver_stock/, (route) =>
+    route.fulfill({ json: { stock, movimientos: moves } }),
+  );
+  await context.route(/\/rest\/v1\/rpc\/ajustar_stock/, (route) => {
+    const { p_cantidad, p_motivo } = route.request().postDataJSON();
+    if (stock + p_cantidad < 0) {
+      return route.fulfill({ status: 400, json: { code: 'P0001', message: 'Stock insuficiente' } });
+    }
+    stock += p_cantidad;
+    moves.unshift({
+      cantidad: p_cantidad,
+      stock_resultante: stock,
+      motivo: p_motivo,
+      creado_en: '2026-10-06T09:00:00Z',
+    });
+    return route.fulfill({ json: stock });
+  });
   await context.route(/\/auth\/v1\/token/, (route) =>
     route.request().postDataJSON().password === 'correcta'
       ? route.fulfill({
@@ -40,7 +69,15 @@ async function mockSupabase(context: BrowserContext, { admin }: { admin: boolean
       const body = req.postDataJSON();
       patches.push({ url: req.url(), body });
       const id = Number(new URL(req.url()).searchParams.get('id')?.replace('eq.', ''));
-      const updated = { ...orders.find((o) => o.id === id)!, ...body };
+      const current = orders.find((o) => o.id === id)!;
+      if (body.estado === 'confirmado' && current.cantidad > stock) {
+        return route.fulfill({
+          status: 400,
+          json: { code: 'P0001', message: 'Stock insuficiente' },
+        });
+      }
+      if (body.estado === 'confirmado') stock -= current.cantidad;
+      const updated = { ...current, ...body };
       return route.fulfill({ json: [updated] });
     }
     return route.fulfill({ json: orders });
@@ -98,4 +135,35 @@ test('el administrador filtra y cambia el estado', async ({ page, context, error
   await page.getByRole('button', { name: 'Salir' }).click();
   await expect(page.locator('#panel-login')).toBeVisible();
   expect(errors).toEqual([]);
+});
+
+test('muestra el stock y registra potes nuevos', async ({ page, context, errors }) => {
+  await mockSupabase(context, { admin: true, stock: 8 });
+  await login(page, 'correcta');
+
+  await expect(page.locator('#panel-stock-count')).toHaveText('8');
+  await expect(page.locator('#panel-stock-warning')).toContainText('Quedan pocos potes');
+
+  await page.fill('#panel-stock-quantity', '50');
+  await page.fill('#panel-stock-reason', 'Producción nueva');
+  await page.getByRole('button', { name: 'Registrar' }).click();
+  await expect(page.locator('#panel-stock-status')).toContainText('Ahora hay 58 potes');
+  await expect(page.locator('#panel-stock-count')).toHaveText('58');
+  await expect(page.locator('#panel-stock-warning')).toBeHidden();
+  await page.locator('.panel-stock-moves summary').click();
+  await expect(page.locator('#panel-stock-moves li').first()).toContainText(
+    '+50 · Producción nueva',
+  );
+  expect(errors).toEqual([]);
+});
+
+test('no deja confirmar un pedido sin stock suficiente', async ({ page, context }) => {
+  await mockSupabase(context, { admin: true, stock: 2 });
+  await login(page, 'correcta');
+
+  const first = page.locator('.panel-order').first();
+  await first.locator('select').selectOption('confirmado');
+  await first.getByRole('button', { name: 'Guardar' }).click();
+  await expect(first.locator('.form-status')).toContainText('No hay stock suficiente');
+  await expect(page.locator('#panel-stock-count')).toHaveText('2');
 });

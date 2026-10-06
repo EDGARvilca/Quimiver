@@ -36,6 +36,43 @@ import PageLayout from '../layouts/PageLayout.astro';
     </form>
 
     <div class="panel-board" id="panel-board" hidden>
+      <section class="panel-stock" aria-labelledby="panel-stock-title">
+        <div class="panel-stock-head">
+          <h2 id="panel-stock-title">Stock</h2>
+          <p class="panel-stock-count">
+            <strong id="panel-stock-count">—</strong> potes
+          </p>
+        </div>
+        <p class="form-status" id="panel-stock-warning" data-kind="error" role="status" hidden></p>
+        <form class="panel-stock-form" id="panel-stock-form">
+          <label for="panel-stock-quantity">Potes</label>
+          <input
+            id="panel-stock-quantity"
+            name="cantidad"
+            type="number"
+            step="1"
+            required
+            placeholder="50"
+          />
+          <label for="panel-stock-reason">Motivo</label>
+          <input
+            id="panel-stock-reason"
+            name="motivo"
+            required
+            maxlength="200"
+            placeholder="Producción nueva"
+          />
+          <button type="submit" class="btn primary">
+            Registrar
+          </button>
+          <p class="form-status" id="panel-stock-status" role="status" hidden></p>
+        </form>
+        <details class="panel-stock-moves">
+          <summary>Últimos movimientos</summary>
+          <ul id="panel-stock-moves"></ul>
+        </details>
+      </section>
+
       <div class="panel-toolbar">
         <div
           class="panel-filters"

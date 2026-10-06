@@ -76,3 +76,42 @@ export function customerWhatsApp(phone: string, code: string): string {
   const text = `Hola, te escribimos de QUIMIVER por tu pedido ${code}.`;
   return `https://wa.me/${full}?text=${encodeURIComponent(text)}`;
 }
+
+/** Desde cuántos potes el panel avisa que quedan pocos. */
+export const LOW_STOCK = 10;
+
+export function stockLevel(stock: number): 'agotado' | 'bajo' | 'ok' {
+  if (stock <= 0) return 'agotado';
+  return stock <= LOW_STOCK ? 'bajo' : 'ok';
+}
+
+export interface StockMove {
+  cantidad: number;
+  stock_resultante: number;
+  motivo: string;
+  creado_en: string;
+}
+
+/** Valida el formulario de ajuste: entero distinto de 0 (negativo para corregir) y un motivo. */
+export function parseStockAdjustment(
+  rawQuantity: string,
+  rawReason: string,
+): { ok: true; cantidad: number; motivo: string } | { ok: false; error: string } {
+  const cantidad = Number(rawQuantity);
+  const motivo = rawReason.trim();
+  if (!Number.isInteger(cantidad) || cantidad === 0 || Math.abs(cantidad) > 100000) {
+    return { ok: false, error: 'Escribe cuántos potes sumas (o restas con un signo menos).' };
+  }
+  if (motivo.length < 2)
+    return { ok: false, error: 'Escribe el motivo, por ejemplo "Producción".' };
+  return { ok: true, cantidad, motivo: motivo.slice(0, 200) };
+}
+
+/** Mensaje para el administrador cuando la base rechaza un cambio por falta de stock. */
+export function isStockError(body: unknown): boolean {
+  return (
+    typeof body === 'object' &&
+    body !== null &&
+    (body as { message?: unknown }).message === 'Stock insuficiente'
+  );
+}

@@ -43,6 +43,10 @@ const singlePresentation = product.presentations.length === 1;
   </div>
 
   <form class="order-form" id="order-form">
+    <p id="order-stock" class="form-status" data-kind="error" role="status" hidden>
+      Por ahora QUIMIVER está agotado. Puedes enviarnos tu pedido igual: lo reservamos y te
+      escribimos por WhatsApp apenas tengamos más potes.
+    </p>
     <div class="form-field">
       <label for="customer-name">Nombre y apellido</label>
       <input

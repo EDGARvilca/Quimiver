@@ -54,6 +54,22 @@ async function registerOrder(
   }
 }
 
+/**
+ * Pregunta al servidor si hay stock (sin la cantidad) y muestra el aviso de agotado.
+ * Si no responde, no muestra nada: el pedido sigue funcionando igual.
+ */
+async function showStock(notice: HTMLElement): Promise<void> {
+  try {
+    const res = await fetch(site.orders.endpoint, {
+      signal: AbortSignal.timeout(REGISTER_TIMEOUT_MS),
+    });
+    const data = (await res.json()) as { disponible?: unknown };
+    notice.hidden = data.disponible !== false;
+  } catch {
+    // Sin respuesta: no se sabe; mejor no alarmar.
+  }
+}
+
 function readConfig(): OrderConfig | null {
   const node = document.getElementById('order-config');
   if (!node?.textContent) {
@@ -159,4 +175,7 @@ export function initOrderForm(): void {
   });
 
   refreshTotal();
+
+  const stockNotice = document.getElementById('order-stock');
+  if (stockNotice) void showStock(stockNotice);
 }
