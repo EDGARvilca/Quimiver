@@ -115,3 +115,101 @@ export function isStockError(body: unknown): boolean {
     (body as { message?: unknown }).message === 'Stock insuficiente'
   );
 }
+
+/** Estados que cuentan como venta (los mismos que descuentan stock en la base). */
+export const SALE_STATES: readonly OrderState[] = ['confirmado', 'pagado', 'enviado', 'entregado'];
+
+export interface SalesTotals {
+  pedidos: number;
+  potes: number;
+  soles: number;
+}
+
+export interface SalesSummary {
+  semana: SalesTotals;
+  mes: SalesTotals;
+  total: SalesTotals;
+  /** Últimos 6 meses, del más reciente al más antiguo; `mes` es "2026-10". */
+  meses: (SalesTotals & { mes: string })[];
+  /** Ciudades con más potes vendidos (hasta 5). */
+  ciudades: (SalesTotals & { ciudad: string })[];
+}
+
+/** Fecha de calendario en Lima como "2026-10-06". */
+function limaDate(date: Date): string {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Lima',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date);
+}
+
+/** Lunes de la semana (en Lima) de una fecha "aaaa-mm-dd". */
+function mondayOf(day: string): string {
+  const d = new Date(`${day}T12:00:00Z`);
+  const offset = (d.getUTCDay() + 6) % 7;
+  d.setUTCDate(d.getUTCDate() - offset);
+  return d.toISOString().slice(0, 10);
+}
+
+const empty = (): SalesTotals => ({ pedidos: 0, potes: 0, soles: 0 });
+
+function add(t: SalesTotals, o: PanelOrder): void {
+  t.pedidos += 1;
+  t.potes += o.cantidad;
+  t.soles = Math.round((t.soles + Number(o.total_estimado)) * 100) / 100;
+}
+
+/** Resumen de ventas a partir de los pedidos; los montos son los estimados (sin envío). */
+export function summarizeSales(orders: PanelOrder[], now: Date = new Date()): SalesSummary {
+  const today = limaDate(now);
+  const week = mondayOf(today);
+  const month = today.slice(0, 7);
+
+  const months: string[] = [];
+  const cursor = new Date(`${month}-15T12:00:00Z`);
+  for (let i = 0; i < 6; i++) {
+    months.push(cursor.toISOString().slice(0, 7));
+    cursor.setUTCMonth(cursor.getUTCMonth() - 1);
+  }
+
+  const summary: SalesSummary = {
+    semana: empty(),
+    mes: empty(),
+    total: empty(),
+    meses: months.map((m) => ({ mes: m, ...empty() })),
+    ciudades: [],
+  };
+  const cities = new Map<string, SalesTotals & { ciudad: string }>();
+
+  for (const o of orders) {
+    if (!SALE_STATES.includes(o.estado)) continue;
+    const day = limaDate(new Date(o.creado_en));
+    add(summary.total, o);
+    if (day >= week && day <= today) add(summary.semana, o);
+    if (day.startsWith(month)) add(summary.mes, o);
+    const row = summary.meses.find((m) => day.startsWith(m.mes));
+    if (row) add(row, o);
+    const key = o.ciudad.trim().toLocaleLowerCase('es-PE');
+    if (!cities.has(key)) cities.set(key, { ciudad: o.ciudad.trim(), ...empty() });
+    add(cities.get(key)!, o);
+  }
+
+  summary.ciudades = [...cities.values()].sort((a, b) => b.potes - a.potes).slice(0, 5);
+  return summary;
+}
+
+/** "2026-10" → "octubre 2026". */
+export function monthLabel(month: string): string {
+  return new Intl.DateTimeFormat('es-PE', {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${month}-15T12:00:00Z`));
+}
+
+/** "1 pote", "6 potes". */
+export function plural(n: number, one: string, many: string): string {
+  return `${n} ${n === 1 ? one : many}`;
+}
