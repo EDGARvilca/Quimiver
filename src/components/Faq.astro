@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { fillPrices } from '../lib/product-data';
 
 interface Props {
   product: CollectionEntry<'products'>['data'];
@@ -18,7 +19,7 @@ const faq = product.faq.filter((item) => item.verified);
     {faq.map((item) => (
       <details>
         <summary>{item.question}</summary>
-        <p>{item.answer}</p>
+        <p>{fillPrices(item.answer, product)}</p>
       </details>
     ))}
   </div>

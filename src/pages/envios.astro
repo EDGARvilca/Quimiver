@@ -11,7 +11,8 @@ if (!entry) {
   throw new Error('No se encontró el producto "quimiver" en src/content/products.');
 }
 const product = entry.data;
-const { shippingOptions, wholesaleMinQuantity } = site.order;
+const { shippingOptions } = site.order;
+const { wholesaleMinQuantity } = product;
 ---
 
 <PageLayout

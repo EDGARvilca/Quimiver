@@ -14,13 +14,13 @@ const { product } = Astro.props;
 const config: OrderConfig = {
   productName: product.name,
   presentations: product.presentations,
-  wholesaleMinQuantity: site.order.wholesaleMinQuantity,
+  wholesaleMinQuantity: product.wholesaleMinQuantity,
   shippingOptions: [...site.order.shippingOptions],
   paymentMethods: site.payment.methods,
   paymentNumber: site.payment.number,
 };
 
-const minWholesale = site.order.wholesaleMinQuantity;
+const minWholesale = product.wholesaleMinQuantity;
 const singlePresentation = product.presentations.length === 1;
 ---
 

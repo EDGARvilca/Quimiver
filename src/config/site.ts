@@ -68,8 +68,6 @@ export const site = {
     { label: 'TikTok', url: null },
   ] satisfies SocialLink[],
   order: {
-    /** Unidades a partir de las cuales se aplica el precio por mayor (media docena). */
-    wholesaleMinQuantity: 6,
     /** `fee: null` = el costo depende del destino y se coordina por WhatsApp. */
     shippingOptions: [
       { id: 'recojo-lima', label: 'Recojo en Lima (costo según zona)', fee: null },

@@ -25,6 +25,7 @@ import {
   type PanelOrder,
 } from '../lib/panel';
 import { buildXlsx } from '../lib/xlsx';
+import { initProduct } from './panel-product';
 
 /**
  * Panel privado de pedidos. Inicia sesión con Supabase Auth (correo y contraseña) y lee o
@@ -154,6 +155,7 @@ export function initPanel(): void {
     return;
   }
 
+  const loadProduct = initProduct(api);
   let orders: PanelOrder[] = [];
   let current: OrderState | 'todos' = 'todos';
 
@@ -419,6 +421,7 @@ export function initPanel(): void {
       if (!res.ok) throw new Error(String(res.status));
       orders = (await res.json()) as PanelOrder[];
       await loadStock();
+      await loadProduct();
       loginForm.hidden = true;
       board.hidden = false;
       render();

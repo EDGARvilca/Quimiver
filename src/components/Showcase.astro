@@ -20,7 +20,7 @@ const specs = [
   { term: 'Presentación', value: presentation.label },
   {
     term: 'Por mayor',
-    value: `${formatCurrency(presentation.wholesalePrice)} desde ${site.order.wholesaleMinQuantity} frascos`,
+    value: `${formatCurrency(presentation.wholesalePrice)} desde ${product.wholesaleMinQuantity} frascos`,
   },
   { term: 'Entrega', value: carriers.join(' · ') },
   { term: 'Pedidos', value: 'Por WhatsApp' },
