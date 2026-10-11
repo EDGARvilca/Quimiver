@@ -36,4 +36,13 @@ Panel /panel/ ── Supabase Auth (correo y contraseña) ── REST + RLS ─�
 
 ## Evolución prevista
 
-Las fases siguen el plan de la auditoría inicial. Pagos en línea o administración de productos desde el panel son cambios estructurales y requieren autorización previa.
+Las fases siguen el plan de la auditoría inicial. Pagos en línea y una API Node propia son cambios estructurales y requieren autorización previa.
+
+## Más documentación
+
+- `docs/database.md`: tablas, funciones, permisos y cómo cambiar el esquema.
+- `docs/api.md`: funciones de Supabase, llamadas y respuestas.
+- `docs/deployment.md`: publicación, variables, tareas programadas y cómo volver atrás.
+- `docs/development.md`: cómo trabajar en el código y probarlo.
+- `docs/requisitos.md`: requisitos funcionales y no funcionales, casos de uso y diagramas.
+- `docs/seguridad.md`: revisión de seguridad.
