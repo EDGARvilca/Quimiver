@@ -2239,6 +2239,24 @@ summary:focus-visible {
   font-size: 1rem;
 }
 
+/* Enlace con forma de botón ("¿Olvidaste tu contraseña?"): es un <button> real. */
+.text-button {
+  justify-self: center;
+  padding: 6px 4px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--emerald);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.text-button:hover {
+  color: var(--forest);
+}
+
 .panel-stock {
   background: var(--surface);
   border: 1px solid var(--line);
