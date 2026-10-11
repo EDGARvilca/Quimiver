@@ -171,6 +171,10 @@ Cumple el D.S. 011-2011-PCM y sus modificatorias: cada hoja recibe un número co
 
 En Supabase → Table Editor → `reclamos` aparecen las hojas. Responde al correo del cliente dentro de 15 días hábiles y anota la respuesta en `acciones_proveedor` y la fecha en `respondido_en`.
 
+## Respaldos
+
+Cada domingo un flujo de GitHub copia los datos de Supabase (pedidos, libro, stock), los cifra, **prueba que se pueden restaurar** y guarda la copia 90 días. Necesita dos secretos del repositorio, `SUPABASE_DB_URL` y `RESPALDO_CLAVE`, que pone el dueño. Cómo activarlo, descargar y restaurar: [docs/respaldos.md](docs/respaldos.md).
+
 ## Monitoreo
 
 `.github/workflows/monitoreo.yml` corre cada 6 horas `scripts/monitoreo.mjs`, que revisa:
