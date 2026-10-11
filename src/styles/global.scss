@@ -1997,6 +1997,28 @@ section {
 
 /* ---------- Accesibilidad ---------- */
 
+/* "Saltar al contenido": invisible hasta que llega el foco con Tab, para no repetir el menú. */
+.skip-link {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1000;
+  padding: 12px 18px;
+  border-radius: var(--radius);
+  background: var(--forest);
+  color: var(--on-dark);
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+#contenido:focus {
+  outline: none;
+}
+
 a:focus-visible,
 button:focus-visible,
 summary:focus-visible {

@@ -34,7 +34,8 @@ CI (`.github/workflows/ci.yml`) ejecuta lint, formato, tipos, pruebas y build en
 - el menú del celular;
 - el pedido: precio por mayor desde 6 unidades, registro con número y apertura de WhatsApp, WhatsApp igual si el registro falla, y nada se envía si faltan datos;
 - el Libro de Reclamaciones: campos obligatorios, hoja registrada, sin conexión y el campo del apoderado;
-- el panel: contraseña incorrecta, cuenta sin permiso y cambio de estado por el administrador.
+- el panel: contraseña incorrecta, cuenta sin permiso y cambio de estado por el administrador;
+- la accesibilidad (`accesibilidad.spec.ts`): cada página pasa la revisión automática axe con las reglas WCAG 2.1 A y AA, el primer Tab lleva a «Saltar al contenido» y todo lo que recibe foco con el teclado se ve resaltado.
 
 Supabase y WhatsApp se simulan en cada prueba (`tests/e2e/fixtures.ts`): las pruebas nunca crean pedidos ni hojas reales. La primera vez instala el navegador con `npx playwright install chromium`. Las reglas de acceso de la base de datos se comprueban aparte, contra Supabase (ver _Panel de pedidos_).
 
