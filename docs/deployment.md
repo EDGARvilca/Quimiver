@@ -45,10 +45,11 @@ Las claves nunca van en el código ni en el chat. La clave publicable de Supabas
 
 ## Tareas programadas (GitHub Actions)
 
-| Flujo                           | Cuándo                       | Qué hace                                                                                                                                                     |
-| ------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `monitoreo.yml`                 | Cada 6 horas                 | Revisa la web y las dos funciones; abre un aviso (issue "monitoreo") si algo falla y lo cierra al recuperarse. También evita que Supabase pause el proyecto. |
-| `respaldo.yml` (PR de respaldo) | Domingos 03:17, hora de Lima | Copia cifrada de la base, prueba de restauración y archivo guardado 90 días.                                                                                 |
+| Flujo           | Cuándo                       | Qué hace                                                                                                                                                     |
+| --------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `monitoreo.yml` | Cada 6 horas                 | Revisa la web y las dos funciones; abre un aviso (issue "monitoreo") si algo falla y lo cierra al recuperarse. También evita que Supabase pause el proyecto. |
+| `producto.yml`  | Cada 15 minutos              | Si cambiaron los precios o textos del producto en el panel, vuelve a publicar la web.                                                                        |
+| `respaldo.yml`  | Domingos 03:17, hora de Lima | Copia cifrada de la base, prueba de restauración y archivo guardado 90 días.                                                                                 |
 
 GitHub apaga los flujos programados de un repositorio sin actividad durante 60 días; si eso pasa llega un correo y se reactivan desde Actions.
 

@@ -1,0 +1,48 @@
+# Publica los cambios del producto hechos en el panel (precios, presentación y textos).
+# Autorizado por Hluot el 13/10/2026. Cada 15 minutos compara la fecha del último cambio en
+# la tabla producto_web con la de la web publicada (producto-version.txt). Si son distintas,
+# vuelve a correr "Publicar en GitHub Pages", que compila leyendo la base. No hace nada si la
+# web ya está al día o si ya hay una publicación en curso.
+name: Publicar cambios del producto
+
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: producto
+  cancel-in-progress: false
+
+jobs:
+  revisar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Comparar la base con la web publicada
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          # Datos públicos (los mismos de src/config/site.ts); no son secretos.
+          SUPABASE_URL: https://buuelzmvfidigimbrplm.supabase.co
+          SUPABASE_KEY: sb_publishable_q2FSVRBLl-JMvXjPXWchXw_ZFoBAMwW
+          WEB: https://edgarvilca.github.io/Quimiver/producto-version.txt
+        run: |
+          set -euo pipefail
+          base=$(curl -fsS --retry 3 -H "apikey: $SUPABASE_KEY" \
+            "$SUPABASE_URL/rest/v1/producto_web?producto=eq.quimiver-50g&select=actualizado_en" \
+            | jq -r '.[0].actualizado_en // empty')
+          if [ -z "$base" ]; then echo "::error::La base no devolvió la fecha del producto."; exit 1; fi
+          web=$(curl -fsS --retry 3 "$WEB?v=$(date +%s)" | tr -d '[:space:]' || true)
+          echo "Base: $base"
+          echo "Web:  ${web:-sin archivo}"
+          if [ "$base" = "$web" ]; then echo "La web ya está al día."; exit 0; fi
+          en_curso=$(gh run list --workflow pages.yml --limit 5 --json status \
+            --jq '[.[] | select(.status != "completed")] | length')
+          if [ "$en_curso" != "0" ]; then echo "Ya hay una publicación en curso."; exit 0; fi
+          gh workflow run pages.yml --ref main
+          echo "Publicación lanzada."

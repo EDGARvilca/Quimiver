@@ -31,6 +31,8 @@ jobs:
         env:
           SITE_URL: ${{ steps.pages.outputs.origin }}
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          # Precios y textos editados en el panel (tabla producto_web); ver producto.yml.
+          PRODUCTO_DESDE_BASE: '1'
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
