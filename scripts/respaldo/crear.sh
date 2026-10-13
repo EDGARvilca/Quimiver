@@ -16,6 +16,9 @@ trap 'rm -rf "$trabajo"' EXIT
 
 fecha="$(TZ=America/Lima date +%F)"
 
+# Corrige los errores comunes al copiar la cadena (espacios, corchetes, símbolos en la clave).
+SUPABASE_DB_URL="$(python3 "$(dirname "$0")/normalizar-url.py")"
+
 # Filas por tabla antes del respaldo, para comprobar la restauración.
 psql "$SUPABASE_DB_URL" --no-psqlrc --quiet --tuples-only --no-align --field-separator=' ' \
   --set=ON_ERROR_STOP=1 >"$trabajo/conteos.txt" <<'SQL'

@@ -16,7 +16,7 @@ Cada domingo a las 03:17 (hora de Lima) el flujo **Respaldo semanal**
 Si algo falla, abre un aviso (issue) con la etiqueta `respaldo`, que llega por correo; cuando
 vuelve a funcionar, lo cierra.
 
-Scripts: `scripts/respaldo/crear.sh` y `scripts/respaldo/restaurar.sh`.
+Scripts: `scripts/respaldo/crear.sh`, `scripts/respaldo/restaurar.sh` y `scripts/respaldo/normalizar-url.py` (corrige espacios, corchetes y símbolos de la contraseña en `SUPABASE_DB_URL`).
 
 ## Activarlo (una sola vez, lo hace el dueño)
 
