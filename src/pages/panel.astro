@@ -33,6 +33,63 @@ import PageLayout from '../layouts/PageLayout.astro';
         Entrar
       </button>
       <p class="form-status" id="panel-login-status" role="status" hidden></p>
+      <button type="button" class="text-button" id="panel-forgot">
+        ¿Olvidaste tu contraseña?
+      </button>
+    </form>
+
+    <form class="order-form panel-login" id="panel-recover" hidden>
+      <p class="lead">
+        Escribe tu correo de administrador y te enviaremos un enlace para elegir una contraseña
+        nueva.
+      </p>
+      <div class="form-field full">
+        <label for="panel-recover-email">Correo</label>
+        <input
+          id="panel-recover-email"
+          name="email"
+          type="email"
+          required
+          autocomplete="username"
+        />
+      </div>
+      <button type="submit" class="btn primary full">
+        Enviar enlace
+      </button>
+      <p class="form-status" id="panel-recover-status" role="status" hidden></p>
+      <button type="button" class="text-button" id="panel-recover-back">
+        Volver a entrar
+      </button>
+    </form>
+
+    <form class="order-form panel-login" id="panel-reset" hidden>
+      <p class="lead">Elige tu contraseña nueva (al menos 8 caracteres).</p>
+      <div class="form-field full">
+        <label for="panel-new-password">Contraseña nueva</label>
+        <input
+          id="panel-new-password"
+          name="password"
+          type="password"
+          required
+          minlength="8"
+          autocomplete="new-password"
+        />
+      </div>
+      <div class="form-field full">
+        <label for="panel-repeat-password">Repite la contraseña</label>
+        <input
+          id="panel-repeat-password"
+          name="repeat"
+          type="password"
+          required
+          minlength="8"
+          autocomplete="new-password"
+        />
+      </div>
+      <button type="submit" class="btn primary full">
+        Guardar contraseña
+      </button>
+      <p class="form-status" id="panel-reset-status" role="status" hidden></p>
     </form>
 
     <div class="panel-board" id="panel-board" hidden>
@@ -177,6 +234,48 @@ import PageLayout from '../layouts/PageLayout.astro';
           estimados del pedido, sin el envío.
         </p>
       </section>
+
+      <details class="panel-customers" id="panel-customers">
+        <summary>
+          <h2 id="panel-customers-title">Clientes</h2>
+          <span class="panel-customers-count" id="panel-customers-count"></span>
+        </summary>
+        <div class="panel-customers-tools">
+          <label for="panel-customers-search">Buscar</label>
+          <input
+            id="panel-customers-search"
+            type="search"
+            placeholder="Nombre, celular o ciudad"
+            autocomplete="off"
+          />
+          <button type="button" class="btn ghost" id="panel-customers-download" disabled>
+            Descargar Excel
+          </button>
+        </div>
+        <div
+          class="panel-table-scroll"
+          tabindex="0"
+          role="region"
+          aria-labelledby="panel-customers-title"
+        >
+          <table class="panel-customers-table">
+            <thead>
+              <tr>
+                <th scope="col">Cliente</th>
+                <th scope="col">Celular</th>
+                <th scope="col">Pedidos</th>
+                <th scope="col">Comprado</th>
+                <th scope="col">Último pedido</th>
+              </tr>
+            </thead>
+            <tbody id="panel-customers-list"></tbody>
+          </table>
+        </div>
+        <p class="footnote">
+          Se agrupan por celular. "Pedidos" no cuenta los cancelados; "Comprado" suma los pedidos
+          confirmados, pagados, enviados o entregados, sin el envío.
+        </p>
+      </details>
 
       <div class="panel-toolbar">
         <div

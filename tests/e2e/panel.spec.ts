@@ -237,6 +237,101 @@ test('descarga los pedidos en Excel, todos o solo el estado filtrado', async ({
   expect(errors).toEqual([]);
 });
 
+test('pide un enlace para recuperar la contraseña', async ({ page, context, errors }) => {
+  let pedido: { url: string; body: unknown } | undefined;
+  await context.route(/\/auth\/v1\/recover/, async (route) => {
+    pedido = { url: route.request().url(), body: route.request().postDataJSON() };
+    await route.fulfill({ json: {} });
+  });
+  await page.goto('panel/');
+  await page.fill('#panel-email', 'admin@ejemplo.com');
+  await page.getByRole('button', { name: '¿Olvidaste tu contraseña?' }).click();
+  await expect(page.locator('#panel-recover-email')).toHaveValue('admin@ejemplo.com');
+  await page.getByRole('button', { name: 'Enviar enlace' }).click();
+  await expect(page.locator('#panel-recover-status')).toContainText('te llegará un enlace');
+  expect(pedido?.body).toEqual({ email: 'admin@ejemplo.com' });
+  expect(decodeURIComponent(pedido!.url)).toMatch(
+    /redirect_to=http:\/\/localhost:\d+\/Quimiver\/panel\/$/,
+  );
+  await page.getByRole('button', { name: 'Volver a entrar' }).click();
+  await expect(page.locator('#panel-login')).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('al volver del correo deja elegir una contraseña nueva y entra', async ({
+  page,
+  context,
+  errors,
+}) => {
+  await mockSupabase(context, { admin: true });
+  const cambios: unknown[] = [];
+  await context.route(/\/auth\/v1\/user/, async (route) => {
+    expect(route.request().headers().authorization).toBe('Bearer token-del-correo');
+    cambios.push(route.request().postDataJSON());
+    await route.fulfill({ json: { id: 'u1' } });
+  });
+  await page.goto(
+    'panel/#access_token=token-del-correo&refresh_token=r1&expires_in=3600&type=recovery',
+  );
+  await expect(page.locator('#panel-reset')).toBeVisible();
+  expect(page.url()).not.toContain('access_token');
+
+  await page.fill('#panel-new-password', 'nueva-clave-1');
+  await page.fill('#panel-repeat-password', 'otra-clave-1');
+  await page.getByRole('button', { name: 'Guardar contraseña' }).click();
+  await expect(page.locator('#panel-reset-status')).toContainText('no coinciden');
+
+  await page.fill('#panel-repeat-password', 'nueva-clave-1');
+  await page.getByRole('button', { name: 'Guardar contraseña' }).click();
+  await expect(page.locator('#panel-board')).toBeVisible();
+  await expect(page.locator('#panel-status')).toContainText('contraseña nueva quedó guardada');
+  expect(cambios).toEqual([{ password: 'nueva-clave-1' }]);
+  expect(errors).toEqual([]);
+});
+
+test('un enlace vencido avisa que hay que pedir otro', async ({ page }) => {
+  await page.goto('panel/#error=access_denied&error_code=otp_expired&error_description=x');
+  await expect(page.locator('#panel-login-status')).toContainText('venció');
+  await expect(page.locator('#panel-login')).toBeVisible();
+});
+
+test('muestra los clientes agrupados por celular, los busca y los descarga', async ({
+  page,
+  context,
+  errors,
+}) => {
+  await mockSupabase(context, { admin: true });
+  await login(page, 'correcta');
+
+  const section = page.locator('#panel-customers');
+  await expect(section.locator('summary')).toHaveText(/Clientes\s*\(1\)/);
+  await section.locator('summary').click();
+  const rows = section.locator('tbody tr');
+  await expect(rows).toHaveCount(1);
+  await expect(rows.first()).toContainText('Cliente de prueba');
+  await expect(rows.first()).toContainText('Huaraz');
+  await expect(rows.first().locator('td').nth(1)).toHaveText('2');
+  await expect(rows.first()).toContainText('S/ 120.00');
+  await expect(rows.first().getByRole('link', { name: /987654321/ })).toHaveAttribute(
+    'href',
+    /^https:\/\/wa\.me\/51987654321/,
+  );
+
+  await page.fill('#panel-customers-search', 'nadie');
+  await expect(rows.first()).toHaveText('Ningún cliente coincide.');
+  await expect(page.locator('#panel-customers-download')).toBeDisabled();
+
+  await page.fill('#panel-customers-search', 'huaraz');
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.locator('#panel-customers-download').click(),
+  ]);
+  expect(download.suggestedFilename()).toMatch(/^clientes-quimiver-\d{4}-\d{2}-\d{2}\.xlsx$/);
+  const text = (await import('node:fs')).readFileSync(await download.path()).toString('utf8');
+  expect(text).toContain('Cliente de prueba');
+  expect(errors).toEqual([]);
+});
+
 test('edita el precio del producto, avisa errores y muestra el cambio', async ({
   page,
   context,
