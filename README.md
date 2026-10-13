@@ -200,7 +200,7 @@ src/
 └── styles/          SCSS global y tokens
 supabase/            Base de datos y servidor del Libro de Reclamaciones
 tests/               Pruebas unitarias
-docs/                Documentación técnica
+docs/                Documentación técnica (empieza por docs/architecture.md)
 ```
 
 ## Convenciones
