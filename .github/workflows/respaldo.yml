@@ -51,7 +51,9 @@ jobs:
           RESPALDO_CLAVE: ${{ secrets.RESPALDO_CLAVE }}
         # shell: bash activa pipefail; sin él, tee esconde el error del script.
         shell: bash
-        run: scripts/respaldo/crear.sh respaldo 2>&1 | tee informe.txt
+        # El registro es público: se ocultan los textos entre comillas y las direcciones,
+        # porque los errores de conexión pueden repetir partes de la contraseña.
+        run: scripts/respaldo/crear.sh respaldo 2>&1 | sed -E 's/"[^"]*"/"[oculto]"/g; s#[a-z]+://[^ ]*#[dirección oculta]#g' | tee informe.txt
       - name: Probar que se puede restaurar
         id: probar
         if: steps.crear.outcome == 'success'
@@ -60,7 +62,7 @@ jobs:
           DESTINO_DB_URL: postgresql://postgres:prueba@localhost:5432/postgres
           RESPALDO_CLAVE: ${{ secrets.RESPALDO_CLAVE }}
         shell: bash
-        run: scripts/respaldo/restaurar.sh respaldo/*.tar.gpg 2>&1 | tee -a informe.txt
+        run: scripts/respaldo/restaurar.sh respaldo/*.tar.gpg 2>&1 | sed -E 's/"[^"]*"/"[oculto]"/g; s#[a-z]+://[^ ]*#[dirección oculta]#g' | tee -a informe.txt
       - name: Guardar el respaldo (90 días)
         id: guardar
         if: steps.probar.outcome == 'success'
