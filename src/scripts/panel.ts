@@ -1,4 +1,6 @@
 import { pages } from '../config/pages';
+import { initRecovery } from './panel-recovery';
+import type { Session } from '../lib/auth';
 import { site } from '../config/site';
 import { formatCurrency } from '../lib/order';
 import {
@@ -34,12 +36,6 @@ import { buildXlsx } from '../lib/xlsx';
 
 const { supabaseUrl, publishableKey } = site.panel;
 const SESSION_KEY = 'quimiver-panel-sesion';
-
-interface Session {
-  access_token: string;
-  refresh_token: string;
-  expires_at: number;
-}
 
 function loadSession(): Session | null {
   try {
@@ -525,6 +521,17 @@ export function initPanel(): void {
       }).catch(() => undefined);
     }
     showLogin();
+  });
+
+  initRecovery({
+    login: loginForm,
+    onSession: (fresh) => {
+      session = fresh;
+      saveSession(session);
+      void load().then(() =>
+        say(boardStatus, 'success', 'Listo: tu contraseña nueva quedó guardada.'),
+      );
+    },
   });
 
   if (session) void load();

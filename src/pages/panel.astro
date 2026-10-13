@@ -33,6 +33,63 @@ import PageLayout from '../layouts/PageLayout.astro';
         Entrar
       </button>
       <p class="form-status" id="panel-login-status" role="status" hidden></p>
+      <button type="button" class="text-button" id="panel-forgot">
+        ¿Olvidaste tu contraseña?
+      </button>
+    </form>
+
+    <form class="order-form panel-login" id="panel-recover" hidden>
+      <p class="lead">
+        Escribe tu correo de administrador y te enviaremos un enlace para elegir una contraseña
+        nueva.
+      </p>
+      <div class="form-field full">
+        <label for="panel-recover-email">Correo</label>
+        <input
+          id="panel-recover-email"
+          name="email"
+          type="email"
+          required
+          autocomplete="username"
+        />
+      </div>
+      <button type="submit" class="btn primary full">
+        Enviar enlace
+      </button>
+      <p class="form-status" id="panel-recover-status" role="status" hidden></p>
+      <button type="button" class="text-button" id="panel-recover-back">
+        Volver a entrar
+      </button>
+    </form>
+
+    <form class="order-form panel-login" id="panel-reset" hidden>
+      <p class="lead">Elige tu contraseña nueva (al menos 8 caracteres).</p>
+      <div class="form-field full">
+        <label for="panel-new-password">Contraseña nueva</label>
+        <input
+          id="panel-new-password"
+          name="password"
+          type="password"
+          required
+          minlength="8"
+          autocomplete="new-password"
+        />
+      </div>
+      <div class="form-field full">
+        <label for="panel-repeat-password">Repite la contraseña</label>
+        <input
+          id="panel-repeat-password"
+          name="repeat"
+          type="password"
+          required
+          minlength="8"
+          autocomplete="new-password"
+        />
+      </div>
+      <button type="submit" class="btn primary full">
+        Guardar contraseña
+      </button>
+      <p class="form-status" id="panel-reset-status" role="status" hidden></p>
     </form>
 
     <div class="panel-board" id="panel-board" hidden>
