@@ -1,0 +1,89 @@
+# Respaldo semanal de los datos (pedidos, libro de reclamaciones, stock, administradores).
+# 1. Copia el esquema public de Supabase y lo cifra con la clave RESPALDO_CLAVE.
+# 2. Prueba que la copia sirve: la descifra y la restaura en una base PostgreSQL temporal.
+# 3. Guarda el archivo cifrado en GitHub por 90 días (el repositorio es público, por eso va
+#    cifrado: sin la clave nadie puede leerlo).
+# Si algo falla abre un aviso con la etiqueta "respaldo"; lo cierra cuando vuelve a funcionar.
+# Cómo descargar y restaurar: docs/respaldos.md.
+name: Respaldo semanal
+
+on:
+  schedule:
+    - cron: '17 8 * * 0' # domingos 03:17 en Lima
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: respaldo
+  cancel-in-progress: false
+
+jobs:
+  respaldar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      prueba:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: prueba
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+      - name: Instalar las herramientas de PostgreSQL 17
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-common
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install -y -qq postgresql-client-17
+          echo "/usr/lib/postgresql/17/bin" >> "$GITHUB_PATH"
+      - name: Crear el respaldo cifrado
+        id: crear
+        continue-on-error: true
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          RESPALDO_CLAVE: ${{ secrets.RESPALDO_CLAVE }}
+        run: scripts/respaldo/crear.sh respaldo 2>&1 | tee informe.txt
+      - name: Probar que se puede restaurar
+        id: probar
+        if: steps.crear.outcome == 'success'
+        continue-on-error: true
+        env:
+          DESTINO_DB_URL: postgresql://postgres:prueba@localhost:5432/postgres
+          RESPALDO_CLAVE: ${{ secrets.RESPALDO_CLAVE }}
+        run: scripts/respaldo/restaurar.sh respaldo/*.tar.gpg 2>&1 | tee -a informe.txt
+      - name: Guardar el respaldo (90 días)
+        if: steps.probar.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: respaldo-quimiver-${{ github.run_number }}
+          path: respaldo/*.tar.gpg
+          retention-days: 90
+          if-no-files-found: error
+      - name: Abrir o cerrar el aviso
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          OK: ${{ steps.probar.outcome == 'success' }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          abierto=$(gh issue list --label respaldo --state open --json number --jq '.[0].number // empty')
+          { echo '```'; tail -n 15 informe.txt 2>/dev/null; echo '```'; printf '\n[Ver el respaldo](%s)\n' "$RUN_URL"; } > aviso.md
+          if [ "$OK" = "true" ]; then
+            if [ -n "$abierto" ]; then gh issue close "$abierto" --comment "El respaldo volvió a funcionar. $RUN_URL"; fi
+          else
+            if [ -n "$abierto" ]; then
+              gh issue comment "$abierto" --body-file aviso.md
+            else
+              gh label create respaldo --color B60205 --description "Avisos del respaldo semanal" --force
+              gh issue create --label respaldo --title "Alerta: el respaldo semanal de QUIMIVER falló" --body-file aviso.md
+            fi
+            exit 1
+          fi
