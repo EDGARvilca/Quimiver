@@ -49,6 +49,8 @@ jobs:
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           RESPALDO_CLAVE: ${{ secrets.RESPALDO_CLAVE }}
+        # shell: bash activa pipefail; sin él, tee esconde el error del script.
+        shell: bash
         run: scripts/respaldo/crear.sh respaldo 2>&1 | tee informe.txt
       - name: Probar que se puede restaurar
         id: probar
@@ -57,9 +59,12 @@ jobs:
         env:
           DESTINO_DB_URL: postgresql://postgres:prueba@localhost:5432/postgres
           RESPALDO_CLAVE: ${{ secrets.RESPALDO_CLAVE }}
+        shell: bash
         run: scripts/respaldo/restaurar.sh respaldo/*.tar.gpg 2>&1 | tee -a informe.txt
       - name: Guardar el respaldo (90 días)
+        id: guardar
         if: steps.probar.outcome == 'success'
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: respaldo-quimiver-${{ github.run_number }}
@@ -71,7 +76,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          OK: ${{ steps.probar.outcome == 'success' }}
+          OK: ${{ steps.probar.outcome == 'success' && steps.guardar.outcome == 'success' }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           abierto=$(gh issue list --label respaldo --state open --json number --jq '.[0].number // empty')
