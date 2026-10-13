@@ -331,3 +331,79 @@ test('muestra los clientes agrupados por celular, los busca y los descarga', asy
   expect(text).toContain('Cliente de prueba');
   expect(errors).toEqual([]);
 });
+
+test('edita el precio del producto, avisa errores y muestra el cambio', async ({
+  page,
+  context,
+  errors,
+}) => {
+  await mockSupabase(context, { admin: true });
+  let row = {
+    producto: 'quimiver-50g',
+    presentacion: 'Frasco de 50 g',
+    precio: 25,
+    precio_mayor: 20,
+    minimo_mayor: 6,
+    descripcion_corta: 'QUIMIVER es elaborado por CELGIMED, inspirado en la sabiduría de Huaraz.',
+    descripcion_google:
+      'QUIMIVER es un producto de CELGIMED elaborado a base de congona de Huaraz. Pide por WhatsApp.',
+    actualizado_en: '2026-10-11T10:00:00+00:00',
+  };
+  const changes: object[] = [];
+  const patches: Record<string, unknown>[] = [];
+  await context.route(/\/rest\/v1\/producto_web_cambios/, (route) =>
+    route.fulfill({ json: changes }),
+  );
+  await context.route(/\/rest\/v1\/producto_web\?/, (route) => {
+    const req = route.request();
+    if (req.method() === 'PATCH') {
+      const body = req.postDataJSON();
+      patches.push(body);
+      changes.unshift({
+        antes: { precio: row.precio },
+        despues: { precio: body.precio },
+        creado_por: 'admin@ejemplo.com',
+        creado_en: '2026-10-11T12:00:00Z',
+      });
+      row = { ...row, ...body, actualizado_en: '2026-10-11T12:00:00+00:00' };
+    }
+    return route.fulfill({ json: [row] });
+  });
+  await login(page, 'correcta');
+
+  const section = page.locator('#panel-product');
+  await section.locator('summary').first().click();
+  await expect(page.locator('#product-precio')).toHaveValue('25.00');
+  await expect(page.locator('#product-minimo')).toHaveValue('6');
+
+  await page.fill('#product-precio-mayor', '30');
+  await section.getByRole('button', { name: 'Guardar cambios' }).click();
+  await expect(page.locator('#product-precio-mayor')).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.locator('#product-precio-mayor')).toBeFocused();
+  await expect(section.locator('.field-error')).toContainText('no puede ser mayor');
+  expect(patches).toEqual([]);
+
+  await page.fill('#product-precio-mayor', '20');
+  await page.fill('#product-precio', '27');
+  await section.getByRole('button', { name: 'Guardar cambios' }).click();
+  await expect(page.locator('#panel-product-status')).toContainText('Guardado');
+  expect(patches).toEqual([
+    expect.objectContaining({ precio: 27, precio_mayor: 20, minimo_mayor: 6 }),
+  ]);
+  await expect(page.locator('#product-precio')).toHaveValue('27.00');
+  await section.getByText('Últimos cambios').click();
+  await expect(page.locator('#panel-product-changes')).toContainText(
+    'Precio: S/ 25.00 → S/ 27.00 (admin@ejemplo.com)',
+  );
+  expect(errors).toEqual([]);
+});
+
+test('si el producto no carga, el resto del panel sigue funcionando', async ({ page, context }) => {
+  await mockSupabase(context, { admin: true });
+  await login(page, 'correcta');
+  await expect(page.locator('.panel-order')).toHaveCount(2);
+  await expect(page.locator('#panel-product-status')).toContainText(
+    'No se pudieron cargar los datos del producto',
+  );
+  await expect(page.locator('#panel-product-form button[type="submit"]')).toBeDisabled();
+});

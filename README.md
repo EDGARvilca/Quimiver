@@ -141,6 +141,12 @@ El botón **Descargar Excel** del panel baja un archivo `.xlsx` con los pedidos 
 
 La sección **Clientes** del panel junta los pedidos por celular (`987 654 321`, `+51 987654321` y `51987654321` son el mismo cliente) y muestra nombre y ciudad del pedido más reciente, cuántos pedidos hizo sin contar los cancelados, cuánto compró (potes y soles de los pedidos confirmados, pagados, enviados o entregados, sin envío) y su último pedido. El celular abre WhatsApp. Se puede buscar por nombre, celular o ciudad, y **Descargar Excel** baja la lista que se ve (`clientes-quimiver-2026-10-06.xlsx`). No hay tabla nueva en la base: se arma con los pedidos que el panel ya cargó (`summarizeCustomers` en `src/lib/panel.ts`).
 
+### Producto y precios
+
+En la sección **Producto y precios** del panel se cambian la presentación, el precio por unidad, el precio por mayor, desde cuántas unidades rige el precio por mayor, la descripción corta de la portada y la descripción para Google. Se guardan en la tabla `producto_web` (migración `20261011010000_producto_editable.sql`): cualquiera puede leerla, solo un administrador puede cambiarla, la base rechaza valores fuera de rango (por ejemplo un precio por mayor más alto que el normal) y cada cambio queda en `producto_web_cambios` con el antes, el después y quién lo hizo.
+
+La web es estática, así que el cambio se ve cuando se vuelve a publicar. El despliegue compila con `PRODUCTO_DESDE_BASE=1`, que lee `producto_web` y la aplica sobre `src/content/products/quimiver.json` (`src/content.config.ts`); si la base no responde, la compilación falla y queda publicada la versión anterior. En desarrollo y en las pruebas se usa solo el JSON. Las preguntas frecuentes usan `{presentacion}`, `{precio}`, `{precio_mayor}` y `{minimo_mayor}` para no repetir precios a mano. `/producto-version.txt` dice con qué cambio se compiló la web publicada.
+
 ### Stock
 
 - Tabla `inventario` (hoy un producto, `quimiver-50g`, con 100 potes al empezar) y registro de cada cambio en `movimientos_inventario`. Migración `supabase/migrations/20261006040000_inventario.sql`.

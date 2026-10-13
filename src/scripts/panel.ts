@@ -28,6 +28,7 @@ import {
 } from '../lib/panel';
 import { downloadXlsx } from './download';
 import { initCustomers } from './panel-customers';
+import { initProduct } from './panel-product';
 
 /**
  * Panel privado de pedidos. Inicia sesión con Supabase Auth (correo y contraseña) y lee o
@@ -152,6 +153,7 @@ export function initPanel(): void {
   }
 
   const renderCustomers = initCustomers();
+  const loadProduct = initProduct(api);
   let orders: PanelOrder[] = [];
   let current: OrderState | 'todos' = 'todos';
 
@@ -418,6 +420,7 @@ export function initPanel(): void {
       if (!res.ok) throw new Error(String(res.status));
       orders = (await res.json()) as PanelOrder[];
       await loadStock();
+      await loadProduct();
       loginForm.hidden = true;
       board.hidden = false;
       render();

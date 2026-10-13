@@ -15,6 +15,7 @@
       "wholesalePrice": 20
     }
   ],
+  "wholesaleMinQuantity": 6,
   "images": {
     "hero": {
       "src": "/images/quimiver-frascos.webp",
@@ -140,7 +141,7 @@
   "faq": [
     {
       "question": "¿Qué presentaciones tienen disponibles?",
-      "answer": "Por ahora manejamos una presentación: frasco de 50 g, a S/ 25.00 por unidad. Desde 6 unidades el precio es de S/ 20.00 por frasco.",
+      "answer": "Por ahora manejamos una presentación: {presentacion}, a {precio} por unidad. Desde {minimo_mayor} unidades el precio es de {precio_mayor} por frasco.",
       "verified": true
     },
     {
@@ -155,7 +156,7 @@
     },
     {
       "question": "¿Ofrecen ventas al por mayor?",
-      "answer": "Sí. Desde 6 unidades (media docena) el precio es de S/ 20.00 por frasco. Contáctanos por WhatsApp para pedidos más grandes.",
+      "answer": "Sí. Desde {minimo_mayor} unidades el precio es de {precio_mayor} por frasco. Contáctanos por WhatsApp para pedidos más grandes.",
       "verified": true
     }
   ]

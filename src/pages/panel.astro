@@ -130,6 +130,84 @@ import PageLayout from '../layouts/PageLayout.astro';
         </details>
       </section>
 
+      <details class="panel-product" id="panel-product">
+        <summary>
+          <h2 id="panel-product-title">Producto y precios</h2>
+        </summary>
+        <p class="panel-product-note">
+          Lo que guardes aquí cambia los precios y textos de la web la próxima vez que se publique.
+          Los pedidos que ya llegaron conservan su precio.
+        </p>
+        <form class="panel-product-form" id="panel-product-form" novalidate>
+          <div class="form-field full">
+            <label for="product-presentacion">Presentación</label>
+            <input id="product-presentacion" name="presentacion" required maxlength="60" />
+          </div>
+          <div class="form-field">
+            <label for="product-precio">Precio por unidad (S/)</label>
+            <input
+              id="product-precio"
+              name="precio"
+              inputmode="decimal"
+              required
+              autocomplete="off"
+            />
+          </div>
+          <div class="form-field">
+            <label for="product-precio-mayor">Precio por mayor (S/)</label>
+            <input
+              id="product-precio-mayor"
+              name="precio_mayor"
+              inputmode="decimal"
+              required
+              autocomplete="off"
+            />
+          </div>
+          <div class="form-field">
+            <label for="product-minimo">Por mayor desde (unidades)</label>
+            <input
+              id="product-minimo"
+              name="minimo_mayor"
+              type="number"
+              min="2"
+              max="1000"
+              step="1"
+              required
+            />
+          </div>
+          <div class="form-field full">
+            <label for="product-corta">Descripción corta (portada)</label>
+            <textarea
+              id="product-corta"
+              name="descripcion_corta"
+              rows="3"
+              maxlength="300"
+              required
+            ></textarea>
+          </div>
+          <div class="form-field full">
+            <label for="product-google">Descripción para Google (50 a 160 caracteres)</label>
+            <textarea
+              id="product-google"
+              name="descripcion_google"
+              rows="3"
+              maxlength="160"
+              required
+            ></textarea>
+          </div>
+          <div class="panel-product-actions full">
+            <button type="submit" class="btn primary" disabled>
+              Guardar cambios
+            </button>
+            <p class="form-status" id="panel-product-status" role="status" hidden></p>
+          </div>
+        </form>
+        <details class="panel-product-changes">
+          <summary>Últimos cambios</summary>
+          <ul id="panel-product-changes"></ul>
+        </details>
+      </details>
+
       <section class="panel-sales" aria-labelledby="panel-sales-title">
         <h2 id="panel-sales-title">Resumen de ventas</h2>
         <div class="panel-sales-cards" id="panel-sales-cards"></div>
