@@ -34,7 +34,8 @@ CI (`.github/workflows/ci.yml`) ejecuta lint, formato, tipos, pruebas y build en
 - el menú del celular;
 - el pedido: precio por mayor desde 6 unidades, registro con número y apertura de WhatsApp, WhatsApp igual si el registro falla, y nada se envía si faltan datos;
 - el Libro de Reclamaciones: campos obligatorios, hoja registrada, sin conexión y el campo del apoderado;
-- el panel: contraseña incorrecta, cuenta sin permiso y cambio de estado por el administrador.
+- el panel: contraseña incorrecta, cuenta sin permiso y cambio de estado por el administrador;
+- la accesibilidad (`accesibilidad.spec.ts`): cada página pasa la revisión automática axe con las reglas WCAG 2.1 A y AA, el primer Tab lleva a «Saltar al contenido» y todo lo que recibe foco con el teclado se ve resaltado.
 
 Supabase y WhatsApp se simulan en cada prueba (`tests/e2e/fixtures.ts`): las pruebas nunca crean pedidos ni hojas reales. La primera vez instala el navegador con `npx playwright install chromium`. Las reglas de acceso de la base de datos se comprueban aparte, contra Supabase (ver _Panel de pedidos_).
 
@@ -122,6 +123,7 @@ Al confirmar el formulario de compra, el sitio guarda una copia numerada del ped
 `/panel/` es una página privada (no aparece en el menú, el sitemap ni Google) para ver los pedidos, filtrarlos por estado, cambiar el estado, anotar notas internas y escribir al cliente por WhatsApp.
 
 - Se entra con correo y contraseña de **Supabase Auth**. Solo entran los correos que estén en la tabla `administradores`; el resto ve "Esta cuenta no tiene permiso".
+- **¿Olvidaste tu contraseña?**: el panel pide a Supabase que envíe un enlace al correo; al abrirlo vuelve al panel y deja elegir una contraseña nueva (mínimo 8 caracteres). Para que el enlace vuelva al panel, en Supabase → Authentication → URL Configuration, el **Site URL** debe ser `https://edgarvilca.github.io/Quimiver/panel/` (o estar en **Redirect URLs**). El correo lo manda el servicio de Supabase, que permite pocos envíos por hora. Código: `src/scripts/panel-recovery.ts` y `src/lib/auth.ts`.
 - Para dar acceso: en Supabase → Authentication → Users → _Add user_ crea el usuario (correo y contraseña) y en SQL Editor ejecuta `insert into administradores (correo) values ('correo@ejemplo.com');` (en minúsculas). Para quitarlo, borra la fila.
 - **Avisar al cliente**: cada pedido tiene un botón que abre WhatsApp con un mensaje listo para el cliente según el estado guardado (las mismas frases de "Sigue tu pedido") y el enlace de seguimiento con su número. Al guardar un cambio de estado, el aviso de "Guardado" también trae ese enlace. Nada se envía solo: Hluot revisa el mensaje y lo manda desde su WhatsApp. Lógica en `customerNotice` de `src/lib/panel.ts`.
 - Desde el panel solo se pueden cambiar `estado` y `notas_internas`; no se pueden crear ni borrar pedidos. Las reglas están en la base (`supabase/migrations/20261006030000_panel_pedidos.sql`), no en la página.
@@ -175,6 +177,10 @@ Cumple el D.S. 011-2011-PCM y sus modificatorias: cada hoja recibe un número co
 
 En Supabase → Table Editor → `reclamos` aparecen las hojas. Responde al correo del cliente dentro de 15 días hábiles y anota la respuesta en `acciones_proveedor` y la fecha en `respondido_en`.
 
+## Respaldos
+
+Cada domingo un flujo de GitHub copia los datos de Supabase (pedidos, libro, stock), los cifra, **prueba que se pueden restaurar** y guarda la copia 90 días. Necesita dos secretos del repositorio, `SUPABASE_DB_URL` y `RESPALDO_CLAVE`, que pone el dueño. Cómo activarlo, descargar y restaurar: [docs/respaldos.md](docs/respaldos.md).
+
 ## Monitoreo
 
 `.github/workflows/monitoreo.yml` corre cada 6 horas `scripts/monitoreo.mjs`, que revisa:
@@ -203,7 +209,7 @@ src/
 └── styles/          SCSS global y tokens
 supabase/            Base de datos y servidor del Libro de Reclamaciones
 tests/               Pruebas unitarias
-docs/                Documentación técnica
+docs/                Documentación técnica (empieza por docs/architecture.md)
 ```
 
 ## Convenciones
