@@ -294,3 +294,40 @@ test('un enlace vencido avisa que hay que pedir otro', async ({ page }) => {
   await expect(page.locator('#panel-login-status')).toContainText('venció');
   await expect(page.locator('#panel-login')).toBeVisible();
 });
+
+test('muestra los clientes agrupados por celular, los busca y los descarga', async ({
+  page,
+  context,
+  errors,
+}) => {
+  await mockSupabase(context, { admin: true });
+  await login(page, 'correcta');
+
+  const section = page.locator('#panel-customers');
+  await expect(section.locator('summary')).toHaveText(/Clientes\s*\(1\)/);
+  await section.locator('summary').click();
+  const rows = section.locator('tbody tr');
+  await expect(rows).toHaveCount(1);
+  await expect(rows.first()).toContainText('Cliente de prueba');
+  await expect(rows.first()).toContainText('Huaraz');
+  await expect(rows.first().locator('td').nth(1)).toHaveText('2');
+  await expect(rows.first()).toContainText('S/ 120.00');
+  await expect(rows.first().getByRole('link', { name: /987654321/ })).toHaveAttribute(
+    'href',
+    /^https:\/\/wa\.me\/51987654321/,
+  );
+
+  await page.fill('#panel-customers-search', 'nadie');
+  await expect(rows.first()).toHaveText('Ningún cliente coincide.');
+  await expect(page.locator('#panel-customers-download')).toBeDisabled();
+
+  await page.fill('#panel-customers-search', 'huaraz');
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.locator('#panel-customers-download').click(),
+  ]);
+  expect(download.suggestedFilename()).toMatch(/^clientes-quimiver-\d{4}-\d{2}-\d{2}\.xlsx$/);
+  const text = (await import('node:fs')).readFileSync(await download.path()).toString('utf8');
+  expect(text).toContain('Cliente de prueba');
+  expect(errors).toEqual([]);
+});

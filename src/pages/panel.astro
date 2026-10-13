@@ -157,6 +157,48 @@ import PageLayout from '../layouts/PageLayout.astro';
         </p>
       </section>
 
+      <details class="panel-customers" id="panel-customers">
+        <summary>
+          <h2 id="panel-customers-title">Clientes</h2>
+          <span class="panel-customers-count" id="panel-customers-count"></span>
+        </summary>
+        <div class="panel-customers-tools">
+          <label for="panel-customers-search">Buscar</label>
+          <input
+            id="panel-customers-search"
+            type="search"
+            placeholder="Nombre, celular o ciudad"
+            autocomplete="off"
+          />
+          <button type="button" class="btn ghost" id="panel-customers-download" disabled>
+            Descargar Excel
+          </button>
+        </div>
+        <div
+          class="panel-table-scroll"
+          tabindex="0"
+          role="region"
+          aria-labelledby="panel-customers-title"
+        >
+          <table class="panel-customers-table">
+            <thead>
+              <tr>
+                <th scope="col">Cliente</th>
+                <th scope="col">Celular</th>
+                <th scope="col">Pedidos</th>
+                <th scope="col">Comprado</th>
+                <th scope="col">Último pedido</th>
+              </tr>
+            </thead>
+            <tbody id="panel-customers-list"></tbody>
+          </table>
+        </div>
+        <p class="footnote">
+          Se agrupan por celular. "Pedidos" no cuenta los cancelados; "Comprado" suma los pedidos
+          confirmados, pagados, enviados o entregados, sin el envío.
+        </p>
+      </details>
+
       <div class="panel-toolbar">
         <div
           class="panel-filters"

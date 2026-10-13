@@ -26,7 +26,8 @@ import {
   type OrderState,
   type PanelOrder,
 } from '../lib/panel';
-import { buildXlsx } from '../lib/xlsx';
+import { downloadXlsx } from './download';
+import { initCustomers } from './panel-customers';
 
 /**
  * Panel privado de pedidos. Inicia sesión con Supabase Auth (correo y contraseña) y lee o
@@ -150,6 +151,7 @@ export function initPanel(): void {
     return;
   }
 
+  const renderCustomers = initCustomers();
   let orders: PanelOrder[] = [];
   let current: OrderState | 'todos' = 'todos';
 
@@ -384,6 +386,7 @@ export function initPanel(): void {
   const render = () => {
     renderFilters();
     renderSales();
+    renderCustomers(orders);
     const visible = filterByState(orders, current);
     download.disabled = visible.length === 0;
     download.textContent =
@@ -495,23 +498,12 @@ export function initPanel(): void {
   download.addEventListener('click', () => {
     const visible = filterByState(orders, current);
     if (visible.length === 0) return;
-    const file = buildXlsx(
+    downloadXlsx(
       'Pedidos',
       ordersToRows(visible),
       EXPORT_COLUMNS.map((c) => c.width),
+      exportFileName(current),
     );
-    const url = URL.createObjectURL(
-      new Blob([file], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      }),
-    );
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = exportFileName(current);
-    document.body.append(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
   logout.addEventListener('click', () => {
     if (session) {

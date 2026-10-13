@@ -314,3 +314,106 @@ export function exportFileName(state: OrderState | 'todos', now: Date = new Date
   const suffix = state === 'todos' ? '' : `-${state}`;
   return `pedidos-quimiver${suffix}-${day}.xlsx`;
 }
+
+export interface Customer {
+  /** Celular normalizado a 9 dígitos (o como vino si no es peruano). */
+  telefono: string;
+  /** Nombre y ciudad del pedido más reciente. */
+  nombre: string;
+  ciudad: string;
+  /** Pedidos que no están cancelados. */
+  pedidos: number;
+  /** Potes y soles de los pedidos confirmados, pagados, enviados o entregados. */
+  potes: number;
+  soles: number;
+  primer_pedido: string;
+  ultimo_pedido: string;
+  ultimo_codigo: string;
+}
+
+/** Celular sin espacios ni +51, para reconocer al mismo cliente en varios pedidos. */
+export function customerKey(phone: string): string {
+  const digits = phone.replace(/\D/g, '');
+  return digits.length === 11 && digits.startsWith('51') ? digits.slice(2) : digits;
+}
+
+/**
+ * Clientes a partir de los pedidos, agrupados por celular, del que compró más reciente
+ * al más antiguo. Un cliente con solo pedidos cancelados aparece con 0 pedidos.
+ */
+export function summarizeCustomers(orders: PanelOrder[]): Customer[] {
+  const byPhone = new Map<string, Customer>();
+  const sorted = [...orders].sort((a, b) => a.creado_en.localeCompare(b.creado_en));
+  for (const o of sorted) {
+    const key = customerKey(o.telefono);
+    if (!key) continue;
+    let c = byPhone.get(key);
+    if (!c) {
+      c = {
+        telefono: key,
+        nombre: '',
+        ciudad: '',
+        pedidos: 0,
+        potes: 0,
+        soles: 0,
+        primer_pedido: o.creado_en,
+        ultimo_pedido: o.creado_en,
+        ultimo_codigo: o.codigo,
+      };
+      byPhone.set(key, c);
+    }
+    c.nombre = o.cliente_nombre.trim() || c.nombre;
+    c.ciudad = o.ciudad.trim() || c.ciudad;
+    c.ultimo_pedido = o.creado_en;
+    c.ultimo_codigo = o.codigo;
+    if (o.estado !== 'cancelado') c.pedidos += 1;
+    if (SALE_STATES.includes(o.estado)) {
+      c.potes += o.cantidad;
+      c.soles = Math.round((c.soles + Number(o.total_estimado)) * 100) / 100;
+    }
+  }
+  return [...byPhone.values()].sort((a, b) => b.ultimo_pedido.localeCompare(a.ultimo_pedido));
+}
+
+/** Busca por nombre, celular o ciudad, sin importar mayúsculas ni tildes. */
+export function filterCustomers(customers: Customer[], query: string): Customer[] {
+  const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLocaleLowerCase('es-PE');
+  const q = fold(query.trim());
+  if (!q) return customers;
+  const digits = q.replace(/\D/g, '');
+  return customers.filter(
+    (c) =>
+      fold(c.nombre).includes(q) ||
+      fold(c.ciudad).includes(q) ||
+      (digits.length >= 3 && c.telefono.includes(digits)),
+  );
+}
+
+export const CUSTOMER_COLUMNS: { title: string; width: number }[] = [
+  { title: 'Cliente', width: 28 },
+  { title: 'Celular', width: 14 },
+  { title: 'Ciudad', width: 18 },
+  { title: 'Pedidos', width: 10 },
+  { title: 'Potes comprados', width: 16 },
+  { title: 'Total comprado (S/)', width: 18 },
+  { title: 'Primer pedido', width: 18 },
+  { title: 'Último pedido', width: 18 },
+  { title: 'Último código', width: 14 },
+];
+
+export function customersToRows(customers: Customer[]): (string | number | null)[][] {
+  return [
+    CUSTOMER_COLUMNS.map((c) => c.title),
+    ...customers.map((c) => [
+      c.nombre,
+      c.telefono,
+      c.ciudad,
+      c.pedidos,
+      c.potes,
+      c.soles,
+      limaDateTime(c.primer_pedido),
+      limaDateTime(c.ultimo_pedido),
+      c.ultimo_codigo,
+    ]),
+  ];
+}

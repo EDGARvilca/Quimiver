@@ -137,6 +137,10 @@ Arriba del panel: soles y potes vendidos esta semana (desde el lunes), este mes 
 
 El botón **Descargar Excel** del panel baja un archivo `.xlsx` con los pedidos que se ven en ese momento: todos, o solo los del estado filtrado (por ejemplo `pedidos-quimiver-pagado-2026-10-06.xlsx`). Trae una fila por pedido con fecha y hora de Lima, estado, cliente, teléfono, ciudad, potes, precios, entrega, observaciones y notas internas; los montos van como números para poder sumarlos. El archivo se arma en el navegador sin librerías (`src/lib/xlsx.ts`) y abre en Excel, Google Sheets y LibreOffice.
 
+### Clientes
+
+La sección **Clientes** del panel junta los pedidos por celular (`987 654 321`, `+51 987654321` y `51987654321` son el mismo cliente) y muestra nombre y ciudad del pedido más reciente, cuántos pedidos hizo sin contar los cancelados, cuánto compró (potes y soles de los pedidos confirmados, pagados, enviados o entregados, sin envío) y su último pedido. El celular abre WhatsApp. Se puede buscar por nombre, celular o ciudad, y **Descargar Excel** baja la lista que se ve (`clientes-quimiver-2026-10-06.xlsx`). No hay tabla nueva en la base: se arma con los pedidos que el panel ya cargó (`summarizeCustomers` en `src/lib/panel.ts`).
+
 ### Stock
 
 - Tabla `inventario` (hoy un producto, `quimiver-50g`, con 100 potes al empezar) y registro de cada cambio en `movimientos_inventario`. Migración `supabase/migrations/20261006040000_inventario.sql`.

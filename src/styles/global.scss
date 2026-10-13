@@ -2470,6 +2470,108 @@ summary:focus-visible {
   margin: 0;
 }
 
+.panel-customers {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.panel-customers summary {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.panel-customers summary h2 {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.panel-customers-count {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.panel-customers[open] summary {
+  margin-bottom: 16px;
+}
+
+.panel-customers-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.panel-customers-tools input {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  font: inherit;
+}
+
+.panel-table-scroll {
+  overflow-x: auto;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.panel-customers-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.panel-customers-table th,
+.panel-customers-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.panel-customers-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.panel-customers-table tbody th {
+  font-weight: 600;
+}
+
+.panel-customers-table small {
+  display: block;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.panel-empty-cell {
+  color: var(--muted);
+}
+
+.panel-customers .footnote {
+  margin: 12px 0 0;
+}
+
 .panel-toolbar {
   display: flex;
   flex-wrap: wrap;
