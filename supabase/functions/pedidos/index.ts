@@ -26,7 +26,8 @@ const MAX_PER_PHONE_PER_HOUR = 5;
 // el cliente igual pide por WhatsApp (el sitio lo abre aunque el registro falle).
 const MAX_PER_HOUR = 60;
 
-const DEFAULT_ORIGINS = 'https://quimiver.cov.com.pe,https://edgarvilca.github.io,http://localhost:4321,http://localhost:4329';
+const DEFAULT_ORIGINS =
+  'https://quimiver.cov.com.pe,https://edgarvilca.github.io,http://localhost:4321,http://localhost:4329';
 
 function allowedOrigins(): string[] {
   return (env('ALLOWED_ORIGINS') || DEFAULT_ORIGINS)
