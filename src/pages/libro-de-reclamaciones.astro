@@ -10,7 +10,7 @@ import {
   RESPONSE_DEADLINE_BUSINESS_DAYS,
 } from '../../supabase/functions/libro-reclamaciones/complaint';
 
-const config = { endpoint: site.complaintsBook.endpoint, email: site.contact.email };
+const config = { endpoint: site.complaintsBook.endpoint, email: site.contact.complaintsEmail };
 ---
 
 <PageLayout
@@ -30,8 +30,9 @@ const config = { endpoint: site.complaintsBook.endpoint, email: site.contact.ema
     {!complaintsBookEnabled && (
       <p class="form-status" data-kind="error">
         El libro virtual se habilitará en cuanto completemos nuestros datos legales. Mientras tanto,
-        escríbenos a <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a> y atenderemos
-        tu reclamo.
+        escríbenos a{' '}
+        <a href={`mailto:${site.contact.complaintsEmail}`}>{site.contact.complaintsEmail}</a> y
+        atenderemos tu reclamo.
       </p>
     )}
 

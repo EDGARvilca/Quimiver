@@ -583,11 +583,6 @@ section {
   }
 }
 
-.product-card figcaption span,
-.story-frame figcaption span {
-  color: var(--emerald);
-}
-
 .seal {
   position: absolute;
   top: 30px;
@@ -782,8 +777,7 @@ section {
   border-top: 1px solid var(--line);
 }
 
-.story-step h3,
-.story-fig {
+.story-step h3 {
   transition: color 0.5s ease;
 }
 
@@ -792,22 +786,13 @@ section {
 }
 
 /* El paso que no se está leyendo baja de tono, sin perder contraste legible. */
-.story-body.is-enhanced .story-step:not(.is-active) h3,
-.story-body.is-enhanced .story-step:not(.is-active) .story-fig {
+.story-body.is-enhanced .story-step:not(.is-active) h3 {
   color: var(--muted);
 }
 
 .story-inline {
   display: none;
   margin: 0 0 28px;
-}
-
-.story-fig {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--emerald);
 }
 
 .story-step h3 {
@@ -2084,10 +2069,6 @@ summary:focus-visible {
 
   .story-body.is-enhanced .story-step:not(.is-active) h3 {
     color: var(--forest);
-  }
-
-  .story-body.is-enhanced .story-step:not(.is-active) .story-fig {
-    color: var(--emerald);
   }
 
   .steps-figure {

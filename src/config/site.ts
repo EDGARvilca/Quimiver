@@ -25,7 +25,9 @@ export const site = {
     phoneHref: 'tel:+51929445834',
     /** Número en formato internacional sin "+", como lo pide wa.me. */
     whatsapp: '51929445834',
-    email: 'ventas@quimicaverdeandina.pe',
+    email: 'ventas@cov.com.pe',
+    /** Correo del Libro de Reclamaciones (alias en Zoho que llega al mismo buzón). */
+    complaintsEmail: 'reclamos@cov.com.pe',
     /** Horario de atención; `null` lo oculta hasta que el negocio lo defina. */
     hours: null as string | null,
   },
@@ -70,9 +72,9 @@ export const site = {
   order: {
     /** `fee: null` = el costo depende del destino y se coordina por WhatsApp. */
     shippingOptions: [
-      { id: 'recojo-lima', label: 'Recojo en Lima (costo según zona)', fee: null },
-      { id: 'shalom', label: 'Envío por Shalom (costo según destino)', fee: null },
-      { id: 'olva', label: 'Envío por Olva (costo según destino)', fee: null },
+      { id: 'recojo-lima', label: 'Recojo en Lima', fee: null },
+      { id: 'shalom', label: 'Envío por Shalom', fee: null },
+      { id: 'olva', label: 'Envío por Olva', fee: null },
     ] satisfies ShippingOption[],
   },
 } as const;

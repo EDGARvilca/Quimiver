@@ -14,7 +14,7 @@ const points = ingredients.points.filter((p) => p.verified);
 /**
  * Historia que se cuenta al bajar: en escritorio la imagen queda fija y cambia con cada paso;
  * en celular cada paso lleva su propia imagen. Los textos solo usan datos confirmados
- * (etiqueta, fabricante, presentación y modo de uso). Solo la foto real lleva leyenda.
+ * (etiqueta, fabricante, presentación y modo de uso). Las imágenes no llevan leyenda.
  */
 const steps = [
   {
@@ -68,10 +68,9 @@ const steps = [
       height: images.hero.height,
       position: '30% 60%',
     },
-    note: 'Foto real',
+    note: '',
   },
 ];
-const fig = (i: number) => `Fig. ${String(i + 2).padStart(2, '0')}`;
 ---
 
 <section class="story" id="ingredientes">
@@ -107,12 +106,7 @@ const fig = (i: number) => `Fig. ${String(i + 2).padStart(2, '0')}`;
             loading="lazy"
             decoding="async"
           />
-          {step.note && (
-            <figcaption>
-              <span>{fig(i)}</span>
-              {step.note}
-            </figcaption>
-          )}
+          {step.note && <figcaption>{step.note}</figcaption>}
         </figure>
       ))}
     </div>
@@ -132,7 +126,6 @@ const fig = (i: number) => `Fig. ${String(i + 2).padStart(2, '0')}`;
             />
             {step.note && <figcaption>{step.note}</figcaption>}
           </figure>
-          <span class="story-fig">{fig(i)}</span>
           <h3>{step.title}</h3>
           <p>{step.text}</p>
         </li>
