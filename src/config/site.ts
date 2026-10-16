@@ -25,7 +25,9 @@ export const site = {
     phoneHref: 'tel:+51929445834',
     /** Número en formato internacional sin "+", como lo pide wa.me. */
     whatsapp: '51929445834',
-    email: 'ventas@quimicaverdeandina.pe',
+    email: 'ventas@cov.com.pe',
+    /** Correo del Libro de Reclamaciones (alias en Zoho que llega al mismo buzón). */
+    complaintsEmail: 'reclamos@cov.com.pe',
     /** Horario de atención; `null` lo oculta hasta que el negocio lo defina. */
     hours: null as string | null,
   },
